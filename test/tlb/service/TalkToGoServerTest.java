@@ -322,6 +322,38 @@ public class TalkToGoServerTest {
         assertThat(failedTests, is(Arrays.asList("com.thoughtworks.cruise.AnotherFailedTest", "com.thoughtworks.cruise.FailedTest", "com.thoughtworks.cruise.YetAnotherFailedTest")));
     }
 
+    @Test
+    public void shouldNotFailWhenFailedTestsNotAvailableInLastRun() throws Exception{
+        HttpAction action = mock(HttpAction.class);
+        when(action.get("http://test.host:8153/go/api/pipelines/pipeline-foo/stages.xml")).thenReturn(TestUtil.fileContents("resources/stages_p1.xml"));
+        when(action.get("http://test.host:8153/go/api/pipelines/pipeline-foo/stages.xml?before=23")).thenReturn(TestUtil.fileContents("resources/stages_p2.xml"));
+        when(action.get("http://test.host:8153/go/api/stages/3.xml")).thenReturn(TestUtil.fileContents("resources/stage_detail.xml"));
+        stubJobDetails(action);
+        when(action.get("http://test.host:8153/go/files/pipeline/1/stage/1/firefox-1/tlb/failed_tests")).thenThrow(new RuntimeException("Something went wrong"));
+        when(action.get("http://test.host:8153/go/files/pipeline/1/stage/1/firefox-2/tlb/failed_tests")).thenThrow(new RuntimeException("Something else went wrong"));
+        TalkToGoServer service = new TalkToGoServer(initEnvironment("http://test.host:8153/go"), action);
+        List<SuiteResultEntry> failedTestEntries = null;
+        try {
+            failedTestEntries = service.getLastRunFailedTests(Arrays.asList("firefox-1", "firefox-2"));
+            assertThat(failedTestEntries.isEmpty(), is(true));
+        } catch (Exception e) {
+            fail("should not have failed in absence of failed tests data, but failed with exception => " + e.getMessage());
+        }
+
+        Exception exception = new RuntimeException("something went really wrong!");
+        when(action.get("http://test.host:8153/go/api/pipelines/pipeline-foo/stages.xml?before=23")).thenThrow(exception);
+        logFixture.startListening();
+        try {
+            failedTestEntries = service.getLastRunFailedTests(Arrays.asList("firefox-1", "firefox-2"));
+            assertThat(failedTestEntries.isEmpty(), is(true));
+        } catch (Exception e) {
+            fail("should not have failed in absence of failed tests data, but failed with exception => " + e.getMessage());
+        }
+        logFixture.stopListening();
+        logFixture.assertHeard("Couldn't find tests that failed in the last run");
+        logFixture.assertHeardException(exception);
+    }
+
     private List<String> failedTestNames(List<SuiteResultEntry> failedTestEntries) {
         ArrayList<String> failedTestNames = new ArrayList<String>();
         for (SuiteResultEntry failedTestEntry : failedTestEntries) {

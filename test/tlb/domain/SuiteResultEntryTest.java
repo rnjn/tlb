@@ -60,6 +60,17 @@ public class SuiteResultEntryTest {
     }
 
     @Test
+    public void shouldIngoreEmptyStringsWhileParsingFailures() {
+        String testResultsString = "\n\n\n   \n\ncom.thoughtworks.foo.FooBarTest\n\n\n\ncom.thoughtworks.quux.QuuxTest\n\n\n\n    \n\n";
+        List<SuiteResultEntry> entries = SuiteResultEntry.parseFailures(testResultsString);
+        assertThat(entries.get(0).getName(), is("com.thoughtworks.foo.FooBarTest"));
+        assertThat(entries.get(0).hasFailed(), is(true));
+        assertThat(entries.get(1).getName(), is("com.thoughtworks.quux.QuuxTest"));
+        assertThat(entries.get(1).hasFailed(), is(true));
+        assertThat(entries.size(), is(2));
+    }
+
+    @Test
     public void shouldParseItselfFromListOfStrings() {
         List<String> listOfStrings = Arrays.asList("com.thoughtworks.foo.FooBarTest: true", "com.thoughtworks.hello.HelloWorldTest: false", "com.thoughtworks.quux.QuuxTest: true");
         List<SuiteResultEntry> entries = SuiteResultEntry.parse(listOfStrings);

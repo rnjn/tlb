@@ -249,7 +249,14 @@ public class TalkToGoServer extends SmoothingTalkToService {
     }
 
     List<SuiteResultEntry> getLastRunFailedTests(List<String> jobNames) {
-        return SuiteResultEntry.parseFailures(tlbArtifactPayloadLines(lastRunArtifactUrls(jobNames, FAILED_TESTS_FILE)));
+        String failedTests = null;
+        try {
+            failedTests = tlbArtifactPayloadLines(lastRunArtifactUrls(jobNames, FAILED_TESTS_FILE));
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Couldn't find tests that failed in the last run", e);
+            failedTests = "";
+        }
+        return SuiteResultEntry.parseFailures(failedTests);
     }
 
     public List<SuiteResultEntry> getLastRunFailedTests() {

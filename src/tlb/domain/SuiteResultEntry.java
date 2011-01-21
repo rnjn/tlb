@@ -1,5 +1,7 @@
 package tlb.domain;
 
+import org.apache.tools.ant.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +64,9 @@ public class SuiteResultEntry implements SuiteLevelEntry {
         ArrayList<SuiteResultEntry> entries = new ArrayList<SuiteResultEntry>();
         String[] failureEntryStrings = buffer.split("\n");
         for (String failureEntryString : failureEntryStrings) {
+            if (failureEntryString.trim().isEmpty()) {
+                continue;
+            }
             entries.add(new SuiteResultEntry(failureEntryString, true));
         }
         return entries;
