@@ -90,7 +90,7 @@ public class TalkToGoServer extends SmoothingTalkToService {
     }
 
     private static HttpAction createHttpAction(SystemEnvironment environment) {
-        return new DefaultHttpAction(createHttpClient(environment), createUri(environment));
+        return new DefaultHttpAction(createHttpClient(environment));
     }
 
     public List<String> getJobs() {

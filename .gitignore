@@ -7,3 +7,4 @@ tlb-all*.jar
 lib
 *.out
 *.err
+attached_sources

@@ -1,5 +1,6 @@
 package tlb;
 
+import org.apache.commons.io.IOUtils;
 import tlb.ant.JunitFileResource;
 import tlb.domain.SuiteLevelEntry;
 import tlb.utils.SystemEnvironment;
@@ -17,6 +18,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -53,6 +55,10 @@ public class TestUtil {
 
     public static String fileContents(String filePath) throws IOException, URISyntaxException {
         return FileUtils.readFileToString(new File(TestUtil.class.getClassLoader().getResource(filePath).toURI()));
+    }
+
+    public static String deref(InputStream inputStream) throws IOException {
+        return IOUtils.readLines(inputStream).toString();
     }
 
     public static File createFileInFolder(File folder, String fileName) {

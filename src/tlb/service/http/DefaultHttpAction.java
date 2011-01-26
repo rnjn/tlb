@@ -1,14 +1,20 @@
 package tlb.service.http;
 
-import tlb.service.http.request.FollowableHttpRequest;
-import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.*;
+import org.apache.commons.httpclient.HttpMethodBase;
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+import tlb.service.http.request.FollowableHttpRequest;
 
-import java.io.UnsupportedEncodingException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -17,32 +23,69 @@ import java.util.logging.Logger;
  */
 public class DefaultHttpAction implements HttpAction {
     private final HttpClient client;
-    private URI url;
-    private boolean ssl;
     private static final Logger logger = Logger.getLogger(DefaultHttpAction.class.getName());
+    private final Map<HostPortCombination,Protocol> hostCfgProtocolMap;
 
-    public DefaultHttpAction(HttpClient client, URI url) {
-        this.client = client;
-        this.url = url;
-        ssl = url.getScheme().equals("https");
+    private static class HostPortCombination {
+        private final String host;
+        private final int port;
+
+        private HostPortCombination(String host, int port) {
+            this.host = host;
+            this.port = port;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            HostPortCombination that = (HostPortCombination) o;
+
+            if (port != that.port) return false;
+            if (host != null ? !host.equals(that.host) : that.host != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = host != null ? host.hashCode() : 0;
+            result = 31 * result + port;
+            return result;
+        }
     }
 
-    /**
-     * its important that this be done before every http call,
-     * as it can be disturbed by tests running under the load balanced environment.
-     *
-     * Ouch! static state again.
-     */
-    private void reRegisterProtocol() {
-        if (ssl) {
-            logger.info("(Re)registering https protocol");
-            Protocol.registerProtocol("https", new Protocol("https", (ProtocolSocketFactory) new PermissiveSSLProtocolSocketFactory(), url.getPort()));
+    public DefaultHttpAction(HttpClient client) {
+        this.client = client;
+        this.hostCfgProtocolMap = new HashMap<HostPortCombination, Protocol>();
+    }
+
+    public void ensureProtocolRegistered(URI url) {
+        try {
+            Protocol protocol = protocol(url);
+            this.client.getHostConfiguration().setHost(url.getHost(), url.getPort(), protocol);
+        } catch (URIException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    private Protocol protocol(URI url) throws URIException {
+        String host = url.getHost();
+        int port = url.getPort();
+        HostPortCombination hostPort = new HostPortCombination(host, port);
+        Protocol protocol = hostCfgProtocolMap.get(hostPort);
+        if (protocol == null) {
+            synchronized (hostCfgProtocolMap) {
+                protocol = url.getScheme().equals("https") ? new Protocol("https", (ProtocolSocketFactory) new PermissiveSSLProtocolSocketFactory(), url.getPort()) : Protocol.getProtocol("http");
+                hostCfgProtocolMap.put(hostPort, protocol);
+            }
+        }
+        return protocol;
     }
 
     public synchronized int executeMethod(HttpMethodBase method) {
         try {
-            reRegisterProtocol();
             logger.info(String.format("Executing http request with %s", method.getClass().getSimpleName()));
             return client.executeMethod(method);
         } catch (IOException e) {

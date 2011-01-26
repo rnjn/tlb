@@ -41,7 +41,7 @@ public class TalkToTlbServer extends SmoothingTalkToService {
         } catch (URIException e) {
             throw new RuntimeException(e);
         }
-        return new DefaultHttpAction(client, uri);
+        return new DefaultHttpAction(client);
     }
 
     public void processedTestClassTime(String className, long time) {

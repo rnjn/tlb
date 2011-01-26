@@ -1,7 +1,6 @@
 package tlb.service;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.junit.AfterClass;
@@ -66,7 +65,7 @@ public class TalkToTlbServerTest {
         String url = "http://localhost:" + freePort;
         clientEnv.put(TlbConstants.TlbServer.URL, url);
         HttpClientParams params = new HttpClientParams();
-        httpAction = new DefaultHttpAction(new HttpClient(params), new URI(url, true));
+        httpAction = new DefaultHttpAction(new HttpClient(params));
         env = new SystemEnvironment(clientEnv);
         talkToTlb = new TalkToTlbServer(env, httpAction);
         talkToTlb.clearCachingFiles();

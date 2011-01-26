@@ -5,6 +5,8 @@ import org.apache.commons.httpclient.HttpMethodBase;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import tlb.utils.RetryAfter;
 import tlb.service.http.DefaultHttpAction;
 
@@ -32,7 +34,8 @@ public abstract class FollowableHttpRequest {
     public abstract HttpMethodBase createMethod(String url);
 
     public String executeRequest(String url) {
-        final HttpMethodBase method = createMethod(url);
+        String pathAndQuery = getPathAndQuery(url);
+        final HttpMethodBase method = createMethod(pathAndQuery);
         
         String baseMessage = String.format("http request to %s with %s", url, method.getClass().getSimpleName());
         logger.info("attempting " + baseMessage);
@@ -52,6 +55,16 @@ public abstract class FollowableHttpRequest {
             return method.getResponseBodyAsString();
         } catch (IOException e) {
             throw new RuntimeException("Oops! Something went wrong", e);
+        }
+    }
+
+    private String getPathAndQuery(String url) {
+        try {
+            URI uri = new URI(url, false);
+            defaultHttpAction.ensureProtocolRegistered(uri);
+            return uri.getPathQuery();
+        } catch (URIException e) {
+            throw new RuntimeException(e);
         }
     }
 }
