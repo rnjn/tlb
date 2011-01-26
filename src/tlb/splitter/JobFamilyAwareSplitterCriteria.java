@@ -1,9 +1,10 @@
 package tlb.splitter;
 
+import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 
 import java.util.List;
-import java.util.logging.Logger;
+
 
 import tlb.TlbSuiteFile;
 import tlb.service.TalkToService;

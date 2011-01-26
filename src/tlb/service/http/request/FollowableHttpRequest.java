@@ -3,10 +3,11 @@ package tlb.service.http.request;
 import org.apache.commons.httpclient.HttpMethodBase;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+
 
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
+import org.apache.log4j.Logger;
 import tlb.utils.RetryAfter;
 import tlb.service.http.DefaultHttpAction;
 

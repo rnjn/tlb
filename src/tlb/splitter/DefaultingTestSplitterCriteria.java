@@ -1,5 +1,6 @@
 package tlb.splitter;
 
+import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 import tlb.TlbSuiteFile;
 import tlb.factory.TlbFactory;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * @understands choosing criteria in order of preference
@@ -37,7 +38,7 @@ public class DefaultingTestSplitterCriteria extends TestSplitterCriteria {
                 logger.info(String.format("Used %s to balance.", criteria.getClass().getCanonicalName()));
                 return subset;
             } catch (Exception e) {
-                logger.log(Level.WARNING, String.format("Could not use %s for balancing because: %s.", criteria.getClass().getCanonicalName(), e.getMessage()), e);
+                logger.warn(String.format("Could not use %s for balancing because: %s.", criteria.getClass().getCanonicalName(), e.getMessage()), e);
                 continue;
             }
         }

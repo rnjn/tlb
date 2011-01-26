@@ -143,7 +143,7 @@
         <jar destfile="${tlb_jar}">
             <fileset dir="${classes.dir}"/>
             <fileset dir="${src.dir}">
-                <include name="commons-logging.properties"/>
+                <include name="log4j.properties"/>
             </fileset>
             <manifest>
                 <attribute name="Main-Class" value="tlb.Main"/>

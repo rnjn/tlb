@@ -1,5 +1,6 @@
 package tlb.balancer;
 
+import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 import org.restlet.Component;
 import org.restlet.Context;
@@ -8,7 +9,7 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.*;
 
-import java.util.logging.Logger;
+
 
 /**
  * @understands balancer process(as in a regular user process with PID)

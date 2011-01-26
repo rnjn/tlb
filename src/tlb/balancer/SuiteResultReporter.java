@@ -1,5 +1,6 @@
 package tlb.balancer;
 
+import org.apache.log4j.Logger;
 import tlb.domain.SuiteResultEntry;
 import tlb.service.TalkToService;
 import org.restlet.Context;
@@ -14,7 +15,7 @@ import org.restlet.resource.Variant;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * @understands posting the suite result entry to server
@@ -38,7 +39,7 @@ public class SuiteResultReporter extends Resource {
                 talkToService.testClassFailure(entry.getName(), entry.hasFailed());
             }
         } catch (IOException e) {
-            logger.log(Level.WARNING, String.format("could not report test result: '%s'", e.getMessage()), e);
+            logger.warn(String.format("could not report test result: '%s'", e.getMessage()), e);
             throw new RuntimeException(e);
         }
     }

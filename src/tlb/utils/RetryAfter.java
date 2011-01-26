@@ -1,11 +1,12 @@
 package tlb.utils;
 
+import org.apache.log4j.Logger;
 import org.jaxen.util.SingletonList;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * @understands catching exception and retrying
@@ -49,12 +50,12 @@ public class RetryAfter {
                 throw new RuntimeException(e);
             } catch (Exception e) {
                 lastException = e;
-                logger.log(Level.INFO, "(Re)attempt failed", lastException);
+                logger.info("(Re)attempt failed", lastException);
                 messages.add(lastException.getMessage());
             }
         }
         String message = String.format("Exausted reattempts, tried %s times, failed with messages %s at the interval of %s mills.", intervals.size(), messages, intervals);
-        logger.log(Level.WARNING, message, lastException);
+        logger.warn(message, lastException);
         throw new RuntimeException(message, lastException);
     }
 }

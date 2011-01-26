@@ -1,5 +1,6 @@
 package tlb.balancer;
 
+import org.apache.log4j.Logger;
 import tlb.TlbSuiteFile;
 import tlb.TlbSuiteFileImpl;
 import tlb.orderer.TestOrderer;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * @understands subseting and ordering of set of suite names given
@@ -39,7 +40,7 @@ public class BalancerResource extends Resource {
             suiteFiles = TlbSuiteFileImpl.parse(representation.getText());
         } catch (IOException e) {
             final String message = "failed to read request";
-            logger.log(Level.WARNING, message, e);
+            logger.warn(message, e);
             throw new RuntimeException(message, e);
         }
         final List<TlbSuiteFile> suiteFilesSubset = splitter.filterSuites(suiteFiles);

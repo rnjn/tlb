@@ -1,5 +1,6 @@
 package tlb.service;
 
+import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 
 import static tlb.TlbConstants.*;
@@ -24,7 +25,7 @@ import org.dom4j.Element;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -243,7 +244,7 @@ public class TalkToGoServer extends SmoothingTalkToService {
             try {
                 repository.cleanup();
             } catch (IOException e) {
-                logger.log(Level.WARNING, "could not delete suite time cache file: " + e.getMessage(), e);
+                logger.warn("could not delete suite time cache file: " + e.getMessage(), e);
             }
         }
     }
@@ -253,7 +254,7 @@ public class TalkToGoServer extends SmoothingTalkToService {
         try {
             failedTests = tlbArtifactPayloadLines(lastRunArtifactUrls(jobNames, FAILED_TESTS_FILE));
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Couldn't find tests that failed in the last run", e);
+            logger.warn("Couldn't find tests that failed in the last run", e);
             failedTests = "";
         }
         return SuiteResultEntry.parseFailures(failedTests);

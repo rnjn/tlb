@@ -17,6 +17,7 @@
         <dependency org="org.restlet" name="org.restlet" rev="1.1.10"/>
         <dependency org="com.noelios.restlet" name="com.noelios.restlet" rev="1.1.10"/>
         <dependency org="com.noelios.restlet" name="com.noelios.restlet.ext.servlet" rev="1.1.10"/>
+        <dependency org="log4j" name="log4j" rev="1.2.9"/>
 
         <dependency org="org.mockito" name="mockito-all" rev="1.8.2" conf="test"/>
         <dependency org="junit.ext" name="junit-ext" rev="1.0-junit-4.5-RC-3" conf="test"/>

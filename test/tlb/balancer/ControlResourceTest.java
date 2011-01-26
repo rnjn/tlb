@@ -96,7 +96,7 @@ public class ControlResourceTest {
         if (!buildFile.exists()) {
             throw new RuntimeException("please execute this test from project root");
         }
-        final Process process = new ProcessBuilder("ant", "run_balancer", "-Drandom.balancer.port=" + port).start();
+        final Process process = new ProcessBuilder("ant", "run_balancer", "-Doffline=t", "-Drandom.balancer.port=" + port).start();
         final boolean[] shouldRun = new boolean[1];
         final Runnable streamPumper = new Runnable() {
             public void run() {

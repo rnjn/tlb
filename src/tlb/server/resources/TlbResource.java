@@ -1,5 +1,6 @@
 package tlb.server.resources;
 
+import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 import tlb.domain.Entry;
 import tlb.server.repo.EntryRepo;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import static tlb.TlbConstants.Server.REQUEST_NAMESPACE;
 
@@ -35,7 +36,7 @@ public abstract class TlbResource extends Resource {
         try {
             repo = getRepo(repoFactory, key);
         } catch (Exception e) {
-            logger.log(Level.WARNING, String.format("Failed to get repo for '%s'", key), e);
+            logger.warn(String.format("Failed to get repo for '%s'", key), e);
             throw new RuntimeException(e);
         }
     }
@@ -70,7 +71,7 @@ public abstract class TlbResource extends Resource {
         try {
             repo.update(parseEntry(entity));
         } catch (Exception e) {
-            logger.log(Level.WARNING, String.format("update of representation failed for %s", entity), e);
+            logger.warn(String.format("update of representation failed for %s", entity), e);
             throw new RuntimeException(e);
         }
     }
@@ -82,7 +83,7 @@ public abstract class TlbResource extends Resource {
         try {
             repo.add(parseEntry(entity));
         } catch (Exception e) {
-            logger.log(Level.WARNING, String.format("addition of representation failed for %s", entity), e);
+            logger.warn(String.format("addition of representation failed for %s", entity), e);
             throw new RuntimeException(e);
         }
     }
