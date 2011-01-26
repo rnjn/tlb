@@ -61,7 +61,7 @@ public class DefaultHttpAction implements HttpAction {
         this.hostCfgProtocolMap = new HashMap<HostPortCombination, Protocol>();
     }
 
-    public void ensureProtocolRegistered(URI url) {
+    private void ensureProtocolRegistered(URI url) {
         try {
             Protocol protocol = protocol(url);
             this.client.getHostConfiguration().setHost(url.getHost(), url.getPort(), protocol);
@@ -84,8 +84,9 @@ public class DefaultHttpAction implements HttpAction {
         return protocol;
     }
 
-    public synchronized int executeMethod(HttpMethodBase method) {
+    public synchronized int executeMethod(HttpMethodBase method, URI uri) {
         try {
+            ensureProtocolRegistered(uri);
             logger.info(String.format("Executing http request with %s", method.getClass().getSimpleName()));
             return client.executeMethod(method);
         } catch (IOException e) {

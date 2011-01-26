@@ -90,7 +90,7 @@ public class FollowableHttpRequestTest {
         URI uri = new URI("https://some.host:8154/cruise", true);
         DefaultHttpAction action = new DefaultHttpAction(client) {
             @Override
-            public int executeMethod(HttpMethodBase method) {
+            public int executeMethod(HttpMethodBase method, URI uri) {
                 if (attemptCount++ < 2) throw new RuntimeException("Failed");
                 return 200;
             }

@@ -34,15 +34,24 @@ public abstract class FollowableHttpRequest {
     public abstract HttpMethodBase createMethod(String url);
 
     public String executeRequest(String url) {
-        String pathAndQuery = getPathAndQuery(url);
+        String pathAndQuery = null;
+        URI uri = null;
+        try {
+            uri = new URI(url, false);
+            pathAndQuery = uri.getPathQuery();
+        } catch (URIException e1) {
+            throw new RuntimeException(e1);
+        }
+
         final HttpMethodBase method = createMethod(pathAndQuery);
         
         String baseMessage = String.format("http request to %s with %s", url, method.getClass().getSimpleName());
         logger.info("attempting " + baseMessage);
         try {
+            final URI finalUri = uri;
             int result = retryer.tryFn(new RetryAfter.Fn<Integer>() {
                 public Integer fn() throws Exception {
-                    return defaultHttpAction.executeMethod(method);
+                    return defaultHttpAction.executeMethod(method, finalUri);
                 }
             });
             logger.info(baseMessage + " returned " + result);
@@ -58,13 +67,4 @@ public abstract class FollowableHttpRequest {
         }
     }
 
-    private String getPathAndQuery(String url) {
-        try {
-            URI uri = new URI(url, false);
-            defaultHttpAction.ensureProtocolRegistered(uri);
-            return uri.getPathQuery();
-        } catch (URIException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
