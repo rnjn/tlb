@@ -55,6 +55,8 @@
     </condition>
     <property name="ivy.jar.dir" value="${ivy.home}/lib" />
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+    <property name="offline" value="false" />
+    <property name="offline" value="${env.OFFLINE}" />
 
     <target name="download-ivy" unless="offline">
         <mkdir dir="${ivy.jar.dir}"/>

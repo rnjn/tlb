@@ -1,0 +1,48 @@
+Test Load Balancer (TLB)
+========================
+
+License
+-------
+
+TLB is a BSD licensed software. 
+
+Basic Definition
+----------------
+
+TLB aims at splitting your test suite into a given number of mutually exclusive units such that each unit can be executed in parallel. Assuming that tests are written independent of each other, which is a best practice in writing tests, the tests can be ordered and arranged in anyway and TLB leverages this fact in order to split the test suite into the given number of units and reorder the tests.
+
+This is the balancer component of TLB. This aims at integrating with your build script and hooking into your test runner so that when the tests are about to be run, TLB makes sure only a pruned list of tests are executed instead of the whole suite. In order to do this, TLB may use historical test run data from the TLB server. 
+
+For further information, refer to the documentation present online.
+
+System Requirements
+-------------------
+
+Platform - Since TLB is written in Java, it is platform independent. Though we have tested it on Linux, Windows and MAC, you should be able to get it working on any platform that runs Java.
+
+Java - We recommend using Sun JRE 1.6 (You can also use the JDK)
+
+Memory - TLB balancer component should work with about 32MB of RAM for most setups
+
+Usage
+-----
+
+Make sure a suitable version of Java is installed. Take a look at the Quick Start page on the documentation to see sample examples of how to enhance your build script to run them in a load balanced fashion.  
+
+If you are using TLB in a Java project, you can add the jars in this distribution to your test classpath. If it is for any other environment, you need to make sure java is available from command line. 
+
+Useful Links
+------------
+
+http://github.com/test-load-balancer - The git hub organization where all the TLB projects are hostted. 
+
+http://github.com/test-load-balancer/sample_projects - This contains the sample implementation of TLB across different platforms and test and build frameworks.
+
+http://test-load-balancer.github.com - Contains all the documentation for TLB including documentation for the previous releases.
+
+http://code.google.com/p/tlb/issues - TLB issue site. You can raise bugs or feature requests here.
+
+Contact Us
+----------
+
+The easiest way to get in touch with the TLB development team is by mailing to test-load-balancer@google-groups.com. You can also refer to http://test-load-balancer.github.com/contact_us.html
