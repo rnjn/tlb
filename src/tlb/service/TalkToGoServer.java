@@ -1,8 +1,15 @@
 package tlb.service;
 
+import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 
@@ -78,7 +85,21 @@ public class TalkToGoServer extends SmoothingTalkToService {
     }
 
     private static HttpAction createHttpAction(SystemEnvironment environment) {
-        return new DefaultHttpAction(createClient(environment));
+        return new DefaultHttpAction(createClient(environment), createContext(environment));
+    }
+
+    private static HttpContext createContext(SystemEnvironment environment) {
+        AuthCache authCache = new BasicAuthCache();
+
+        BasicScheme basicAuth = new BasicScheme();
+        URI uri = createUri(environment);
+        HttpHost host = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
+        authCache.put(host, basicAuth);
+
+        BasicHttpContext context = new BasicHttpContext();
+        context.setAttribute(ClientContext.AUTH_CACHE, authCache);
+
+        return context;
     }
 
     private static DefaultHttpClient createClient(SystemEnvironment environment) {

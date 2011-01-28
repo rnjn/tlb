@@ -35,9 +35,20 @@ public class DefaultHttpAction implements HttpAction {
     private final HttpClient client;
     private static final Logger logger = Logger.getLogger(DefaultHttpAction.class.getName());
     private SSLSocketFactory socketFactory;
+    private HttpContext context;
 
     public DefaultHttpAction() {
         this(createClient());
+    }
+
+    DefaultHttpAction(HttpClient client) {
+        this(client, new BasicHttpContext());
+    }
+
+    public DefaultHttpAction(HttpClient client, HttpContext context) {
+        this.client = client;
+        this.socketFactory = sslSocketFactory();
+        this.context = context;
     }
 
     public static DefaultHttpClient createClient() {
@@ -57,11 +68,6 @@ public class DefaultHttpAction implements HttpAction {
         }
     }
 
-    public DefaultHttpAction(HttpClient client) {
-        this.client = client;
-        this.socketFactory = sslSocketFactory();
-    }
-
     public synchronized String executeMethod(HttpRequestBase req) {
         URI uri = req.getURI();
         HttpHost targetHost = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
@@ -69,11 +75,10 @@ public class DefaultHttpAction implements HttpAction {
             Scheme sch = new Scheme(HTTPS, uri.getPort(), socketFactory);
             client.getConnectionManager().getSchemeRegistry().register(sch);
         }
-        HttpContext ctx = new BasicHttpContext();
 
         HttpResponse response = null;
         try {
-            response = client.execute(targetHost, req, ctx);
+            response = client.execute(targetHost, req, context);
         } catch (IOException e) {
             logger.fatal(String.format("Request to %s failed.", uri), e);
             throw new RuntimeException(e);
