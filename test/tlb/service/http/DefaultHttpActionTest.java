@@ -1,8 +1,5 @@
 package tlb.service.http;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,6 +9,9 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import tlb.HttpTestUtil;
 
+import javax.print.URIException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public class DefaultHttpActionTest {
     public static final int HTTP_PORT_OTHER = 3080;
     public static final int HTTPS_PORT_OTHER = 3443;
 
-    private static final DefaultHttpAction action = new DefaultHttpAction(new HttpClient());
+    private static final DefaultHttpAction action = new DefaultHttpAction();
 
     private static HttpTestUtil httpTestUtil;
 
@@ -47,11 +47,11 @@ public class DefaultHttpActionTest {
     }
 
     private static interface DoAction {
-        void act(DefaultHttpAction action, URI url, final String pathQueryExpected, final String paramsString) throws URIException;
+        void act(DefaultHttpAction action, URI url, final String pathQueryExpected, final String paramsString);
     }
 
     private static class GetAction implements DoAction {
-        public void act(DefaultHttpAction action, URI url, final String pathQueryExpected, final String paramsString) throws URIException {
+        public void act(DefaultHttpAction action, URI url, final String pathQueryExpected, final String paramsString) {
             String responseBody = action.get(url.toString());
             assertThat(responseBody.startsWith(String.format("GET(%s): %s", url.getPort(), pathQueryExpected)), is(true));
             assertThat(responseBody.contains(paramsString), is(true));
@@ -59,7 +59,7 @@ public class DefaultHttpActionTest {
     }
 
     private static class PostActionWithMap implements DoAction {
-        public void act(DefaultHttpAction action, URI url, final String pathQueryExpected, final String paramsString) throws URIException {
+        public void act(DefaultHttpAction action, URI url, final String pathQueryExpected, final String paramsString) {
             Map<String, String> payload = new HashMap<String, String>();
             payload.put("foo", "bar");
             payload.put("hello", "world");
@@ -72,7 +72,7 @@ public class DefaultHttpActionTest {
     }
 
     private static class PostActionWithString implements DoAction {
-        public void act(DefaultHttpAction action, URI url, final String pathQueryExpected, final String paramsString) throws URIException {
+        public void act(DefaultHttpAction action, URI url, final String pathQueryExpected, final String paramsString) {
             String responseBody = action.post(url.toString(), "some_random_data");
             assertThat(responseBody.startsWith(String.format("POST(%s): %s", url.getPort(), pathQueryExpected)), is(true));
             assertThat(responseBody.contains(paramsString), is(true));
@@ -81,7 +81,7 @@ public class DefaultHttpActionTest {
     }
 
     private static class PutActionWithString implements DoAction {
-        public void act(DefaultHttpAction action, URI url, final String pathQueryExpected, final String paramsString) throws URIException {
+        public void act(DefaultHttpAction action, URI url, final String pathQueryExpected, final String paramsString) {
             String responseBody = action.put(url.toString(), "some_random_data");
             assertThat(responseBody.startsWith(String.format("PUT(%s): %s", url.getPort(), pathQueryExpected)), is(true));
             assertThat(responseBody.contains(paramsString), is(true));
@@ -97,8 +97,8 @@ public class DefaultHttpActionTest {
     private static class HttpUriProvider implements UriProvider {
         public URI uri() {
             try {
-                return new URI("http://localhost:" + HTTP_PORT, true);
-            } catch (URIException e) {
+                return new URI("http://localhost:" + HTTP_PORT);
+            } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -115,8 +115,8 @@ public class DefaultHttpActionTest {
 
         public URI uri() {
             try {
-                return new URI("https://" + localhost + ":" + port, true);
-            } catch (URIException e) {
+                return new URI("https://" + localhost + ":" + port);
+            } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -131,8 +131,9 @@ public class DefaultHttpActionTest {
             uri = getUrl.uri();
         }
 
-        public void act(String pathQuery, final String paramsString) throws URIException {
-            URI callUri = new URI(uri, pathQuery);
+        public void act(String pathQuery, final String paramsString) throws URISyntaxException {
+            URI pathQueryUri = new URI(pathQuery);
+            URI callUri = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), pathQueryUri.getPath(), pathQueryUri.getQuery(), pathQueryUri.getFragment());
             doAction.act(action, callUri, pathQuery, paramsString);
         }
     }
@@ -150,7 +151,7 @@ public class DefaultHttpActionTest {
     @DataPoint public static final Action httpsGetFromIp = new Action(new HttpsUriProvider(HTTPS_PORT_OTHER), new GetAction());
 
     @Theory
-    public void shouldTalkHttpWell(Action action) throws URIException {
+    public void shouldTalkHttpWell(Action action) throws URISyntaxException {
         action.act("/foo/bar?baz=quux", "baz=[quux]");
     }
 }

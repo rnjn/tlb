@@ -1,5 +1,8 @@
 package tlb.service;
 
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 
@@ -13,18 +16,14 @@ import tlb.storage.TlbEntryRepository;
 import tlb.utils.FileUtil;
 import tlb.utils.SystemEnvironment;
 import tlb.utils.XmlUtil;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.params.HttpClientParams;
+
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
-import java.util.logging.Level;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,28 +69,25 @@ public class TalkToGoServer extends SmoothingTalkToService {
         stageLocator = String.format("%s/%s/%s/%s", v(Go.GO_PIPELINE_NAME), v(Go.GO_PIPELINE_COUNTER), v(Go.GO_STAGE_NAME), v(Go.GO_STAGE_COUNTER));
     }
 
-    private static HttpClient createHttpClient(SystemEnvironment environment) {
-        HttpClientParams params = new HttpClientParams();
-        if (environment.val(USERNAME) != null) {
-            params.setAuthenticationPreemptive(true);
-            HttpClient client = new HttpClient(params);
-            client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(environment.val(USERNAME), environment.val(PASSWORD)));
-            return client;
-        } else {
-            return new HttpClient(params);
-        }
-    }
-
     private static URI createUri(SystemEnvironment environment) {
         try {
-            return new URI(environment.val(Go.GO_SERVER_URL), true);
-        } catch (URIException e) {
+            return new URI(environment.val(Go.GO_SERVER_URL));
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
     private static HttpAction createHttpAction(SystemEnvironment environment) {
-        return new DefaultHttpAction(createHttpClient(environment));
+        return new DefaultHttpAction(createClient(environment));
+    }
+
+    private static DefaultHttpClient createClient(SystemEnvironment environment) {
+        DefaultHttpClient client = DefaultHttpAction.createClient();
+        URI uri = createUri(environment);
+        if (environment.val(USERNAME) != null) {
+            client.getCredentialsProvider().setCredentials(new AuthScope(uri.getHost(), uri.getPort()), new UsernamePasswordCredentials(environment.val(USERNAME), environment.val(PASSWORD)));
+        }
+        return client;
     }
 
     public List<String> getJobs() {

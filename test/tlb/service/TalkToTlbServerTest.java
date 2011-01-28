@@ -1,8 +1,5 @@
 package tlb.service;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -56,7 +53,7 @@ public class TalkToTlbServerTest {
     }
 
     @Before
-    public void setUp() throws URIException {
+    public void setUp() {
         clientEnv = new HashMap<String, String>();
         clientEnv.put(TlbConstants.TlbServer.JOB_NAMESPACE, "job");
         clientEnv.put(TlbConstants.TlbServer.PARTITION_NUMBER, "4");
@@ -64,8 +61,7 @@ public class TalkToTlbServerTest {
         clientEnv.put(TlbConstants.TlbServer.JOB_VERSION, String.valueOf(UUID.randomUUID()));
         String url = "http://localhost:" + freePort;
         clientEnv.put(TlbConstants.TlbServer.URL, url);
-        HttpClientParams params = new HttpClientParams();
-        httpAction = new DefaultHttpAction(new HttpClient(params));
+        httpAction = new DefaultHttpAction();
         env = new SystemEnvironment(clientEnv);
         talkToTlb = new TalkToTlbServer(env, httpAction);
         talkToTlb.clearCachingFiles();
