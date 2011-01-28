@@ -77,8 +77,9 @@ public class DefaultHttpAction implements HttpAction {
         }
 
         HttpResponse response = null;
+
         try {
-            response = client.execute(targetHost, req, context);
+            response = client.execute(targetHost, req, new BasicHttpContext(context));
         } catch (IOException e) {
             logger.fatal(String.format("Request to %s failed.", uri), e);
             throw new RuntimeException(e);
@@ -92,72 +93,6 @@ public class DefaultHttpAction implements HttpAction {
             throw new RuntimeException(e);
         }
     }
-
-//    class FollowableGetRequest extends FollowableHttpRequest {
-//        protected FollowableGetRequest(DefaultHttpAction action) {
-//            super(action);
-//        }
-//
-//        public HttpMethodBase createMethod(String url) {
-//            return new GetMethod(url);
-//        }
-//    }
-//
-//    class FollowablePutRequest extends FollowableHttpRequest {
-//        private String data;
-//
-//        protected FollowablePutRequest(DefaultHttpAction action, String data) {
-//            super(action);
-//            this.data = data;
-//        }
-//
-//        public HttpMethodBase createMethod(String url) {
-//            PutMethod method = new PutMethod(url);
-//            try {
-//                method.setRequestEntity(new StringRequestEntity(data, "text/plain", "UTF-8"));
-//            } catch (UnsupportedEncodingException e) {
-//                throw new RuntimeException(e);
-//            }
-//            return method;
-//        }
-//    }
-//
-//    class FollowablePostRequest extends FollowableHttpRequest {
-//        private Map<String, String> data;
-//
-//        protected FollowablePostRequest(DefaultHttpAction action, Map<String, String> data) {
-//            super(action);
-//            this.data = data;
-//        }
-//
-//        public HttpMethodBase createMethod(String url) {
-//            PostMethod method = new PostMethod(url);
-//            for (Map.Entry<String, String> param : data.entrySet()) {
-//                method.addParameter(param.getKey(), param.getValue());
-//            }
-//            return method;
-//        }
-//    }
-//
-//    class FollowableRawPostRequest extends FollowableHttpRequest {
-//        private String data;
-//
-//        protected FollowableRawPostRequest(DefaultHttpAction action, String data) {
-//            super(action);
-//            this.data = data;
-//        }
-//
-//        public HttpMethodBase createMethod(String url) {
-//            PostMethod method = new PostMethod(url);
-//            try {
-//                method.setRequestEntity(new StringRequestEntity(data, "text/plain", "UTF-8"));
-//            } catch (UnsupportedEncodingException e) {
-//                throw new RuntimeException(e);
-//            }
-//            return method;
-//        }
-//    }
-    
 
     public String get(String url) {
         HttpGet httpget = new HttpGet(url);
