@@ -212,7 +212,7 @@ public class TestUtil {
         }
 
 
-        public void assertHeardException(Exception expected) {
+        public void assertHeardException(Throwable expected) {
             boolean matched = false;
             for (LoggingEvent evt : loggingEvents) {
                 ThrowableInformation throwableInformation = evt.getThrowableInformation();

@@ -68,7 +68,7 @@ public class DefaultHttpAction implements HttpAction {
         }
     }
 
-    public synchronized String executeMethod(HttpRequestBase req) {
+    private synchronized String executeMethod(HttpRequestBase req) {
         URI uri = req.getURI();
         HttpHost targetHost = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
         if (HTTPS.equals(uri.getScheme())) {
@@ -81,7 +81,7 @@ public class DefaultHttpAction implements HttpAction {
         try {
             response = client.execute(targetHost, req, new BasicHttpContext(context));
         } catch (IOException e) {
-            logger.fatal(String.format("Request to %s failed.", uri), e);
+            logger.fatal(String.format("Request to [%s] failed.", uri), e);
             throw new RuntimeException(e);
         }
         // response.getStatusLine().getStatusCode();//TODO: check me and bomb if need be
@@ -89,7 +89,7 @@ public class DefaultHttpAction implements HttpAction {
         try {
             return EntityUtils.toString(entity);
         } catch (IOException e) {
-            logger.fatal(String.format("Could not de-reference response from %s.", uri), e);
+            logger.fatal(String.format("Could not de-reference response from [%s].", uri), e);
             throw new RuntimeException(e);
         }
     }

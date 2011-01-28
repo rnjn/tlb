@@ -51,7 +51,8 @@ public class HttpTestUtil {
         serverKeyStore = new File(createTempFolder(), "server.jks");
         prepareCertStore(serverKeyStore);
         server = new Server();
-        server.setHandler(echoHandler());
+        server.addHandler(echoHandler());
+        server.addHandler(redirectHandler());
     }
 
     public void httpConnector(final int port) {
@@ -90,7 +91,7 @@ public class HttpTestUtil {
             }
         });
         blocker.start();
-        while(!server.isStarted()) {
+        while (!server.isStarted()) {
             Thread.sleep(50);
         }
     }
@@ -172,30 +173,47 @@ public class HttpTestUtil {
     }
 
     private Handler echoHandler() {
-        return new ContextHandler("/") {
+        return new ContextHandler("/echo") {
             public void handle(String target, HttpServletRequest request, HttpServletResponse response, int dispatch) throws IOException, ServletException {
-                response.setStatus(200);
-                response.setHeader("Content-Type", "text/plain");
-                PrintWriter writer = response.getWriter();
-                writer.write(String.format("%s(%s): %s", request.getMethod(), request.getLocalPort(), request.getPathInfo()));
-                String query = request.getQueryString();
-                if (query != null) {
-                    writer.write("?");
-                    writer.write(query);
-                }
-                Enumeration paramKeys = request.getParameterNames();
-                if (paramKeys.hasMoreElements()) {
-                    writer.write("\nparams: ");
-                    while(paramKeys.hasMoreElements()) {
-                        Object key = paramKeys.nextElement();
-                        writer.write(key.toString());
-                        writer.write("=");
-                        writer.write(Arrays.asList(request.getParameterValues((String) key)).toString());
+                if (request.getPathInfo().startsWith("/echo")) {
+                    response.setStatus(200);
+                    response.setHeader("Content-Type", "text/plain");
+                    PrintWriter writer = response.getWriter();
+                    writer.write(String.format("%s(%s): %s", request.getMethod(), request.getLocalPort(), request.getPathInfo()));
+                    String query = request.getQueryString();
+                    if (query != null) {
+                        writer.write("?");
+                        writer.write(query);
                     }
+                    Enumeration paramKeys = request.getParameterNames();
+                    if (paramKeys.hasMoreElements()) {
+                        writer.write("\nparams: ");
+                        while (paramKeys.hasMoreElements()) {
+                            Object key = paramKeys.nextElement();
+                            writer.write(key.toString());
+                            writer.write("=");
+                            writer.write(Arrays.asList(request.getParameterValues((String) key)).toString());
+                        }
+                    }
+                    writer.write("\n");
+                    writer.write(deref(request.getInputStream()));
+                    writer.close();
                 }
-                writer.write("\n");
-                writer.write(deref(request.getInputStream()));
-                writer.close();
+            }
+        };
+    }
+
+    private Handler redirectHandler() {
+        return new ContextHandler("/redirect") {
+            @Override
+            public void handle(String target, HttpServletRequest request, HttpServletResponse response, int dispatch) throws IOException, ServletException {
+                if (request.getPathInfo().startsWith("/redirect")) {
+                    response.setStatus(302);
+                    response.setHeader("Location", String.format("%s://%s:%s/echo", request.getScheme(), request.getLocalName(), String.valueOf(request.getLocalPort())));
+                    PrintWriter writer = response.getWriter();
+                    writer.write("fly. huuuuiiiii!!!!");
+                    writer.close();
+                }
             }
         };
     }
