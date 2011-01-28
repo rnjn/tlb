@@ -1,11 +1,12 @@
 package tlb.splitter;
 
+import org.apache.log4j.Logger;
 import tlb.TlbSuiteFile;
 import tlb.service.TalkToService;
 import tlb.utils.SystemEnvironment;
 
 import java.util.List;
-import java.util.logging.Logger;
+
 
 /**
  * @understands the criteria for splitting tests based on the number of tests

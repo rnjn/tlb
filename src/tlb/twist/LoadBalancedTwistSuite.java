@@ -1,5 +1,6 @@
 package tlb.twist;
 
+import org.apache.log4j.Logger;
 import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
 import tlb.splitter.TestSplitterCriteria;
@@ -15,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.logging.Logger;
+
 
 /**
  * @understands splitting Twist scenarios into groups:

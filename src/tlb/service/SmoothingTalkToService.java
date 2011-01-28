@@ -1,5 +1,6 @@
 package tlb.service;
 
+import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 import tlb.domain.SuiteTimeEntry;
 import tlb.storage.TlbEntryRepository;
@@ -10,7 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * @understands smoothing test data before posting it to the service
@@ -65,7 +66,7 @@ public abstract class SmoothingTalkToService implements TalkToService {
         try {
             oldTestTimesRepo.cleanup();
         } catch (IOException e) {
-            logger.log(Level.WARNING, "failed to delete cachedTestTimes repo", e);
+            logger.warn("failed to delete cachedTestTimes repo", e);
             throw new RuntimeException(e);
         }
         clearOtherCachingFiles();
@@ -85,7 +86,7 @@ public abstract class SmoothingTalkToService implements TalkToService {
         try {
             suiteTimeEntries = fetchLastRunTestTimes();
         } catch (Exception e) {
-            logger.log(Level.WARNING, String.format("could not load test times for smoothing.: '%s'", e.getMessage()), e);
+            logger.warn(String.format("could not load test times for smoothing.: '%s'", e.getMessage()), e);
             suiteTimeEntries = new ArrayList<SuiteTimeEntry>();
         }
         for (SuiteTimeEntry suiteTimeEntry : suiteTimeEntries) {

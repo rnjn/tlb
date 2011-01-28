@@ -7,10 +7,6 @@ import tlb.server.repo.EntryRepoFactory;
 import tlb.service.http.DefaultHttpAction;
 import tlb.service.http.HttpAction;
 import tlb.utils.SystemEnvironment;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.params.HttpClientParams;
 
 import java.util.List;
 
@@ -25,23 +21,12 @@ public class TalkToTlbServer extends SmoothingTalkToService {
 
     //reflectively invoked by factory
     public TalkToTlbServer(SystemEnvironment systemEnvironment) {
-        this(systemEnvironment, createHttpAction(systemEnvironment));
+        this(systemEnvironment, new DefaultHttpAction());
     }
 
     public TalkToTlbServer(SystemEnvironment systemEnvironment, HttpAction httpAction) {
         super(systemEnvironment);
         this.httpAction = httpAction;
-    }
-
-    private static HttpAction createHttpAction(SystemEnvironment env) {
-        final HttpClient client = new HttpClient(new HttpClientParams());
-        final URI uri;
-        try {
-            uri = new URI(env.val(TlbConstants.TlbServer.URL), true);
-        } catch (URIException e) {
-            throw new RuntimeException(e);
-        }
-        return new DefaultHttpAction(client);
     }
 
     public void processedTestClassTime(String className, long time) {

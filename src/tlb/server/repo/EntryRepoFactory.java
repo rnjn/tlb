@@ -1,5 +1,6 @@
 package tlb.server.repo;
 
+import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 import tlb.domain.TimeProvider;
 import tlb.utils.FileUtil;
@@ -10,7 +11,7 @@ import java.io.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import static tlb.TlbConstants.Server.TLB_STORE_DIR;
 
@@ -65,7 +66,7 @@ public class EntryRepoFactory implements Runnable {
                 try {
                     repo.purgeOldVersions(versionLifeInDays);
                 } catch (Exception e) {
-                    logger.log(Level.WARNING, String.format("failed to delete older versions for repo identified by '%s'", identifier), e);
+                    logger.warn(String.format("failed to delete older versions for repo identified by '%s'", identifier), e);
                 }
             }
         }
@@ -148,14 +149,14 @@ public class EntryRepoFactory implements Runnable {
                     }
                 }
             } catch (IOException e) {
-                logger.log(Level.WARNING, String.format("disk dump of %s failed, tlb server may not be able to perform data dependent on next reboot.", identifier), e);
+                logger.warn(String.format("disk dump of %s failed, tlb server may not be able to perform data dependent on next reboot.", identifier), e);
             } finally {
                 try {
                     if (writer != null) {
                         writer.close();
                     }
                 } catch (IOException e) {
-                    logger.log(Level.WARNING, String.format("closing of disk dump file of %s failed, tlb server may not be able to perform data dependent on next reboot.", identifier), e);
+                    logger.warn(String.format("closing of disk dump file of %s failed, tlb server may not be able to perform data dependent on next reboot.", identifier), e);
                 }
             }
         }

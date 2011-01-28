@@ -1,5 +1,16 @@
 package tlb.service;
 
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 
 import static tlb.TlbConstants.*;
@@ -12,19 +23,15 @@ import tlb.storage.TlbEntryRepository;
 import tlb.utils.FileUtil;
 import tlb.utils.SystemEnvironment;
 import tlb.utils.XmlUtil;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.params.HttpClientParams;
+
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,28 +76,39 @@ public class TalkToGoServer extends SmoothingTalkToService {
         stageLocator = String.format("%s/%s/%s/%s", v(Go.GO_PIPELINE_NAME), v(Go.GO_PIPELINE_COUNTER), v(Go.GO_STAGE_NAME), v(Go.GO_STAGE_COUNTER));
     }
 
-    private static HttpClient createHttpClient(SystemEnvironment environment) {
-        HttpClientParams params = new HttpClientParams();
-        if (environment.val(USERNAME) != null) {
-            params.setAuthenticationPreemptive(true);
-            HttpClient client = new HttpClient(params);
-            client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(environment.val(USERNAME), environment.val(PASSWORD)));
-            return client;
-        } else {
-            return new HttpClient(params);
-        }
-    }
-
     private static URI createUri(SystemEnvironment environment) {
         try {
-            return new URI(environment.val(Go.GO_SERVER_URL), true);
-        } catch (URIException e) {
+            return new URI(environment.val(Go.GO_SERVER_URL));
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
     private static HttpAction createHttpAction(SystemEnvironment environment) {
-        return new DefaultHttpAction(createHttpClient(environment));
+        return new DefaultHttpAction(createClient(environment), createContext(environment));
+    }
+
+    private static HttpContext createContext(SystemEnvironment environment) {
+        AuthCache authCache = new BasicAuthCache();
+
+        BasicScheme basicAuth = new BasicScheme();
+        URI uri = createUri(environment);
+        HttpHost host = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
+        authCache.put(host, basicAuth);
+
+        BasicHttpContext context = new BasicHttpContext();
+        context.setAttribute(ClientContext.AUTH_CACHE, authCache);
+
+        return context;
+    }
+
+    private static DefaultHttpClient createClient(SystemEnvironment environment) {
+        DefaultHttpClient client = DefaultHttpAction.createClient();
+        URI uri = createUri(environment);
+        if (environment.val(USERNAME) != null) {
+            client.getCredentialsProvider().setCredentials(new AuthScope(uri.getHost(), uri.getPort()), new UsernamePasswordCredentials(environment.val(USERNAME), environment.val(PASSWORD)));
+        }
+        return client;
     }
 
     public List<String> getJobs() {
@@ -243,7 +261,7 @@ public class TalkToGoServer extends SmoothingTalkToService {
             try {
                 repository.cleanup();
             } catch (IOException e) {
-                logger.log(Level.WARNING, "could not delete suite time cache file: " + e.getMessage(), e);
+                logger.warn("could not delete suite time cache file: " + e.getMessage(), e);
             }
         }
     }
@@ -253,7 +271,7 @@ public class TalkToGoServer extends SmoothingTalkToService {
         try {
             failedTests = tlbArtifactPayloadLines(lastRunArtifactUrls(jobNames, FAILED_TESTS_FILE));
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Couldn't find tests that failed in the last run", e);
+            logger.warn("Couldn't find tests that failed in the last run", e);
             failedTests = "";
         }
         return SuiteResultEntry.parseFailures(failedTests);

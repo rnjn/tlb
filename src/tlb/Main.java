@@ -1,5 +1,6 @@
 package tlb;
 
+import org.apache.log4j.Logger;
 import tlb.factory.TlbFactory;
 import tlb.server.ServerInitializer;
 import tlb.utils.SystemEnvironment;

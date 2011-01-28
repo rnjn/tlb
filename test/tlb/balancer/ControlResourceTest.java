@@ -1,8 +1,9 @@
 package tlb.balancer;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,7 +97,7 @@ public class ControlResourceTest {
         if (!buildFile.exists()) {
             throw new RuntimeException("please execute this test from project root");
         }
-        final Process process = new ProcessBuilder("ant", "run_balancer", "-Drandom.balancer.port=" + port).start();
+        final Process process = new ProcessBuilder("ant", "run_balancer", "-Doffline=t", "-Drandom.balancer.port=" + port).start();
         final boolean[] shouldRun = new boolean[1];
         final Runnable streamPumper = new Runnable() {
             public void run() {
@@ -109,21 +110,22 @@ public class ControlResourceTest {
         };
         new Thread(streamPumper).start();
 
-        final HttpClient client = new HttpClient(new HttpClientParams());
-        final GetMethod suicide = new GetMethod(String.format("http://localhost:%s/control/suicide", port));
-        final GetMethod waitForStart = new GetMethod(String.format("http://localhost:%s/control/status", port));
+        DefaultHttpClient client = new DefaultHttpClient();
+        final HttpGet suicide = new HttpGet(String.format("http://localhost:%s/control/suicide", port));
+        final HttpGet waitForStart = new HttpGet(String.format("http://localhost:%s/control/status", port));
 
         while (true) {
             try {
-                client.executeMethod(waitForStart);
-                if (new String(waitForStart.getResponseBody()).equals("RUNNING")) break;
+                HttpResponse execute = client.execute(waitForStart);
+                if (EntityUtils.toString(execute.getEntity()).equals("RUNNING")) break;
             } catch (IOException e) {
                 //ignore
             }
         }
 
-        assertThat(client.executeMethod(suicide), is(200));
-        assertThat(suicide.getResponseBodyAsString(), is("HALTING"));
+        HttpResponse suicideCall = client.execute(suicide);
+        assertThat(suicideCall.getStatusLine().getStatusCode(), is(200));
+        assertThat(EntityUtils.toString(suicideCall.getEntity()), is("HALTING"));
         assertThat(process.waitFor(), is(0));
         shouldRun[0] = false;
     }

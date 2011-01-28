@@ -1,5 +1,6 @@
 package tlb.splitter;
 
+import org.apache.log4j.Logger;
 import tlb.TlbSuiteFile;
 import tlb.domain.SuiteTimeEntry;
 import tlb.service.TalkToService;
@@ -9,7 +10,7 @@ import tlb.utils.FileUtil;
 import tlb.utils.SystemEnvironment;
 
 import java.util.*;
-import java.util.logging.Logger;
+
 
 /**
  * @understands criteria for splitting tests based on time taken
@@ -62,7 +63,7 @@ public class TimeBasedTestSplitterCriteria extends JobFamilyAwareSplitterCriteri
         List<SuiteTimeEntry> suiteTimeEntries = talkToService.getLastRunTestTimes();
         logger.info(String.format("historical test time data has entries for %s suites", suiteTimeEntries.size()));
         if (suiteTimeEntries.isEmpty()) {
-            logger.warning(NO_HISTORICAL_DATA);
+            logger.warn(NO_HISTORICAL_DATA);
             throw new IllegalStateException(NO_HISTORICAL_DATA);
         }
         Map<String, TlbSuiteFile> fileNameToResource = new HashMap<String, TlbSuiteFile>();

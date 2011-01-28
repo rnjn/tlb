@@ -1,15 +1,15 @@
 package tlb.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.log4j.Logger;
 
-import java.io.*;
-import java.util.Collections;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,7 +73,7 @@ public class SystemEnvironment {
         String tmpParent = val(TLB_TMP_DIR);
         if (tmpParent == null) {
             tmpParent = System.getProperty(SystemEnvironment.TMP_DIR);
-            logger.warning(String.format("defaulting tlb tmp directory to %s", tmpParent));
+            logger.warn(String.format("defaulting tlb tmp directory to %s", tmpParent));
         }
         logger.info(String.format("using %s as tlb temp directory", tmpParent));
         return new File(tmpParent, getDigest()).getAbsolutePath();

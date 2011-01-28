@@ -25,7 +25,6 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Mockito.*;
 import static tlb.TestUtil.deref;
-import static tlb.TestUtil.invoke;
 import static tlb.server.repo.EntryRepoFactory.LATEST_VERSION;
 
 

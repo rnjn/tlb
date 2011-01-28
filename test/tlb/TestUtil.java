@@ -1,20 +1,22 @@
 package tlb;
 
-import org.apache.commons.io.IOUtils;
-import tlb.ant.JunitFileResource;
-import tlb.domain.SuiteLevelEntry;
-import tlb.utils.SystemEnvironment;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
 import org.apache.tools.ant.Project;
+import org.hamcrest.core.Is;
 import org.restlet.Application;
 import org.restlet.Restlet;
 import org.restlet.Route;
 import org.restlet.Router;
 import org.restlet.util.RouteList;
-
-import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import tlb.ant.JunitFileResource;
+import tlb.domain.SuiteLevelEntry;
+import tlb.utils.SystemEnvironment;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,10 +28,11 @@ import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 
 public class TestUtil {
     private static final int MIN_ANONYMOUS_PORT = 1024;
@@ -126,114 +129,109 @@ public class TestUtil {
         return map;
     }
 
-    public static class LogFixture {
-        private ArrayList<Logger> loggersRegisteredTo;
-        private TestUtil.LogFixture.TestHandler handler;
+    public static class LogFixture extends AppenderSkeleton {
 
-        public void assertHeard(String partOfMessage) {
-            assertHeard(partOfMessage, 1);
+        public void startListening() {
+            startListening(Level.DEBUG);
+        }
+
+        public void startListening(Level level) {
+            this.activateOptions();
+            setLevel(level);
+            Logger.getRootLogger().addAppender(this);
+        }
+
+        public void stopListening() {
+            Logger.getRootLogger().removeAppender(this);
+        }
+
+//        public static Level getLevel() {
+//            return Logger.getRootLogger().getLevel();
+//        }
+
+//        public static void enableDebug() {
+//            setLevel(Level.DEBUG);
+//        }
+
+        public static void setLevel(Level level) {
+            Logger.getRootLogger().setLevel(level);
+        }
+
+        private List<LoggingEvent> loggingEvents = new ArrayList<LoggingEvent>();
+
+        public LogFixture() {
+        }
+
+        protected void append(LoggingEvent event) {
+            loggingEvents.add(event);
+        }
+
+        public void close() {
+        }
+
+        public boolean requiresLayout() {
+            return false;
+        }
+
+        public List<String> messages() {
+            ArrayList<String> messages = new ArrayList<String>();
+            for (LoggingEvent loggingEvent : loggingEvents) {
+                messages.add(loggingEvent.getRenderedMessage());
+            }
+            return messages;
+        }
+
+        public boolean contains(Level level, String message) {
+            for (LoggingEvent event : loggingEvents) {
+                if (event.getLevel().equals(level) && event.getMessage().toString().contains(message)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void assertHeard(String message) {
+            assertHeard(message, 1);
         }
 
         public void clearHistory() {
-            handler.clearHistory();
+            loggingEvents.clear();
         }
 
-        public void assertHeardException(Exception expected) {
+        public void assertHeard(String partOfMessage, int expectedOccurances) {
+            int actualOccurances = totalOccurances(partOfMessage);
+            assertThat(String.format("log message '%s' should have been heard %s times, but was actually heard %s times in %s statements %s", partOfMessage, expectedOccurances, actualOccurances, loggingEvents.size(), messages()), actualOccurances, is(expectedOccurances));
+        }
+
+        private int totalOccurances(String partOfMessage) {
+            int numberOfOccurances = 0;
+            for (LoggingEvent evt : loggingEvents) {
+                if (evt.getRenderedMessage().contains(partOfMessage)) numberOfOccurances++;
+            }
+            return numberOfOccurances;
+        }
+
+
+        public void assertHeardException(Throwable expected) {
             boolean matched = false;
-            for (Throwable actual : handler.execeptions) {
-                matched = match(actual, expected);
+            for (LoggingEvent evt : loggingEvents) {
+                ThrowableInformation throwableInformation = evt.getThrowableInformation();
+                matched = match(throwableInformation.getThrowable(), expected);
                 if (matched) break;
             }
-            assertTrue(String.format("didn't find exception %s in heard throwables", expected), matched);
+            assertTrue(String.format("didnt find exception %s in heard throwables", expected), matched);
         }
 
         private boolean match(Throwable actual, Throwable expected) {
             if (actual == null) {
                 return expected == null;
             }
-            if (expected.getClass().equals(actual.getClass())) {
-                return actual.getMessage().equals(expected.getMessage()) && match(actual.getCause(), expected.getCause());
-            }
-            return false;
-        }
-
-
-        public void assertHeard(String partOfMessage, int expectedOccurances) {
-            int actualOccurances = totalOccurances(partOfMessage);
-            assertThat(String.format("log message '%s' should have been heard %s times, but was actually heard %s times in %s statements %s",
-                    partOfMessage, expectedOccurances, actualOccurances, handler.messages.size(), handler.messages), actualOccurances, is(expectedOccurances));
-        }
-
-        private int totalOccurances(String partOfMessage) {
-            int numberOfOccurances = 0;
-            for (String message : handler.messages) {
-                if (message.contains(partOfMessage)) numberOfOccurances++;
-            }
-            return numberOfOccurances;
+            return expected.getClass().equals(actual.getClass()) && actual.getMessage().equals(expected.getMessage()) && match(actual.getCause(), expected.getCause());
         }
 
         public void assertNotHeard(String partOfMessage) {
             int actualOccurances = totalOccurances(partOfMessage);
-            assertThat(String.format("log message '%s' should NOT have been heard at all, but was actually heard %s times in %s statements %s",
-                    partOfMessage, actualOccurances, handler.messages.size(), handler.messages), actualOccurances, is(0));
-        }
-
-        class TestHandler extends Handler {
-            private ArrayList<String> messages;
-            private ArrayList<Throwable> execeptions;
-
-            TestHandler() {
-                messages = new ArrayList<String>();
-                execeptions = new ArrayList<Throwable>();
-            }
-
-            public void publish(LogRecord record) {
-                messages.add(record.getMessage());
-                Throwable throwable = record.getThrown();
-                if (throwable != null) {
-                    execeptions.add(throwable);
-                }
-            }
-
-            public void flush() {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public void close() throws SecurityException {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public void clearHistory() {
-                messages.clear();
-            }
-        }
-
-        public LogFixture() {
-            loggersRegisteredTo = new ArrayList<Logger>();
-            handler = new TestHandler();
-        }
-
-        public void startListening() {
-            populateLoggers();
-            for (Logger logger : loggersRegisteredTo) {
-                logger.addHandler(handler);
-            }
-        }
-
-        private void populateLoggers() {
-            Enumeration<String> activeLoggers = LogManager.getLogManager().getLoggerNames();
-            while(activeLoggers.hasMoreElements()) {
-                String loggerName = activeLoggers.nextElement();
-                if (!loggerName.isEmpty()) {
-                    loggersRegisteredTo.add(Logger.getLogger(loggerName));
-                }
-            }
-        }
-
-        public void stopListening() {
-            for (Logger logger : loggersRegisteredTo) {
-                logger.removeHandler(handler);
-            }
+            assertThat(String.format("log message %s should NOT have been heard at all, but was actually heard %s times in %s statements %s", partOfMessage, actualOccurances, loggingEvents.size(), messages()), actualOccurances, is(0));
         }
     }
 

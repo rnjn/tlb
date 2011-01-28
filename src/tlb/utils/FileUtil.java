@@ -2,11 +2,12 @@ package tlb.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
+
 import java.util.logging.Level;
 import java.util.List;
 import java.util.Iterator;
@@ -32,7 +33,7 @@ public class FileUtil {
         if (tmpDirectory.exists()) {
             if (! tmpDirectory.isDirectory()) {
                 String fileInsteedOfDirectoryMessage = String.format("tlb tmp dir %s is a file, it must be a directory", tmpDir);
-                logger.warning(fileInsteedOfDirectoryMessage);
+                logger.warn(fileInsteedOfDirectoryMessage);
                 throw new IllegalStateException(fileInsteedOfDirectoryMessage);
             }
             logger.info(String.format("directory %s exists, creation not required", tmpDir));
@@ -41,7 +42,7 @@ public class FileUtil {
             try {
                 FileUtils.forceMkdir(tmpDirectory);
             } catch (IOException e) {
-                logger.log(Level.WARNING, String.format("could not create directory %s", tmpDirectory.getAbsolutePath()), e);
+                logger.warn(String.format("could not create directory %s", tmpDirectory.getAbsolutePath()), e);
                 throw new RuntimeException(e);
             }
             logger.info(String.format("created directory %s, which is to be used as tlb tmp dir.", tmpDir));

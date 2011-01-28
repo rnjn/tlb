@@ -1,5 +1,6 @@
 package tlb.ant;
 
+import org.apache.log4j.Logger;
 import tlb.factory.TlbFactory;
 import tlb.service.TalkToService;
 import tlb.utils.FileUtil;
@@ -12,7 +13,7 @@ import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest;
 
 import java.io.OutputStream;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * @understands recording test suite time as cruise artifact
@@ -49,7 +50,7 @@ public class JunitDataRecorder implements JUnitResultFormatter {
             talkToService.testClassFailure(suiteFileName, (jUnitTest.failureCount() + jUnitTest.errorCount()) > 0);
             talkToService.testClassTime(suiteFileName, jUnitTest.getRunTime());
         } catch (Exception e) {
-            logger.log(Level.WARNING, String.format("recording suite time failed for %s, gobbling exception, things may not work too well for the next run", suiteFileName), e);
+            logger.warn(String.format("recording suite time failed for %s, gobbling exception, things may not work too well for the next run", suiteFileName), e);
         }
     }
 
