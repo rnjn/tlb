@@ -1,3 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE project [
+        <!ENTITY manifest SYSTEM "misc/manifest.xml">
+        <!ENTITY extension-name SYSTEM "misc/extension-name.xml">
+]>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="tlb" basedir="." default="all">
     <property name="src.dir" location="src"/>
     <property name="test.dir" location="test"/>
@@ -10,6 +15,7 @@
     <property name="target.dir" location="target"/>
     <property name="classes.dir" location="${target.dir}/classes"/>
     <property name="emma.dir" location="${target.dir}/emma"/>
+    <property name="emma.version" value="2.0.5312"/>
     <property name="test-classes.dir" location="${target.dir}/test-classes"/>
     <property name="integration-test-classes.dir" location="${target.dir}/integration-test-classes"/>
     <property name="reports.dir" location="${target.dir}/reports"/>
@@ -47,8 +53,8 @@
     </path>
 
     <path id="emma.classpath">
-        <pathelement location="${build_lib.dir}/emma.jar"/>
-        <pathelement location="${build_lib.dir}/emma_ant.jar"/>
+        <pathelement location="${build_lib.dir}/emma-${emma.version}.jar"/>
+        <pathelement location="${build_lib.dir}/emma_ant-${emma.version}.jar"/>
     </path>
 
     <property name="ivy.install.version" value="2.2.0" />
@@ -142,57 +148,52 @@
         <property name="tlb.src.jar.name" value="${tlb.basename}-src.jar"/>
     </target>
 
+    <macrodef name="tlb-jar">
+        <attribute name="dest"/>
+        <element name="extra-manifest" optional="true"/>
+        <element name="content"/>
+        <sequential>
+            <jar destfile="@{dest}">
+                <manifest>
+                    <extra-manifest/>
+                    <section name="tlb/">
+                        <attribute name="Sealed" value="true"/>
+                        &extension-name;
+                    </section>
+                    &manifest;
+                </manifest>
+                <content/>
+            </jar>
+        </sequential>
+    </macrodef>
+
     <target name="package.src" depends="init, -load.short.rev">
         <property name="tlb.src.jar" value="${target.dir}/${tlb.src.jar.name}"/>
-        <jar destfile="${tlb.src.jar}">
-            <manifest>
-                <attribute name="Main-Class" value="tlb.Main"/>
-                <section name="tlb/">
-                    <attribute name="Sealed" value="true"/>
-                    <attribute name="Extension-name" value="tlb."/>
-                </section>
-                <attribute name="Implementation-Title" value="${title}"/>
-                <attribute name="Implementation-Version" value="${short_rev}"/>
-                <attribute name="Implementation-Vendor" value="${vendor}"/>
-                <attribute name="License" value="${license}"/>
-                <attribute name="Description" value="${description}"/>
-                <attribute name="Build-Date" value="${build-time-with-timezone}"/>
-            </manifest>
-            <fileset dir="src"/>
-        </jar>
+        <tlb-jar dest="${tlb.src.jar}">
+            <content>
+                <fileset dir="src"/>
+            </content>
+        </tlb-jar>
     </target>
 
     <target name="package.jar" depends="init, compile, -load.short.rev">
         <property name="tlb_jar" value="${target.dir}/${tlb.jar.name}"/>
-        <jar destfile="${tlb_jar}">
-            <manifest>
+        <tlb-jar dest="${tlb_jar}">
+            <extra-manifest>
                 <attribute name="Main-Class" value="tlb.Main"/>
-                <section name="tlb/">
-                    <attribute name="Sealed" value="true"/>
-                    <attribute name="Extension-name" value="tlb."/>
-                </section>
-                <attribute name="Implementation-Title" value="${title}"/>
-                <attribute name="Implementation-Version" value="${short_rev}"/>
-                <attribute name="Implementation-Vendor" value="${vendor}"/>
-                <attribute name="License" value="${license}"/>
-                <attribute name="Description" value="${description}"/>
-                <attribute name="Build-Date" value="${build-time-with-timezone}"/>
-            </manifest>
-            <fileset dir="${classes.dir}"/>
-            <fileset dir="${src.dir}">
-                <include name="log4j.properties"/>
-            </fileset>
-        </jar>
+            </extra-manifest>
+            <content>
+                <fileset dir="${classes.dir}"/>
+                <fileset dir="${src.dir}">
+                    <include name="log4j.properties"/>
+                </fileset>
+            </content>
+        </tlb-jar>
 
         <onejar destfile="${target.dir}/${tlb.all.jar.name}">
             <manifest>
-                <attribute name="Extension-name" value="tlb."/>
-                <attribute name="Implementation-Title" value="${title}"/>
-                <attribute name="Implementation-Version" value="${short_rev}"/>
-                <attribute name="Implementation-Vendor" value="${vendor}"/>
-                <attribute name="License" value="${vendor}"/>
-                <attribute name="Description" value="${description}"/>
-                <attribute name="Build-Date" value="${build-time-with-timezone}"/>
+                &extension-name;
+                &manifest;
             </manifest>
             <main jar="${tlb_jar}"/>
             <lib>
