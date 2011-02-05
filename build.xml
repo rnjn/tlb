@@ -15,6 +15,11 @@
     <property name="reports.dir" location="${target.dir}/reports"/>
     <property name="test-target-resources.dir" location="${test-classes.dir}/resources"/>
 
+    <property name="title" value="TLB - Test Load Balancer"/>
+    <property name="vendor" value="TLB Core Team - Janmejay Singh, Pavan KS"/><!-- follow alpha first name -->
+    <property name="license" value="2-clause BSD License"/>
+    <property name="description" value="A tool to load-balance tests across multiple processes or machines"/>
+
     <path id="dependencies">
         <fileset dir="${prod-lib.dir}" includes="*.jar"/>
     </path>
@@ -55,8 +60,6 @@
     </condition>
     <property name="ivy.jar.dir" value="${ivy.home}/lib" />
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
-    <property name="offline" value="false" />
-    <property name="offline" value="${env.OFFLINE}" />
 
     <target name="download-ivy" unless="offline">
         <mkdir dir="${ivy.jar.dir}"/>
@@ -76,7 +79,7 @@
     </target>
 
     <target name="resolve" depends="init-ivy">
-        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact].[ext]" sync="true"/>
+        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
     </target>
 
     <target name="init" depends="resolve">
@@ -91,9 +94,13 @@
 
         <taskdef name="onejar" classname="com.simontuffs.onejar.ant.OneJarTask">
             <classpath>
-                <pathelement location="${build_lib.dir}/one-jar-ant-task.jar"/>
+                <pathelement location="${build_lib.dir}/one-jar-ant-task-${one-jar.version}.jar"/>
             </classpath>
         </taskdef>
+        <tstamp>
+            <format property="build-time" pattern="MMM/dd/yyyy hh:mm aa"  timezone="${ENV.TZ}"/>
+        </tstamp>
+        <property name="build-time-with-timezone" value="${build-time} UTC"/>
     </target>
 
     <target name="clean">
@@ -132,10 +139,25 @@
         <property name="tlb.all.basename" value="tlb-all-g${short_rev}"/>
         <property name="tlb.jar.name" value="${tlb.basename}.jar"/>
         <property name="tlb.all.jar.name" value="${tlb.all.basename}.jar"/>
+        <property name="tlb.src.jar.name" value="${tlb.basename}-src.jar"/>
     </target>
 
     <target name="package.src" depends="init, -load.short.rev">
-        <jar destfile="${target.dir}/tlb-g${short_rev}-src.jar">
+        <property name="tlb.src.jar" value="${target.dir}/${tlb.src.jar.name}"/>
+        <jar destfile="${tlb.src.jar}">
+            <manifest>
+                <attribute name="Main-Class" value="tlb.Main"/>
+                <section name="tlb/">
+                    <attribute name="Sealed" value="true"/>
+                    <attribute name="Extension-name" value="tlb."/>
+                </section>
+                <attribute name="Implementation-Title" value="${title}"/>
+                <attribute name="Implementation-Version" value="${short_rev}"/>
+                <attribute name="Implementation-Vendor" value="${vendor}"/>
+                <attribute name="License" value="${license}"/>
+                <attribute name="Description" value="${description}"/>
+                <attribute name="Build-Date" value="${build-time-with-timezone}"/>
+            </manifest>
             <fileset dir="src"/>
         </jar>
     </target>
@@ -143,16 +165,35 @@
     <target name="package.jar" depends="init, compile, -load.short.rev">
         <property name="tlb_jar" value="${target.dir}/${tlb.jar.name}"/>
         <jar destfile="${tlb_jar}">
+            <manifest>
+                <attribute name="Main-Class" value="tlb.Main"/>
+                <section name="tlb/">
+                    <attribute name="Sealed" value="true"/>
+                    <attribute name="Extension-name" value="tlb."/>
+                </section>
+                <attribute name="Implementation-Title" value="${title}"/>
+                <attribute name="Implementation-Version" value="${short_rev}"/>
+                <attribute name="Implementation-Vendor" value="${vendor}"/>
+                <attribute name="License" value="${license}"/>
+                <attribute name="Description" value="${description}"/>
+                <attribute name="Build-Date" value="${build-time-with-timezone}"/>
+            </manifest>
             <fileset dir="${classes.dir}"/>
             <fileset dir="${src.dir}">
                 <include name="log4j.properties"/>
             </fileset>
-            <manifest>
-                <attribute name="Main-Class" value="tlb.Main"/>
-            </manifest>
         </jar>
 
         <onejar destfile="${target.dir}/${tlb.all.jar.name}">
+            <manifest>
+                <attribute name="Extension-name" value="tlb."/>
+                <attribute name="Implementation-Title" value="${title}"/>
+                <attribute name="Implementation-Version" value="${short_rev}"/>
+                <attribute name="Implementation-Vendor" value="${vendor}"/>
+                <attribute name="License" value="${vendor}"/>
+                <attribute name="Description" value="${description}"/>
+                <attribute name="Build-Date" value="${build-time-with-timezone}"/>
+            </manifest>
             <main jar="${tlb_jar}"/>
             <lib>
                 <fileset dir="${prod-lib.dir}"/>
@@ -162,38 +203,28 @@
 
     <target name="package" depends="clean, package.src, package.jar"/>
 
-    <target name="zip-all" depends="package, -load.short.rev">
-        <property name="dest_dir" location="${target.dir}/tlb_all_dist"/>
-        <property name="archive_dir" location="${dest_dir}/${tlb.all.basename}"/>
-        <property name="tar" location="${target.dir}/${tlb.all.basename}.tar"/>
-        <mkdir dir="${archive_dir}" />
-        <copy todir="${archive_dir}">
-            <fileset dir="${basedir}" includes="*.sh" />
-            <fileset dir="${basedir}" includes="*.bat" />
-            <fileset dir="${basedir}" includes="*.cmd" />
-            <fileset dir="${target.dir}" includes="${tlb.all.jar.name}" />
-        </copy>
-        <tar basedir="${dest_dir}" destfile="${tar}"/>
-        <bzip2 src="${tar}" destfile="${target.dir}/${tlb.all.basename}.tar.bz2"/>
-        <delete dir="${tar}" />
-        <delete dir="${dest_dir}" />
-    </target>
-
-    <target name="zip" depends="package">
-        <property name="dest_dir" location="${target.dir}/tlb_client_dist"/>
-        <property name="archive_dir" location="${dest_dir}/${tlb.basename}"/>
-        <property name="tar" location="${target.dir}/${tlb.basename}.tar"/>
-        <mkdir dir="${archive_dir}" />
-        <copy todir="${archive_dir}">
-            <fileset dir="${target.dir}" includes="${tlb.jar.name}" />
-        </copy>
-        <copy todir="${archive_dir}/lib">
-            <fileset dir="${prod-lib.dir}" includes="*.jar" />
-        </copy>
-        <tar basedir="${dest_dir}" destfile="${tar}"/>
-        <bzip2 src="${tar}" destfile="${target.dir}/${tlb.basename}.tar.bz2"/>
-        <delete dir="${tar}" />
-        <delete dir="${dest_dir}" />
+    <target name="dist" depends="package, -load.short.rev">
+        <property name="archive.name" location="${target.dir}/${tlb.all.basename}.tar.gz"/>
+        <tar destfile="${archive.name}" compression="gzip">
+            <tarfileset dir="${basedir}" prefix="${tlb.all.basename}" >
+                <include name="*.bat"/>
+                <include name="*.cmd"/>
+                <include name="LICENSE"/>
+            </tarfileset>
+            <tarfileset dir="${basedir}" prefix="${tlb.all.basename}" filemode="0755">
+                <include name="*.sh"/>
+            </tarfileset>
+            <tarfileset dir="${basedir}" fullpath="${tlb.all.basename}/README">
+                <include name="README.release"/>
+            </tarfileset>
+            <tarfileset dir="${target.dir}" prefix="${tlb.all.basename}">
+                <include name="*.jar"/>
+            </tarfileset>
+            <tarfileset dir="${prod-lib.dir}" prefix="${tlb.all.basename}/libs">
+                <include name="*.jar"/>
+            </tarfileset>
+        </tar>
+        <!--<delete dir="${dest_dir}" />-->
     </target>
 
     <target name="emma.instr" depends="compile">
