@@ -34,7 +34,7 @@ public class SuiteTimeRepoTest {
 
     private SystemEnvironment env() {
         final HashMap<String, String> env = new HashMap<String, String>();
-        env.put(TlbConstants.Server.TLB_STORE_DIR, tmpDir.getAbsolutePath());
+        env.put(TlbConstants.Server.TLB_DATA_DIR, tmpDir.getAbsolutePath());
         return new SystemEnvironment(env);
     }
 

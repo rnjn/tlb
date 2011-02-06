@@ -20,7 +20,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
-public class DefaultingTestSplitterCriteriaTest {
+public class DefaultingTestSplitterTest {
     private Project project;
 
     @Before
@@ -30,7 +30,7 @@ public class DefaultingTestSplitterCriteriaTest {
 
     @Test
     public void shouldAttemptCriterionSpecifiedInOrder() throws Exception{
-        TestSplitterCriteria criteria = defaultingCriteriaWith("tlb.splitter.test.UnusableCriteria1:tlb.splitter.test.UnusableCriteria2:tlb.splitter.test.LastSelectingCriteria");
+        TestSplitter criteria = defaultingCriteriaWith("tlb.splitter.test.UnusableSplitter1:tlb.splitter.test.UnusableSplitter2:tlb.splitter.test.LastSelectingSplitter");
 
         TlbFileResource foo = fileResource("foo");
         TlbFileResource bar = fileResource("bar");
@@ -43,7 +43,7 @@ public class DefaultingTestSplitterCriteriaTest {
 
     @Test
     public void shouldAcceptSpacesBetweenCriterionNamesSpecified() throws Exception{
-        TestSplitterCriteria criteria = defaultingCriteriaWith("tlb.splitter.test.UnusableCriteria1   :   tlb.splitter.test.UnusableCriteria2 :   tlb.splitter.test.LastSelectingCriteria");
+        TestSplitter criteria = defaultingCriteriaWith("tlb.splitter.test.UnusableSplitter1   :   tlb.splitter.test.UnusableSplitter2 :   tlb.splitter.test.LastSelectingSplitter");
 
         TlbFileResource foo = fileResource("foo");
         TlbFileResource bar = fileResource("bar");
@@ -54,16 +54,16 @@ public class DefaultingTestSplitterCriteriaTest {
         assertThat(filteredResources, hasItem(bar));
     }
 
-    private TestSplitterCriteria defaultingCriteriaWith(String criterion) {
+    private TestSplitter defaultingCriteriaWith(String criterion) {
         Map<String, String> envMap = new HashMap<String, String>();
-        envMap.put(TlbConstants.CRITERIA_DEFAULTING_ORDER, criterion);
+        envMap.put(TlbConstants.TLB_PREFERRED_SPLITTERS, criterion);
         SystemEnvironment env = new SystemEnvironment(envMap);
-        return new DefaultingTestSplitterCriteria(env);
+        return new DefaultingTestSplitter(env);
     }
 
     @Test
     public void shouldBombIfNoCriteriaCanBeUsedSuccessfully() throws Exception{
-        TestSplitterCriteria criteria = defaultingCriteriaWith("tlb.splitter.test.UnusableCriteria1:tlb.splitter.test.UnusableCriteria2");
+        TestSplitter criteria = defaultingCriteriaWith("tlb.splitter.test.UnusableSplitter1:tlb.splitter.test.UnusableSplitter2");
 
         TlbFileResource foo = fileResource("foo");
         TlbFileResource bar = fileResource("bar");
@@ -73,7 +73,7 @@ public class DefaultingTestSplitterCriteriaTest {
             convertor.toTlbFileResources(criteria.filterSuites(suiteFiles));
             fail("should have raised exception as no usable criteria specified");
         } catch (Exception e) {
-            assertThat(e.getMessage(), is("None of [tlb.splitter.test.UnusableCriteria1, tlb.splitter.test.UnusableCriteria2] could successfully split the test suites."));
+            assertThat(e.getMessage(), is("None of [tlb.splitter.test.UnusableSplitter1, tlb.splitter.test.UnusableSplitter2] could successfully split the test suites."));
         }
     }
 

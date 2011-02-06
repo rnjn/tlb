@@ -7,14 +7,15 @@ import java.util.List;
 
 
 import tlb.TlbSuiteFile;
-import tlb.service.TalkToService;
+import tlb.service.Server;
+import tlb.service.TalksToServer;
 import tlb.utils.SystemEnvironment;
 
 /**
  * @understands the criteria for splitting a given test suite across jobs from the same family
  */
-public abstract class JobFamilyAwareSplitterCriteria extends TestSplitterCriteria implements TalksToService {
-    public static TestSplitterCriteria MATCH_ALL_FILE_SET = new JobFamilyAwareSplitterCriteria(null) {
+public abstract class JobFamilyAwareSplitter extends TestSplitter implements TalksToServer {
+    public static TestSplitter MATCH_ALL_FILE_SET = new JobFamilyAwareSplitter(null) {
         @Override
         public List<TlbSuiteFile> filterSuites(List<TlbSuiteFile> fileResources) {
             return fileResources;
@@ -24,12 +25,12 @@ public abstract class JobFamilyAwareSplitterCriteria extends TestSplitterCriteri
             throw new RuntimeException("Should never reach here");
         }
     };
-    protected TalkToService talkToService;
+    protected Server server;
 
-    private static final Logger logger = Logger.getLogger(JobFamilyAwareSplitterCriteria.class.getName());
+    private static final Logger logger = Logger.getLogger(JobFamilyAwareSplitter.class.getName());
     protected int totalPartitions;
 
-    public JobFamilyAwareSplitterCriteria(SystemEnvironment env) {
+    public JobFamilyAwareSplitter(SystemEnvironment env) {
         super(env);
     }
 
@@ -37,7 +38,7 @@ public abstract class JobFamilyAwareSplitterCriteria extends TestSplitterCriteri
     public List<TlbSuiteFile> filterSuites(List<TlbSuiteFile> fileResources) {
         logger.info(String.format("got total of %s files to balance", fileResources.size()));
 
-        totalPartitions = talkToService.totalPartitions();
+        totalPartitions = server.totalPartitions();
         logger.info(String.format("total jobs to distribute load [ %s ]", totalPartitions));
         if (totalPartitions <= 1) {
             return fileResources;
@@ -45,14 +46,14 @@ public abstract class JobFamilyAwareSplitterCriteria extends TestSplitterCriteri
 
         List<TlbSuiteFile> subset = subset(fileResources);
         logger.info(String.format("assigned total of %s files to [ %s ]", subset.size(), env.val(TlbConstants.Go.GO_JOB_NAME)));
-        talkToService.publishSubsetSize(subset.size());
+        server.publishSubsetSize(subset.size());
         return subset;
     }
 
     protected abstract List<TlbSuiteFile> subset(List<TlbSuiteFile> fileResources);
 
-    public void talksToService(TalkToService service) {
-       this.talkToService = service;
+    public void talksToServer(Server service) {
+       this.server = service;
     }
 
     protected boolean isLast(int totalPartitions, int index) {

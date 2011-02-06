@@ -27,7 +27,7 @@ public class BalancerInitializer extends ServerInitializer {
     @Override
     public Restlet application() {
         HashMap<String, Object> appMap = new HashMap<String, Object>();
-        appMap.put(TlbClient.SPLITTER, TlbFactory.getCriteria(env.val(TlbConstants.TLB_CRITERIA), env));
+        appMap.put(TlbClient.SPLITTER, TlbFactory.getCriteria(env.val(TlbConstants.TLB_SPLITTER), env));
         appMap.put(TlbClient.ORDERER, TlbFactory.getOrderer(env.val(TlbConstants.TLB_ORDERER), env));
         appMap.put(TlbClient.TALK_TO_SERVICE, TlbFactory.getTalkToService(env));
         appMap.put(TlbClient.APP_COMPONENT, init());

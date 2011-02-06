@@ -1,7 +1,6 @@
 package tlb.splitter.timebased;
 
 import tlb.TlbSuiteFile;
-import tlb.splitter.TimeBasedTestSplitterCriteria;
 
 /**
 * @understands a test file as an element that needs to be balanced.

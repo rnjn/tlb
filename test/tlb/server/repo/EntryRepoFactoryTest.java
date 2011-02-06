@@ -35,7 +35,7 @@ public class EntryRepoFactoryTest {
 
     private SystemEnvironment env() {
         final HashMap<String, String> env = new HashMap<String, String>();
-        env.put(TlbConstants.Server.TLB_STORE_DIR, baseDir.getAbsolutePath());
+        env.put(TlbConstants.Server.TLB_DATA_DIR, baseDir.getAbsolutePath());
         return new SystemEnvironment(env);
     }
 
@@ -156,7 +156,7 @@ public class EntryRepoFactoryTest {
 
     @Test
     public void shouldUseWorkingDirAsDiskStorageRootWhenNotGiven() throws IOException, ClassNotFoundException {
-        final File workingDirStorage = new File(TlbConstants.Server.TLB_STORE_DIR);
+        final File workingDirStorage = new File(TlbConstants.Server.DEFAULT_TLB_DATA_DIR);
         workingDirStorage.mkdirs();
         File file = new File(workingDirStorage, EntryRepoFactory.name("foo", LATEST_VERSION, EntryRepoFactory.SUBSET_SIZE));
         FileUtils.writeStringToFile(file, "1\n2\n3\n");

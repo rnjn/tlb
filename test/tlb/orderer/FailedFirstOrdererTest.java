@@ -9,8 +9,8 @@ import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
 import tlb.ant.JunitFileResource;
 import tlb.domain.SuiteResultEntry;
-import tlb.service.TalkToGoServer;
-import tlb.splitter.TalksToService;
+import tlb.service.GoServer;
+import tlb.service.TalksToServer;
 import tlb.utils.SuiteFileConvertor;
 
 import java.io.File;
@@ -28,23 +28,23 @@ import static tlb.TestUtil.initEnvironment;
 
 public class FailedFirstOrdererTest {
     private FailedFirstOrderer orderer;
-    private TalkToGoServer toCruise;
+    private GoServer toCruise;
     private Project project;
     private String baseDir;
 
     @Before
     public void setUp() throws Exception {
         orderer = new FailedFirstOrderer(initEnvironment("job-1"));
-        toCruise = mock(TalkToGoServer.class);
+        toCruise = mock(GoServer.class);
         project = new Project();
         baseDir = TestUtil.createTempFolder().getAbsolutePath();
         project.setBasedir(baseDir);
-        orderer.talksToService(toCruise);
+        orderer.talksToServer(toCruise);
     }
 
     @Test
     public void shouldImplementTalksToCruise() throws Exception{
-        assertTrue("Failed first orderer must be talk to cruise aware", TalksToService.class.isAssignableFrom(FailedFirstOrderer.class));
+        assertTrue("Failed first orderer must be talk to cruise aware", TalksToServer.class.isAssignableFrom(FailedFirstOrderer.class));
     }
 
     @Test

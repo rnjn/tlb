@@ -9,11 +9,11 @@ import tlb.utils.SystemEnvironment;
 /**
  * @understands the criteria for splitting a given test suite 
  */
-public abstract class TestSplitterCriteria {
+public abstract class TestSplitter {
     protected File dir;
     protected final SystemEnvironment env;
 
-    protected TestSplitterCriteria(SystemEnvironment env) {
+    protected TestSplitter(SystemEnvironment env) {
         this.env = env;
     }
 

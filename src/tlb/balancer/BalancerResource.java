@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import tlb.TlbSuiteFile;
 import tlb.TlbSuiteFileImpl;
 import tlb.orderer.TestOrderer;
-import tlb.splitter.TestSplitterCriteria;
+import tlb.splitter.TestSplitter;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
@@ -14,7 +14,6 @@ import org.restlet.resource.*;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 
 /**
@@ -24,13 +23,13 @@ public class BalancerResource extends Resource {
     private static final Logger logger = Logger.getLogger(BalancerResource.class.getName());
 
     private final TestOrderer orderer;
-    private final TestSplitterCriteria splitter;
+    private final TestSplitter splitter;
 
     public BalancerResource(Context context, Request request, Response response) {
         super(context, request, response);
         getVariants().add(new Variant(MediaType.TEXT_PLAIN));
         orderer = (TestOrderer) context.getAttributes().get(TlbClient.ORDERER);
-        splitter = (TestSplitterCriteria) context.getAttributes().get(TlbClient.SPLITTER);
+        splitter = (TestSplitter) context.getAttributes().get(TlbClient.SPLITTER);
     }
 
     @Override

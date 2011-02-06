@@ -10,21 +10,21 @@ import tlb.utils.SystemEnvironment;
 
 import java.util.List;
 
-import static tlb.TlbConstants.TlbServer.JOB_NAMESPACE;
-import static tlb.TlbConstants.TlbServer.URL;
+import static tlb.TlbConstants.TlbServer.TLB_JOB_NAME;
+import static tlb.TlbConstants.TlbServer.TLB_BASE_URL;
 
 /**
  * @understands exchanging balancing/ordering related data with the TLB server
  */
-public class TalkToTlbServer extends SmoothingTalkToService {
+public class TlbServer extends SmoothingServer {
     private final HttpAction httpAction;
 
     //reflectively invoked by factory
-    public TalkToTlbServer(SystemEnvironment systemEnvironment) {
+    public TlbServer(SystemEnvironment systemEnvironment) {
         this(systemEnvironment, new DefaultHttpAction());
     }
 
-    public TalkToTlbServer(SystemEnvironment systemEnvironment, HttpAction httpAction) {
+    public TlbServer(SystemEnvironment systemEnvironment, HttpAction httpAction) {
         super(systemEnvironment);
         this.httpAction = httpAction;
     }
@@ -42,7 +42,7 @@ public class TalkToTlbServer extends SmoothingTalkToService {
     }
 
     public List<SuiteTimeEntry> fetchLastRunTestTimes() {
-        return SuiteTimeEntry.parse(httpAction.get(getUrl(namespace(), suiteTimeRepoName(), environment.val(TlbConstants.TlbServer.JOB_VERSION))));
+        return SuiteTimeEntry.parse(httpAction.get(getUrl(namespace(), suiteTimeRepoName(), environment.val(TlbConstants.TlbServer.TLB_JOB_VERSION))));
     }
 
     public List<SuiteResultEntry> getLastRunFailedTests() {
@@ -59,16 +59,16 @@ public class TalkToTlbServer extends SmoothingTalkToService {
     }
 
     public int partitionNumber() {
-        return Integer.parseInt(environment.val(TlbConstants.TlbServer.PARTITION_NUMBER));
+        return Integer.parseInt(environment.val(TlbConstants.TlbServer.TLB_PARTITION_NUMBER));
     }
 
     public int totalPartitions() {
-        return Integer.parseInt(environment.val(TlbConstants.TlbServer.TOTAL_PARTITIONS));
+        return Integer.parseInt(environment.val(TlbConstants.TlbServer.TLB_TOTAL_PARTITIONS));
     }
 
     private String getUrl(String... parts) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(environment.val(URL));
+        builder.append(environment.val(TLB_BASE_URL));
         for (String part : parts) {
             builder.append("/").append(part);
         }
@@ -84,6 +84,6 @@ public class TalkToTlbServer extends SmoothingTalkToService {
     }
 
     private String namespace() {
-        return environment.val(JOB_NAMESPACE);
+        return environment.val(TLB_JOB_NAME);
     }
 }

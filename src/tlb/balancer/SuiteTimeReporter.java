@@ -2,7 +2,7 @@ package tlb.balancer;
 
 import org.apache.log4j.Logger;
 import tlb.domain.SuiteTimeEntry;
-import tlb.service.TalkToService;
+import tlb.service.Server;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
@@ -14,7 +14,6 @@ import org.restlet.resource.Variant;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
 
 
 /**
@@ -23,12 +22,12 @@ import java.util.logging.Level;
 public class SuiteTimeReporter extends Resource {
     private static final Logger logger = Logger.getLogger(SuiteTimeReporter.class.getName());
 
-    protected TalkToService talkToService;
+    protected Server server;
 
     public SuiteTimeReporter(Context context, Request request, Response response) {
         super(context, request, response);
         getVariants().add(new Variant(MediaType.TEXT_PLAIN));
-        talkToService = (TalkToService) context.getAttributes().get(TlbClient.TALK_TO_SERVICE);
+        server = (Server) context.getAttributes().get(TlbClient.TALK_TO_SERVICE);
     }
 
     @Override
@@ -36,7 +35,7 @@ public class SuiteTimeReporter extends Resource {
         try {
             final List<SuiteTimeEntry> entries = SuiteTimeEntry.parse(entity.getText());
             for (SuiteTimeEntry entry : entries) {
-                talkToService.testClassTime(entry.getName(), entry.getTime());
+                server.testClassTime(entry.getName(), entry.getTime());
             }
         } catch (IOException e) {
             logger.warn(String.format("could not report test time: '%s'", e.getMessage()), e);

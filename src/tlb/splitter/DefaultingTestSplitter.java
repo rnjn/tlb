@@ -9,30 +9,29 @@ import tlb.utils.SystemEnvironment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 
 /**
  * @understands choosing criteria in order of preference
  */
-public class DefaultingTestSplitterCriteria extends TestSplitterCriteria {
-    private static final Logger logger = Logger.getLogger(DefaultingTestSplitterCriteria.class.getName());
+public class DefaultingTestSplitter extends TestSplitter {
+    private static final Logger logger = Logger.getLogger(DefaultingTestSplitter.class.getName());
 
-    private ArrayList<TestSplitterCriteria> criterion;
+    private ArrayList<TestSplitter> criterion;
 
-    public DefaultingTestSplitterCriteria(SystemEnvironment env) {
+    public DefaultingTestSplitter(SystemEnvironment env) {
         super(env);
-        criterion = new ArrayList<TestSplitterCriteria>();
+        criterion = new ArrayList<TestSplitter>();
         String[] criteriaNames = criteriaNames(env);
         for (String criteriaName : criteriaNames) {
-            TestSplitterCriteria splitterCriteria = TlbFactory.getCriteria(criteriaName, env);
-            criterion.add(splitterCriteria);
+            TestSplitter splitter = TlbFactory.getCriteria(criteriaName, env);
+            criterion.add(splitter);
         }
     }
 
     @Override
     public List<TlbSuiteFile> filterSuites(List<TlbSuiteFile> fileResources) {
-        for (TestSplitterCriteria criteria : criterion) {
+        for (TestSplitter criteria : criterion) {
             try {
                 List<TlbSuiteFile> subset = criteria.filterSuites(fileResources);
                 logger.info(String.format("Used %s to balance.", criteria.getClass().getCanonicalName()));
@@ -46,6 +45,6 @@ public class DefaultingTestSplitterCriteria extends TestSplitterCriteria {
     }
 
     private String[] criteriaNames(SystemEnvironment env) {
-        return env.val(TlbConstants.CRITERIA_DEFAULTING_ORDER).split("\\s*:\\s*");
+        return env.val(TlbConstants.TLB_PREFERRED_SPLITTERS).split("\\s*:\\s*");
     }
 }

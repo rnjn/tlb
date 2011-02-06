@@ -9,9 +9,10 @@ import tlb.orderer.FailedFirstOrderer;
 import tlb.orderer.TestOrderer;
 import tlb.server.ServerInitializer;
 import tlb.server.TlbServerInitializer;
-import tlb.service.TalkToGoServer;
-import tlb.service.TalkToService;
-import tlb.service.TalkToTlbServer;
+import tlb.service.Server;
+import tlb.service.GoServer;
+import tlb.service.TalksToServer;
+import tlb.service.TlbServer;
 import tlb.splitter.*;
 import tlb.utils.SystemEnvironment;
 
@@ -28,31 +29,31 @@ public class TlbFactoryTest {
 
     @Test
     public void shouldReturnDefaultMatchAllCriteriaForEmpty() {
-        TestSplitterCriteria criteria = TlbFactory.getCriteria(null, env("tlb.service.TalkToGoServer"));
-        assertThat(criteria, Is.is(JobFamilyAwareSplitterCriteria.MATCH_ALL_FILE_SET));
-        criteria = TlbFactory.getCriteria("", env("tlb.service.TalkToGoServer"));
-        assertThat(criteria, is(JobFamilyAwareSplitterCriteria.MATCH_ALL_FILE_SET));
+        TestSplitter criteria = TlbFactory.getCriteria(null, env("tlb.service.GoServer"));
+        assertThat(criteria, Is.is(JobFamilyAwareSplitter.MATCH_ALL_FILE_SET));
+        criteria = TlbFactory.getCriteria("", env("tlb.service.GoServer"));
+        assertThat(criteria, is(JobFamilyAwareSplitter.MATCH_ALL_FILE_SET));
     }
     
     @Test
     public void shouldReturnNoOPOrdererForEmpty() {
-        TestOrderer orderer = TlbFactory.getOrderer(null, env("tlb.service.TalkToGoServer"));
+        TestOrderer orderer = TlbFactory.getOrderer(null, env("tlb.service.GoServer"));
         assertThat(orderer, Is.is(TestOrderer.NO_OP));
-        orderer = TlbFactory.getOrderer("", env("tlb.service.TalkToGoServer"));
+        orderer = TlbFactory.getOrderer("", env("tlb.service.GoServer"));
         assertThat(orderer, is(TestOrderer.NO_OP));
     }
 
     @Test
     public void shouldThrowAnExceptionWhenTheCriteriaClassIsNotFound() {
         try {
-            TlbFactory.getCriteria("com.thoughtworks.cruise.tlb.MissingCriteria", env("tlb.service.TalkToGoServer"));
+            TlbFactory.getCriteria("com.thoughtworks.cruise.tlb.MissingCriteria", env("tlb.service.GoServer"));
             fail("should not be able to create random criteria!");
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage(), is("Unable to locate class 'com.thoughtworks.cruise.tlb.MissingCriteria'"));
         }
 
         try {
-            TlbFactory.getOrderer("com.thoughtworks.cruise.tlb.MissingOrderer", env("tlb.service.TalkToGoServer"));
+            TlbFactory.getOrderer("com.thoughtworks.cruise.tlb.MissingOrderer", env("tlb.service.GoServer"));
             fail("should not be able to create random orderer!");
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage(), is("Unable to locate class 'com.thoughtworks.cruise.tlb.MissingOrderer'"));
@@ -72,65 +73,65 @@ public class TlbFactoryTest {
     @Test
     public void shouldThrowAnExceptionWhenTheCriteriaClassDoesNotImplementTestSplitterCriteria() {
         try {
-            TlbFactory.getCriteria("java.lang.String", env("tlb.service.TalkToGoServer"));
-            fail("should not be able to create criteria that doesn't implement TestSplitterCriteria");
+            TlbFactory.getCriteria("java.lang.String", env("tlb.service.GoServer"));
+            fail("should not be able to create criteria that doesn't implement TestSplitter");
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), is("Class 'java.lang.String' is-not/does-not-implement 'class tlb.splitter.TestSplitterCriteria'"));
+            assertThat(e.getMessage(), is("Class 'java.lang.String' is-not/does-not-implement 'class tlb.splitter.TestSplitter'"));
         }
     }
 
     @Test
     public void shouldReturnCountBasedCriteria() {
-        TestSplitterCriteria criteria = TlbFactory.getCriteria("tlb.splitter.CountBasedTestSplitterCriteria", env("tlb.service.TalkToGoServer"));
-        assertThat(criteria, instanceOf(CountBasedTestSplitterCriteria.class));
+        TestSplitter criteria = TlbFactory.getCriteria("tlb.splitter.CountBasedTestSplitter", env("tlb.service.GoServer"));
+        assertThat(criteria, instanceOf(CountBasedTestSplitter.class));
     }
     
     @Test
     public void shouldInjectTlbCommunicatorWhenImplementsTalkToService() {
-        TlbFactory<TestSplitterCriteria> criteriaFactory = new TlbFactory<TestSplitterCriteria>(TestSplitterCriteria.class, JobFamilyAwareSplitterCriteria.MATCH_ALL_FILE_SET);
-        TestSplitterCriteria criteria = criteriaFactory.getInstance(MockCriteria.class, env("tlb.service.TalkToTlbServer"));
-        assertThat(criteria, instanceOf(MockCriteria.class));
-        assertThat(((MockCriteria)criteria).calledTalksToService, is(true));
-        assertThat(((MockCriteria)criteria).talker, is(TalkToTlbServer.class));
+        TlbFactory<TestSplitter> criteriaFactory = new TlbFactory<TestSplitter>(TestSplitter.class, JobFamilyAwareSplitter.MATCH_ALL_FILE_SET);
+        TestSplitter criteria = criteriaFactory.getInstance(MockSplitter.class, env("tlb.service.TlbServer"));
+        assertThat(criteria, instanceOf(MockSplitter.class));
+        assertThat(((MockSplitter)criteria).calledTalksToService, is(true));
+        assertThat(((MockSplitter)criteria).talker, is(TlbServer.class));
     }
 
     @Test
     public void shouldInjectCruiseCommunicatorWhenImplementsTalkToService() {
-        TlbFactory<TestSplitterCriteria> criteriaFactory = new TlbFactory<TestSplitterCriteria>(TestSplitterCriteria.class, JobFamilyAwareSplitterCriteria.MATCH_ALL_FILE_SET);
-        TestSplitterCriteria criteria = criteriaFactory.getInstance(MockCriteria.class, env("tlb.service.TalkToGoServer"));
-        assertThat(criteria, instanceOf(MockCriteria.class));
-        assertThat(((MockCriteria)criteria).calledTalksToService, is(true));
-        assertThat(((MockCriteria)criteria).talker, is(TalkToGoServer.class));
+        TlbFactory<TestSplitter> criteriaFactory = new TlbFactory<TestSplitter>(TestSplitter.class, JobFamilyAwareSplitter.MATCH_ALL_FILE_SET);
+        TestSplitter criteria = criteriaFactory.getInstance(MockSplitter.class, env("tlb.service.GoServer"));
+        assertThat(criteria, instanceOf(MockSplitter.class));
+        assertThat(((MockSplitter)criteria).calledTalksToService, is(true));
+        assertThat(((MockSplitter)criteria).talker, is(GoServer.class));
     }
 
     @Test
     public void shouldReturnTimeBasedCriteria() {
-        TestSplitterCriteria criteria = TlbFactory.getCriteria("tlb.splitter.TimeBasedTestSplitterCriteria", env("tlb.service.TalkToGoServer"));
-        assertThat(criteria, instanceOf(TimeBasedTestSplitterCriteria.class));
+        TestSplitter criteria = TlbFactory.getCriteria("tlb.splitter.TimeBasedTestSplitter", env("tlb.service.GoServer"));
+        assertThat(criteria, instanceOf(TimeBasedTestSplitter.class));
     }
 
     @Test
     public void shouldReturnFailedFirstOrderer() {
-        TestOrderer failedTestsFirstOrderer = TlbFactory.getOrderer("tlb.orderer.FailedFirstOrderer", env("tlb.service.TalkToGoServer"));
+        TestOrderer failedTestsFirstOrderer = TlbFactory.getOrderer("tlb.orderer.FailedFirstOrderer", env("tlb.service.GoServer"));
         assertThat(failedTestsFirstOrderer, instanceOf(FailedFirstOrderer.class));
     }
 
     @Test
     public void shouldReturnTalkToTlbServer() {
         final Map<String, String> map = new HashMap<String, String>();
-        map.put(TlbConstants.TlbServer.URL, "http://localhost:7019");
-        map.put(TlbConstants.TALK_TO_SERVICE, "tlb.service.TalkToTlbServer");
-        TalkToService talkToService = TlbFactory.getTalkToService(new SystemEnvironment(map));
-        assertThat(talkToService, is(TalkToTlbServer.class));
+        map.put(TlbConstants.TlbServer.TLB_BASE_URL, "http://localhost:7019");
+        map.put(TlbConstants.TYPE_OF_SERVER, "tlb.service.TlbServer");
+        Server server = TlbFactory.getTalkToService(new SystemEnvironment(map));
+        assertThat(server, is(TlbServer.class));
     }
     
     @Test
     public void shouldReturnTalkToCruise() {
         final Map<String, String> map = new HashMap<String, String>();
         map.put(TlbConstants.Go.GO_SERVER_URL, "http://localhost:8153/cruise");
-        map.put(TlbConstants.TALK_TO_SERVICE, "tlb.service.TalkToGoServer");
-        TalkToService talkToService = TlbFactory.getTalkToService(new SystemEnvironment(map));
-        assertThat(talkToService, is(TalkToGoServer.class));
+        map.put(TlbConstants.TYPE_OF_SERVER, "tlb.service.GoServer");
+        Server server = TlbFactory.getTalkToService(new SystemEnvironment(map));
+        assertThat(server, is(GoServer.class));
     }
 
     @Test
@@ -154,17 +155,17 @@ public class TlbFactoryTest {
     private SystemEnvironment env(String talkToService) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put(TlbConstants.Go.GO_SERVER_URL, "https://localhost:8154/cruise");
-        map.put(TlbConstants.TlbServer.URL, "http://localhost:7019");
-        map.put(TlbConstants.TALK_TO_SERVICE, talkToService);
+        map.put(TlbConstants.TlbServer.TLB_BASE_URL, "http://localhost:7019");
+        map.put(TlbConstants.TYPE_OF_SERVER, talkToService);
         return new SystemEnvironment(map);
     }
 
-    private static class MockCriteria extends JobFamilyAwareSplitterCriteria implements TalksToService {
+    private static class MockSplitter extends JobFamilyAwareSplitter implements TalksToServer {
         private boolean calledFilter = false;
         private boolean calledTalksToService = false;
-        private TalkToService talker;
+        private Server talker;
 
-        public MockCriteria(SystemEnvironment env) {
+        public MockSplitter(SystemEnvironment env) {
             super(env);
         }
 
@@ -173,7 +174,7 @@ public class TlbFactoryTest {
             return null;
         }
 
-        public void talksToService(TalkToService service) {
+        public void talksToServer(Server service) {
             this.calledTalksToService = true;
             this.talker = service;
         }

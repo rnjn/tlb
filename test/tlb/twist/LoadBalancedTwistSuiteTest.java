@@ -4,7 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Test;
 import tlb.TlbFileResource;
-import tlb.splitter.TestSplitterCriteria;
+import tlb.splitter.TestSplitter;
 import tlb.utils.SuiteFileConvertor;
 
 import java.io.File;
@@ -28,7 +28,7 @@ public class LoadBalancedTwistSuiteTest {
 
     @Test
     public void shouldLoadScenarioExecutorFromClassPath() throws Exception {
-        TestSplitterCriteria criteria = mock(TestSplitterCriteria.class);
+        TestSplitter criteria = mock(TestSplitter.class);
 
         File folder = folder("folder");
 
@@ -48,7 +48,7 @@ public class LoadBalancedTwistSuiteTest {
 
     @Test
     public void shouldCopyCSVAssociatedWithAScenario() throws Exception {
-        TestSplitterCriteria criteria = mock(TestSplitterCriteria.class);
+        TestSplitter criteria = mock(TestSplitter.class);
 
         File folder = folder("folder");
         List<TlbFileResource> resources = scenarioResource(folder, 1, 2);
@@ -68,7 +68,7 @@ public class LoadBalancedTwistSuiteTest {
 
     @Test
     public void shouldNotCopyCSVIfNotAssociatedWithAFilteredScenario() throws Exception {
-        TestSplitterCriteria criteria = mock(TestSplitterCriteria.class);
+        TestSplitter criteria = mock(TestSplitter.class);
 
         File folder = folder("folder");
         List<TlbFileResource> resources = scenarioResource(folder, 1, 2);

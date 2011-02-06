@@ -10,14 +10,13 @@ import tlb.utils.SystemEnvironment;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 
 /**
  * @understands smoothing test data before posting it to the service
  */
-public abstract class SmoothingTalkToService implements TalkToService {
-    private static final Logger logger = Logger.getLogger(SmoothingTalkToService.class.getName());
+public abstract class SmoothingServer implements Server {
+    private static final Logger logger = Logger.getLogger(SmoothingServer.class.getName());
     private final TlbEntryRepository oldTestTimesRepo;
 
     private static class PassThroughSuiteEntry extends SuiteTimeEntry {
@@ -33,7 +32,7 @@ public abstract class SmoothingTalkToService implements TalkToService {
 
     protected final SystemEnvironment environment;
 
-    protected SmoothingTalkToService(SystemEnvironment environment) {
+    protected SmoothingServer(SystemEnvironment environment) {
         this.environment = environment;
         FileUtil fileUtil = new FileUtil(this.environment);
         oldTestTimesRepo = new TlbEntryRepository(fileUtil.getUniqueFile("old_test_times"));
@@ -50,7 +49,7 @@ public abstract class SmoothingTalkToService implements TalkToService {
     }
 
     private double smoothingFactor() {
-        return Double.parseDouble(environment.val(TlbConstants.SMOOTHING_FACTOR, "1.0"));
+        return Double.parseDouble(environment.val(TlbConstants.TLB_SMOOTHING_FACTOR, "1.0"));
     }
 
     private SuiteTimeEntry entryFor(String className) {

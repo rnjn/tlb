@@ -14,7 +14,7 @@ import tlb.TestUtil;
 import tlb.TlbSuiteFile;
 import tlb.TlbSuiteFileImpl;
 import tlb.orderer.TestOrderer;
-import tlb.splitter.TestSplitterCriteria;
+import tlb.splitter.TestSplitter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class BalancerResourceTest {
 
     private BalancerResource balancerResource;
     private TestOrderer orderer;
-    protected TestSplitterCriteria criteria;
+    protected TestSplitter criteria;
     protected Request request;
     protected TestUtil.LogFixture logFixture;
     protected Response response;
@@ -40,7 +40,7 @@ public class BalancerResourceTest {
     public void setUp() throws ClassNotFoundException, IOException {
         Context context = new Context();
         request = mock(Request.class);
-        criteria = mock(TestSplitterCriteria.class);
+        criteria = mock(TestSplitter.class);
         orderer = mock(TestOrderer.class);
         final HashMap<String, Object> ctxMap = new HashMap<String, Object>();
         ctxMap.put(TlbClient.SPLITTER, criteria);

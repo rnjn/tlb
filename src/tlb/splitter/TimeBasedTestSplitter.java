@@ -3,7 +3,8 @@ package tlb.splitter;
 import org.apache.log4j.Logger;
 import tlb.TlbSuiteFile;
 import tlb.domain.SuiteTimeEntry;
-import tlb.service.TalkToService;
+import tlb.service.Server;
+import tlb.service.TalksToServer;
 import tlb.splitter.timebased.Bucket;
 import tlb.splitter.timebased.TestFile;
 import tlb.utils.FileUtil;
@@ -15,17 +16,17 @@ import java.util.*;
 /**
  * @understands criteria for splitting tests based on time taken
  */
-public class TimeBasedTestSplitterCriteria extends JobFamilyAwareSplitterCriteria implements TalksToService {
+public class TimeBasedTestSplitter extends JobFamilyAwareSplitter implements TalksToServer {
     private final FileUtil fileUtil;
-    private static final Logger logger = Logger.getLogger(TimeBasedTestSplitterCriteria.class.getName());
+    private static final Logger logger = Logger.getLogger(TimeBasedTestSplitter.class.getName());
     private static final String NO_HISTORICAL_DATA = "no historical test time data, aborting attempt to balance based on time";
 
-    public TimeBasedTestSplitterCriteria(TalkToService talkToService, SystemEnvironment env) {
+    public TimeBasedTestSplitter(Server server, SystemEnvironment env) {
         this(env);
-        talksToService(talkToService);
+        talksToServer(server);
     }
 
-    public TimeBasedTestSplitterCriteria(SystemEnvironment env) {
+    public TimeBasedTestSplitter(SystemEnvironment env) {
         super(env);
         fileUtil = new FileUtil(env);
     }
@@ -40,7 +41,7 @@ public class TimeBasedTestSplitterCriteria extends JobFamilyAwareSplitterCriteri
     private Bucket buckets(List<TestFile> testFiles) {
         Bucket thisBucket = null;
         List<Bucket> buckets = new ArrayList<Bucket>();
-        int thisPartition = talkToService.partitionNumber();
+        int thisPartition = server.partitionNumber();
         for(int i = 1; i <= totalPartitions; i++) {
             Bucket bucket = new Bucket(i);
             if (i == thisPartition) thisBucket = bucket;
@@ -60,7 +61,7 @@ public class TimeBasedTestSplitterCriteria extends JobFamilyAwareSplitterCriteri
     }
 
     private List<TestFile> testFiles(List<TlbSuiteFile> fileResources) {
-        List<SuiteTimeEntry> suiteTimeEntries = talkToService.getLastRunTestTimes();
+        List<SuiteTimeEntry> suiteTimeEntries = server.getLastRunTestTimes();
         logger.info(String.format("historical test time data has entries for %s suites", suiteTimeEntries.size()));
         if (suiteTimeEntries.isEmpty()) {
             logger.warn(NO_HISTORICAL_DATA);

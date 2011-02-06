@@ -1,12 +1,11 @@
 package tlb.twist;
 
 import tlb.TestUtil;
-import tlb.service.TalkToGoServer;
+import tlb.service.Server;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.apache.commons.io.FileUtils;
-import tlb.service.TalkToService;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +15,7 @@ public class PublishScenarioExecutionTimeTest {
 
     @Test
     public void shouldPublishScenarioExecutionTimeToCruise() throws Exception {
-        TalkToService service = mock(TalkToService.class);
+        Server service = mock(Server.class);
         PublishScenarioExecutionTime publishTime = new PublishScenarioExecutionTime(service);
         String reportsDir = "reports";
         publishTime.setReportsDir(reportsDir);

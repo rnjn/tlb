@@ -2,7 +2,7 @@ package tlb.ant;
 
 import org.apache.log4j.Logger;
 import tlb.factory.TlbFactory;
-import tlb.service.TalkToService;
+import tlb.service.Server;
 import tlb.utils.FileUtil;
 import tlb.utils.SystemEnvironment;
 import junit.framework.AssertionFailedError;
@@ -12,7 +12,6 @@ import org.apache.tools.ant.taskdefs.optional.junit.JUnitResultFormatter;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest;
 
 import java.io.OutputStream;
-import java.util.logging.Level;
 
 
 /**
@@ -20,12 +19,12 @@ import java.util.logging.Level;
  */
 public class JunitDataRecorder implements JUnitResultFormatter {
     private static final Logger logger = Logger.getLogger(JunitDataRecorder.class.getName());
-    private TalkToService talkToService;
+    private Server server;
     private final SystemEnvironment environment;
     private final FileUtil fileUtil;
 
-    public JunitDataRecorder(TalkToService talkToService, SystemEnvironment environment) {
-        this(talkToService, environment, new FileUtil(environment));
+    public JunitDataRecorder(Server server, SystemEnvironment environment) {
+        this(server, environment, new FileUtil(environment));
     }
 
     public JunitDataRecorder() {//default constructor
@@ -36,8 +35,8 @@ public class JunitDataRecorder implements JUnitResultFormatter {
         this(TlbFactory.getTalkToService(systemEnvironment), systemEnvironment);
     }
 
-    JunitDataRecorder(TalkToService talkToService, SystemEnvironment environment, FileUtil fileUtil) {
-        this.talkToService = talkToService;
+    JunitDataRecorder(Server server, SystemEnvironment environment, FileUtil fileUtil) {
+        this.server = server;
         this.environment = environment;
         this.fileUtil = fileUtil;
     }
@@ -47,8 +46,8 @@ public class JunitDataRecorder implements JUnitResultFormatter {
     public void endTestSuite(JUnitTest jUnitTest) throws BuildException {
         String suiteFileName = fileUtil.classFileRelativePath(jUnitTest.getName());
         try {
-            talkToService.testClassFailure(suiteFileName, (jUnitTest.failureCount() + jUnitTest.errorCount()) > 0);
-            talkToService.testClassTime(suiteFileName, jUnitTest.getRunTime());
+            server.testClassFailure(suiteFileName, (jUnitTest.failureCount() + jUnitTest.errorCount()) > 0);
+            server.testClassTime(suiteFileName, jUnitTest.getRunTime());
         } catch (Exception e) {
             logger.warn(String.format("recording suite time failed for %s, gobbling exception, things may not work too well for the next run", suiteFileName), e);
         }

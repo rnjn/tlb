@@ -22,42 +22,42 @@ import static org.mockito.Mockito.*;
 import static tlb.TestUtil.deref;
 import static tlb.TestUtil.updateEnv;
 
-public class SmoothingTalkToServiceTest {
+public class SmoothingServerTest {
     private SystemEnvironment env;
-    private SmoothingTalkToService service;
+    private SmoothingServer server;
     private ArrayList<SuiteTimeEntry> fetchedEntries;
     private TestUtil.LogFixture logFixture;
-    private SmoothingTalkToService delegate;
+    private SmoothingServer delegate;
 
     @Before
     public void setUp() throws IllegalAccessException {
         fetchedEntries = new ArrayList<SuiteTimeEntry>();
         HashMap<String, String> variables = new HashMap<String, String>();
-        variables.put(TlbConstants.SMOOTHING_FACTOR, "0.05");
+        variables.put(TlbConstants.TLB_SMOOTHING_FACTOR, "0.05");
         env = new SystemEnvironment(variables);
 
-        delegate = mock(SmoothingTalkToService.class);
-        service = new DelegatingSmoothingTalkToService(delegate, env);
+        delegate = mock(SmoothingServer.class);
+        server = new DelegatingSmoothingServer(delegate, env);
         FileUtils.delete(testTimeCacheRepo().getFile());
 
         logFixture = new TestUtil.LogFixture();
     }
 
     private TlbEntryRepository testTimeCacheRepo() throws IllegalAccessException {
-        return (TlbEntryRepository) deref("oldTestTimesRepo", service);
+        return (TlbEntryRepository) deref("oldTestTimesRepo", server);
     }
 
     @Test
     public void shouldSmoothenUsingSetSmoothingFactor() throws NoSuchFieldException, IllegalAccessException {
         when(delegate.fetchLastRunTestTimes()).thenReturn(Arrays.asList(new SuiteTimeEntry("foo/bar/Baz.class", 12l)));
-        service.testClassTime("foo/bar/Baz.class", 102l);
+        server.testClassTime("foo/bar/Baz.class", 102l);
         verify(delegate).processedTestClassTime("foo/bar/Baz.class", 17l);
     }
 
     @Test
     public void shouldPassTimeAsIsWhenForANewTestSuite() {
         when(delegate.fetchLastRunTestTimes()).thenReturn(Arrays.asList(new SuiteTimeEntry("foo/bar/Baz.class", 12l)));
-        service.testClassTime("foo/baz/Quux.class", 77l);
+        server.testClassTime("foo/baz/Quux.class", 77l);
         verify(delegate).processedTestClassTime("foo/baz/Quux.class", 77l);
     }
 
@@ -66,7 +66,7 @@ public class SmoothingTalkToServiceTest {
         final RuntimeException exception = new RuntimeException("failed for some reason");
         when(delegate.fetchLastRunTestTimes()).thenThrow(exception);
         logFixture.startListening();
-        service.testClassTime("foo/baz/Bam.class", 35l);
+        server.testClassTime("foo/baz/Bam.class", 35l);
         logFixture.stopListening();
         verify(delegate).processedTestClassTime("foo/baz/Bam.class", 35l);
         logFixture.assertHeard("could not load test times for smoothing.: 'failed for some reason'");
@@ -76,25 +76,25 @@ public class SmoothingTalkToServiceTest {
     @Test
     public void shouldCacheTestRunTimes() {
         when(delegate.fetchLastRunTestTimes()).thenReturn(Arrays.asList(new SuiteTimeEntry("foo/bar/Baz.class", 12l), new SuiteTimeEntry("quux/bang/Boom.class", 15l)));
-        service.testClassTime("foo/baz/Quux.class", 77l);
+        server.testClassTime("foo/baz/Quux.class", 77l);
         verify(delegate, new Times(1)).fetchLastRunTestTimes();
         verify(delegate).processedTestClassTime("foo/baz/Quux.class", 77l);
-        service.testClassTime("quux/bang/Boom.class", 18l);
+        server.testClassTime("quux/bang/Boom.class", 18l);
         verify(delegate).processedTestClassTime("quux/bang/Boom.class", 15l);
-        service.testClassTime("foo/bar/Baz.class", 90l);
+        server.testClassTime("foo/bar/Baz.class", 90l);
         verify(delegate).processedTestClassTime("foo/bar/Baz.class", 16l);
     }
     
     @Test
     public void shouldClearCachedOldTestTimesOnClearCall() throws IllegalAccessException {
         when(delegate.fetchLastRunTestTimes()).thenReturn(Arrays.asList(new SuiteTimeEntry("foo/bar/Baz.class", 12l), new SuiteTimeEntry("quux/bang/Boom.class", 15l)));
-        service.testClassTime("foo/baz/Quux.class", 77l);
+        server.testClassTime("foo/baz/Quux.class", 77l);
         verify(delegate).processedTestClassTime("foo/baz/Quux.class", 77l);
         assertThat(testTimeCacheRepo().getFile().exists(), is(true));
-        service.clearCachingFiles();
+        server.clearCachingFiles();
         assertThat(testTimeCacheRepo().getFile().exists(), is(false));
 
-        service.testClassTime("quux/bang/Boom.class", 18l);
+        server.testClassTime("quux/bang/Boom.class", 18l);
         verify(delegate).processedTestClassTime("quux/bang/Boom.class", 15l);
         assertThat(testTimeCacheRepo().getFile().exists(), is(true));
         verify(delegate, new Times(2)).fetchLastRunTestTimes();
@@ -102,23 +102,23 @@ public class SmoothingTalkToServiceTest {
 
     @Test
     public void shouldPassOnClearFilesCall() {
-        service.clearCachingFiles();
+        server.clearCachingFiles();
         verify(delegate).clearOtherCachingFiles();
     }
     
     @Test
     public void shouldAssumeNoOpSmoothingFactorWhenNotGiven() throws NoSuchFieldException, IllegalAccessException {
         when(delegate.fetchLastRunTestTimes()).thenReturn(Arrays.asList(new SuiteTimeEntry("foo/bar/Baz.class", 12l)));
-        updateEnv(env, TlbConstants.SMOOTHING_FACTOR, null);
-        service.testClassTime("foo/bar/Baz.class", 102l);
+        updateEnv(env, TlbConstants.TLB_SMOOTHING_FACTOR, null);
+        server.testClassTime("foo/bar/Baz.class", 102l);
         verify(delegate).processedTestClassTime("foo/bar/Baz.class", 102l);
     }
 
-    private static class DelegatingSmoothingTalkToService extends SmoothingTalkToService {
+    private static class DelegatingSmoothingServer extends SmoothingServer {
 
-        private final SmoothingTalkToService delegate;
+        private final SmoothingServer delegate;
 
-        public DelegatingSmoothingTalkToService(SmoothingTalkToService delegate, final SystemEnvironment env) {
+        public DelegatingSmoothingServer(SmoothingServer delegate, final SystemEnvironment env) {
             super(env);
             this.delegate = delegate;
         }

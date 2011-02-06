@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @understands talking to an external service to get and post data
  */
-public interface TalkToService {
+public interface Server {
     //TODO: this is horrible api, make it accept SuiteTimeEntry
     void testClassTime(String className, long time);
 

@@ -38,8 +38,8 @@ import java.util.regex.Pattern;
 /**
  * @understands requesting and posting information to/from cruise
  */
-public class TalkToGoServer extends SmoothingTalkToService {
-    private static final Logger logger = Logger.getLogger(TalkToGoServer.class.getName());
+public class GoServer extends SmoothingServer {
+    private static final Logger logger = Logger.getLogger(GoServer.class.getName());
     private static final String DEFAULT_STAGE_FEED_SEARCH_DEPTH = "10";
 
     private final HttpAction httpAction;
@@ -60,11 +60,11 @@ public class TalkToGoServer extends SmoothingTalkToService {
     final TlbEntryRepository testTimesRepository;
     final TlbEntryRepository failedTestsRepository;
 
-    public TalkToGoServer(SystemEnvironment environment) {
+    public GoServer(SystemEnvironment environment) {
         this(environment, createHttpAction(environment));
     }
 
-    public TalkToGoServer(SystemEnvironment environment, HttpAction httpAction) {
+    public GoServer(SystemEnvironment environment, HttpAction httpAction) {
         super(environment);
         this.httpAction = httpAction;
         subsetSize = null;
@@ -221,7 +221,7 @@ public class TalkToGoServer extends SmoothingTalkToService {
 
     @SuppressWarnings({"unchecked"})
     private String lastRunStageDetailUrl(String stageFeedUrl) {
-        return findLastRunStageDetailUrl(stageFeedUrl, Integer.parseInt(environment.val(TlbConstants.Go.MAX_STAGE_FEED_SEARCH_DEPTH, DEFAULT_STAGE_FEED_SEARCH_DEPTH)), 0);
+        return findLastRunStageDetailUrl(stageFeedUrl, Integer.parseInt(environment.val(TlbConstants.Go.GO_STAGE_FEED_MAX_SEARCH_DEPTH, DEFAULT_STAGE_FEED_SEARCH_DEPTH)), 0);
     }
 
     private String findLastRunStageDetailUrl(String stageFeedUrl, int digNoMoreThan, int current) {

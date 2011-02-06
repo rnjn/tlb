@@ -1,7 +1,7 @@
 package tlb.twist;
 
 import tlb.factory.TlbFactory;
-import tlb.service.TalkToService;
+import tlb.service.Server;
 import tlb.utils.SystemEnvironment;
 import tlb.utils.XmlUtil;
 import tlb.utils.FileUtil;
@@ -20,11 +20,11 @@ import java.util.List;
  */
 public class PublishScenarioExecutionTime extends Task {
     private String reportsDir;
-    private TalkToService talkToService;
+    private Server server;
     private static final String XML_REPORT_PATH = "/xml";
 
-    public PublishScenarioExecutionTime(TalkToService talkToService) {
-        this.talkToService = talkToService;
+    public PublishScenarioExecutionTime(Server server) {
+        this.server = server;
     }
 
     public PublishScenarioExecutionTime() {
@@ -49,12 +49,12 @@ public class PublishScenarioExecutionTime extends Task {
     public void execute() throws BuildException {
         Iterator<File> reports = FileUtils.iterateFiles(new File(reportsDir + XML_REPORT_PATH), null, false);
         List<File> reportFiles = FileUtil.toFileList(reports);
-        talkToService.publishSubsetSize(reportFiles.size());
+        server.publishSubsetSize(reportFiles.size());
         for (File report : reportFiles) {
             try {
                 Element element = XmlUtil.domFor(FileUtils.readFileToString(report));
                 Element testCase = (Element) element.selectSingleNode("//testcase");
-                talkToService.testClassTime(testCase.attribute("name").getText(), toSecond(testCase));
+                server.testClassTime(testCase.attribute("name").getText(), toSecond(testCase));
             } catch (IOException e) {
                 throw new RuntimeException("Could not read the twist report: " + report.getName(), e);
             }

@@ -27,8 +27,8 @@ import static tlb.TestUtil.fileContents;
 import static tlb.TlbConstants.Go;
 import static tlb.TlbConstants.TLB_TMP_DIR;
 
-public class TalkToGoServerTest {
-    private TalkToGoServer cruise;
+public class GoServerTest {
+    private GoServer server;
     private TestUtil.LogFixture logFixture;
 
     @Before
@@ -57,11 +57,11 @@ public class TalkToGoServerTest {
         when(action.get("http://test.host:8153/go/pipelines/pipeline-foo/26/stage-foo-bar/1.xml")).thenReturn(TestUtil.fileContents("resources/stage_detail_with_jobs_in_random_order.xml"));
         stubJobDetails(action);
 
-        cruise = new TalkToGoServer(environment, action);
-        assertThat(cruise.getJobs(), is(Arrays.asList("firefox-3", "rails", "firefox-1", "smoke", "firefox-2")));
-        assertThat(cruise.pearJobs(), is(Arrays.asList("firefox-1", "firefox-2", "firefox-3")));
-        assertThat(cruise.totalPartitions(), is(3));
-        assertThat(cruise.partitionNumber(), is(2));
+        server = new GoServer(environment, action);
+        assertThat(server.getJobs(), is(Arrays.asList("firefox-3", "rails", "firefox-1", "smoke", "firefox-2")));
+        assertThat(server.pearJobs(), is(Arrays.asList("firefox-1", "firefox-2", "firefox-3")));
+        assertThat(server.totalPartitions(), is(3));
+        assertThat(server.partitionNumber(), is(2));
     }
 
     @Test
@@ -78,11 +78,11 @@ public class TalkToGoServerTest {
         when(action.get("http://test.host:8153/go/api/jobs/142.xml")).thenReturn(TestUtil.fileContents("resources/job_details_142_UUID.xml"));
         when(action.get("http://test.host:8153/go/api/jobs/143.xml")).thenReturn(TestUtil.fileContents("resources/job_details_143.xml"));
 
-        cruise = new TalkToGoServer(environment, action);
-        assertThat(cruise.getJobs(), is(Arrays.asList("firefox-cbcdef12-1234-1234-1234-abcdef123456", "rails", "firefox-abcdef12-1234-1234-1234-abcdef123456", "smoke", "firefox-bbcdef12-1234-1234-1234-abcdef123456")));
-        assertThat(cruise.pearJobs(), is(Arrays.asList("firefox-abcdef12-1234-1234-1234-abcdef123456", "firefox-bbcdef12-1234-1234-1234-abcdef123456", "firefox-cbcdef12-1234-1234-1234-abcdef123456")));
-        assertThat(cruise.totalPartitions(), is(3));
-        assertThat(cruise.partitionNumber(), is(2));
+        server = new GoServer(environment, action);
+        assertThat(server.getJobs(), is(Arrays.asList("firefox-cbcdef12-1234-1234-1234-abcdef123456", "rails", "firefox-abcdef12-1234-1234-1234-abcdef123456", "smoke", "firefox-bbcdef12-1234-1234-1234-abcdef123456")));
+        assertThat(server.pearJobs(), is(Arrays.asList("firefox-abcdef12-1234-1234-1234-abcdef123456", "firefox-bbcdef12-1234-1234-1234-abcdef123456", "firefox-cbcdef12-1234-1234-1234-abcdef123456")));
+        assertThat(server.totalPartitions(), is(3));
+        assertThat(server.partitionNumber(), is(2));
     }
 
     @Test
@@ -96,9 +96,9 @@ public class TalkToGoServerTest {
         SystemEnvironment environment = initEnvironment("http://test.host:8153/go");
         HttpAction action = mock(HttpAction.class);
         String data = "com.thoughtworks.tlb.TestSuite: 12\n";
-        String url = "http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/" + TalkToGoServer.TEST_TIME_FILE;
+        String url = "http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/" + GoServer.TEST_TIME_FILE;
 
-        TalkToGoServer cruise = new TalkToGoServer(environment, action);
+        GoServer cruise = new GoServer(environment, action);
         cruise.clearCachingFiles();
         cruise.subsetSizeRepository.appendLine("1\n");
 
@@ -116,7 +116,7 @@ public class TalkToGoServerTest {
         when(action.put("http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/tlb/subset_size", "10")).thenReturn("File tlb/subset_size was appended successfully");
         when(action.put("http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/tlb/subset_size", "20")).thenReturn("File tlb/subset_size was appended successfully");
         when(action.put("http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/tlb/subset_size", "25")).thenReturn("File tlb/subset_size was appended successfully");
-        TalkToGoServer toCruise = new TalkToGoServer(environment, action);
+        GoServer toCruise = new GoServer(environment, action);
         toCruise.clearCachingFiles();
         logFixture.startListening();
         toCruise.publishSubsetSize(10);
@@ -147,9 +147,9 @@ public class TalkToGoServerTest {
                 "com.thoughtworks.tlb.TestCountBased: 10\n" +
                 "com.thoughtworks.tlb.TestCriteriaSelection: 30\n" +
                 "com.thougthworks.tlb.SystemEnvTest: 8\n";
-        String url = "http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/" + TalkToGoServer.TEST_TIME_FILE;
+        String url = "http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/" + GoServer.TEST_TIME_FILE;
 
-        TalkToGoServer cruise = new TalkToGoServer(env, action);
+        GoServer cruise = new GoServer(env, action);
         cruise.clearCachingFiles();
         cruise.subsetSizeRepository.appendLine("5\n");
         cruise.testClassTime("com.thoughtworks.tlb.TestSuite", 12);
@@ -178,9 +178,9 @@ public class TalkToGoServerTest {
         String data = "com.thoughtworks.tlb.FailedSuiteOne\n" +
                 "com.thoughtworks.tlb.FailedSuiteTwo\n" +
                 "com.thoughtworks.tlb.FailedSuiteThree\n";
-        String url = "http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/" + TalkToGoServer.FAILED_TESTS_FILE;
+        String url = "http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/" + GoServer.FAILED_TESTS_FILE;
 
-        TalkToGoServer cruise = new TalkToGoServer(env, action);
+        GoServer cruise = new GoServer(env, action);
         cruise.clearCachingFiles();
         cruise.subsetSizeRepository.appendLine("3\n\10\n6\n");
         cruise.testClassFailure("com.thoughtworks.tlb.PassingSuite", false);
@@ -213,9 +213,9 @@ public class TalkToGoServerTest {
         String data = "com.thoughtworks.tlb.TestSuite: 12\n" +
                 "com.thoughtworks.tlb.TestCriteriaSelection: 30\n" +
                 "com.thougthworks.tlb.SystemEnvTest: 8\n";
-        String url = "http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/" + TalkToGoServer.TEST_TIME_FILE;
+        String url = "http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/" + GoServer.TEST_TIME_FILE;
         
-        TalkToGoServer cruise = new TalkToGoServer(env, action);
+        GoServer cruise = new GoServer(env, action);
         cruise.clearCachingFiles();
         cruise.subsetSizeRepository.appendLine("5\n10\n3\n");
         cruise.testClassTime("com.thoughtworks.tlb.TestSuite", 12);
@@ -236,14 +236,14 @@ public class TalkToGoServerTest {
     public void shouldUpdateCruiseArtifactWithSmoothenedTestTimes() throws Exception {
         Map<String, String> envMap = initEnvMap("http://test.host:8153/go");
         envMap.put(TlbConstants.Go.GO_JOB_NAME, "firefox-2");
-        envMap.put(TlbConstants.SMOOTHING_FACTOR, "0.5");
+        envMap.put(TlbConstants.TLB_SMOOTHING_FACTOR, "0.5");
         SystemEnvironment env = new SystemEnvironment(envMap);
         HttpAction action = mock(HttpAction.class);
 
         when(action.get("http://test.host:8153/go/pipelines/pipeline-foo/26/stage-foo-bar/1.xml")).thenReturn(TestUtil.fileContents("resources/stage_detail_with_jobs_in_random_order.xml"));
         stubJobDetails(action);
 
-        cruise = new TalkToGoServer(env, action);
+        server = new GoServer(env, action);
 
         when(action.get("http://test.host:8153/go/api/pipelines/pipeline-foo/stages.xml")).thenReturn(fileContents("resources/stages_p1.xml"));
 
@@ -259,9 +259,9 @@ public class TalkToGoServerTest {
         String data = "com.thoughtworks.cruise.one.One: 55\n" +
                 "com.thoughtworks.cruise.two.Two: 30\n" +
                 "com.thoughtworks.cruise.three.Three: 20\n";
-        String url = "http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/firefox-2/" + TalkToGoServer.TEST_TIME_FILE;
+        String url = "http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/firefox-2/" + GoServer.TEST_TIME_FILE;
 
-        TalkToGoServer cruise = new TalkToGoServer(env, action);
+        GoServer cruise = new GoServer(env, action);
         cruise.clearCachingFiles();
         cruise.subsetSizeRepository.appendLine("5\n10\n3\n");
         cruise.testClassTime("com.thoughtworks.cruise.one.One", 100);
@@ -301,7 +301,7 @@ public class TalkToGoServerTest {
         SystemEnvironment environment = initEnvironment("http://test.host:8153/go");
         HttpAction action = mock(HttpAction.class);
         when(action.put("http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/tlb/subset_size", "10\n")).thenReturn("File tlb/subset_size was appended successfully");
-        TalkToService toService = new TalkToGoServer(environment, action);
+        Server toService = new GoServer(environment, action);
         toService.publishSubsetSize(10);
         verify(action).put("http://test.host:8153/go/files/pipeline-foo/pipeline-foo-26/stage-foo-bar/1/job-baz/tlb/subset_size", "10\n");
     }
@@ -315,7 +315,7 @@ public class TalkToGoServerTest {
         stubJobDetails(action);
         when(action.get("http://test.host:8153/go/files/pipeline/1/stage/1/firefox-1/tlb/failed_tests")).thenReturn(TestUtil.fileContents("resources/failed_tests_1.properties"));
         when(action.get("http://test.host:8153/go/files/pipeline/1/stage/1/firefox-2/tlb/failed_tests")).thenReturn(TestUtil.fileContents("resources/failed_tests_2.properties"));
-        TalkToGoServer service = new TalkToGoServer(initEnvironment("http://test.host:8153/go"), action);
+        GoServer service = new GoServer(initEnvironment("http://test.host:8153/go"), action);
         List<SuiteResultEntry> failedTestEntries = service.getLastRunFailedTests(Arrays.asList("firefox-1", "firefox-2"));
         List<String> failedTests = failedTestNames(failedTestEntries);
         Collections.sort(failedTests);
@@ -331,7 +331,7 @@ public class TalkToGoServerTest {
         stubJobDetails(action);
         when(action.get("http://test.host:8153/go/files/pipeline/1/stage/1/firefox-1/tlb/failed_tests")).thenThrow(new RuntimeException("Something went wrong"));
         when(action.get("http://test.host:8153/go/files/pipeline/1/stage/1/firefox-2/tlb/failed_tests")).thenThrow(new RuntimeException("Something else went wrong"));
-        TalkToGoServer service = new TalkToGoServer(initEnvironment("http://test.host:8153/go"), action);
+        GoServer service = new GoServer(initEnvironment("http://test.host:8153/go"), action);
         List<SuiteResultEntry> failedTestEntries = null;
         try {
             failedTestEntries = service.getLastRunFailedTests(Arrays.asList("firefox-1", "firefox-2"));
@@ -372,7 +372,7 @@ public class TalkToGoServerTest {
         stubJobDetails(action);
         when(action.get("http://test.host:8153/go/files/pipeline/1/stage/1/firefox-1/tlb/test_time.properties")).thenReturn(fileContents("resources/test_time_1.properties"));
         when(action.get("http://test.host:8153/go/files/pipeline/1/stage/1/firefox-2/tlb/test_time.properties")).thenReturn(fileContents("resources/test_time_2.properties"));
-        TalkToGoServer service = new TalkToGoServer(initEnvironment("http://test.host:8153/go"), action);
+        GoServer service = new GoServer(initEnvironment("http://test.host:8153/go"), action);
         List<SuiteTimeEntry> runTimes = service.getLastRunTestTimes(Arrays.asList("firefox-1", "firefox-2"));
         List<SuiteTimeEntry> expected = new ArrayList<SuiteTimeEntry>();
         expected.add(new SuiteTimeEntry("com.thoughtworks.cruise.one.One", 10l));
@@ -398,7 +398,7 @@ public class TalkToGoServerTest {
         Map<String, String> envMap = initEnvMap("http://test.host:8153/go");
         envMap.put(TlbConstants.Go.GO_PIPELINE_NAME, "pipeline-foo");
         envMap.put(TlbConstants.Go.GO_STAGE_NAME, "stage-foo-quux");
-        TalkToGoServer service = new TalkToGoServer(new SystemEnvironment(envMap), action);
+        GoServer service = new GoServer(new SystemEnvironment(envMap), action);
         List<SuiteTimeEntry> runTimes = service.getLastRunTestTimes(Arrays.asList("firefox-1", "firefox-2"));
         List<SuiteTimeEntry> expected = new ArrayList<SuiteTimeEntry>();
         expected.add(new SuiteTimeEntry("com.thoughtworks.cruise.one.One", 10l));
@@ -418,7 +418,7 @@ public class TalkToGoServerTest {
         stubJobDetails(action);
         when(action.get("http://test.host:8153/go/files/pipeline/1/stage/1/firefox-1/tlb/test_time.properties")).thenReturn(fileContents("resources/test_time_1.properties"));
         when(action.get("http://test.host:8153/go/files/pipeline/1/stage/1/firefox-2/tlb/test_time.properties")).thenReturn(fileContents("resources/test_time_2.properties"));
-        TalkToGoServer service = new TalkToGoServer(initEnvironment("http://test.host:8153/go"), action);
+        GoServer service = new GoServer(initEnvironment("http://test.host:8153/go"), action);
         try {
             service.getLastRunTestTimes(Arrays.asList("firefox-1", "firefox-2"));
             fail("should have failed as a historical stage run does not exist");
@@ -438,7 +438,7 @@ public class TalkToGoServerTest {
         map.put(TlbConstants.Go.GO_PIPELINE_LABEL, "pipeline-foo-3");
         map.put(TlbConstants.Go.GO_PIPELINE_COUNTER, "3");
         map.put(TlbConstants.Go.GO_STAGE_NAME, "fun-stage");
-        TalkToGoServer service = new TalkToGoServer(new SystemEnvironment(map), action);
+        GoServer service = new GoServer(new SystemEnvironment(map), action);
         try {
             service.getLastRunTestTimes(Arrays.asList("firefox-1", "firefox-2"));
             fail("should have failed as historical stage run does not exist in defined depth");
@@ -447,8 +447,8 @@ public class TalkToGoServerTest {
             assertThat(e.getMessage(), is("Couldn't find a historical run for stage in '10' pages of stage feed."));
         }
 
-        map.put(TlbConstants.Go.MAX_STAGE_FEED_SEARCH_DEPTH, "17");
-        service = new TalkToGoServer(new SystemEnvironment(map), action);
+        map.put(TlbConstants.Go.GO_STAGE_FEED_MAX_SEARCH_DEPTH, "17");
+        service = new GoServer(new SystemEnvironment(map), action);
         try {
             service.getLastRunTestTimes(Arrays.asList("firefox-1", "firefox-2"));
             fail("should have failed as historical stage run does not exist in defined depth");
@@ -457,9 +457,9 @@ public class TalkToGoServerTest {
             assertThat(e.getMessage(), is("Couldn't find a historical run for stage in '17' pages of stage feed."));
         }
 
-        map.put(TlbConstants.Go.MAX_STAGE_FEED_SEARCH_DEPTH, "2");
+        map.put(TlbConstants.Go.GO_STAGE_FEED_MAX_SEARCH_DEPTH, "2");
         when(action.get("http://test.host:8153/go/api/pipelines/pipeline-foo/stages.xml?before=19")).thenThrow(new AssertionError("requested more pages than permitted"));
-        service = new TalkToGoServer(new SystemEnvironment(map), action);
+        service = new GoServer(new SystemEnvironment(map), action);
         try {
             service.getLastRunTestTimes(Arrays.asList("firefox-1", "firefox-2"));
             fail("should have failed as historical stage run does not exist in defined depth");
@@ -492,9 +492,9 @@ public class TalkToGoServerTest {
         when(action.get(baseUrl + "/pipelines/pipeline-foo/26/stage-foo-bar/1.xml")).thenReturn(fileContents("resources/stage_detail.xml"));
         stubJobDetails(action);
 
-        cruise = new TalkToGoServer(environment, action);
+        server = new GoServer(environment, action);
         logFixture.startListening();
-        assertThat(cruise.getJobs(), is(Arrays.asList("firefox-1", "firefox-2", "firefox-3", "rails", "smoke")));
+        assertThat(server.getJobs(), is(Arrays.asList("firefox-1", "firefox-2", "firefox-3", "rails", "smoke")));
         logFixture.assertHeard("jobs found [firefox-1, firefox-2, firefox-3, rails, smoke]");
     }
 

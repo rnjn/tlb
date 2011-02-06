@@ -57,12 +57,12 @@ public class TlbServerInitializer extends ServerInitializer {
     }
 
     private int versionInLife() {
-        return Integer.parseInt(env.val(TlbConstants.Server.VERSION_LIFE_IN_DAYS, "7"));
+        return Integer.parseInt(env.val(TlbConstants.Server.TLB_VERSION_LIFE_IN_DAYS, "7"));
     }
 
     @Override
     protected int appPort()  {
-        return Integer.parseInt(env.val(TlbConstants.Server.TLB_PORT, "7019"));
+        return Integer.parseInt(env.val(TlbConstants.Server.TLB_SERVER_PORT, "7019"));
     }
 
     EntryRepoFactory repoFactory() {

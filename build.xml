@@ -283,13 +283,13 @@
 
     <target name="run_balancer" depends="compile">
         <java classname="tlb.Main" fork="true">
-            <env key="TLB_URL" value="http://localhost:7019"/>
+            <env key="TLB_BASE_URL" value="http://localhost:7019"/>
             <env key="TLB_JOB_NAME" value="foo"/>
-            <env key="PARTITION_NUMBER" value="1"/>
-            <env key="TOTAL_PARTITIONS" value="2"/>
-            <env key="JOB_VERSION" value="1.1"/>
-            <env key="TLB_CRITERIA" value="tlb.splitter.CountBasedTestSplitterCriteria"/>
-            <env key="TALK_TO_SERVICE" value="tlb.service.TalkToTlbServer"/>
+            <env key="TLB_PARTITION_NUMBER" value="1"/>
+            <env key="TLB_TOTAL_PARTITIONS" value="2"/>
+            <env key="TLB_JOB_VERSION" value="1.1"/>
+            <env key="TLB_SPLITTER" value="tlb.splitter.CountBasedTestSplitter"/>
+            <env key="TYPE_OF_SERVER" value="tlb.service.TlbServer"/>
             <env key="TLB_BALANCER_PORT" value="${random.balancer.port}"/>
             <env key="TLB_APP" value="tlb.balancer.BalancerInitializer"/>
 

@@ -6,8 +6,8 @@ import tlb.TestUtil;
 import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
 import tlb.ant.JunitFileResource;
-import tlb.service.TalkToGoServer;
-import tlb.service.TalkToService;
+import tlb.service.GoServer;
+import tlb.service.Server;
 import tlb.utils.SuiteFileConvertor;
 import tlb.utils.SystemEnvironment;
 
@@ -21,20 +21,20 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CountBasedTestSplitterCriteriaTest {
-    private TalkToService talkToService;
+public class CountBasedTestSplitterTest {
+    private Server server;
     private TestUtil.LogFixture logFixture;
 
     @Before
     public void setUp() throws Exception {
-        talkToService = mock(TalkToGoServer.class);
+        server = mock(GoServer.class);
         logFixture = new TestUtil.LogFixture();
     }
 
     @Test
     public void shouldConsumeAllTestsWhenNoJobsToBalanceWith() {
-        when(talkToService.totalPartitions()).thenReturn(1);
-        when(talkToService.partitionNumber()).thenReturn(1);
+        when(server.totalPartitions()).thenReturn(1);
+        when(server.partitionNumber()).thenReturn(1);
 
         SystemEnvironment env = TestUtil.initEnvironment("job-1");
 
@@ -43,7 +43,7 @@ public class CountBasedTestSplitterCriteriaTest {
         TlbFileResource third = TestUtil.junitFileResource("third");
         List<TlbFileResource> resources = Arrays.asList(first, second, third);
 
-        CountBasedTestSplitterCriteria criteria = new CountBasedTestSplitterCriteria(talkToService, env);
+        CountBasedTestSplitter criteria = new CountBasedTestSplitter(server, env);
         final SuiteFileConvertor convertor = new SuiteFileConvertor();
         final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
         assertThat(convertor.toTlbFileResources(criteria.filterSuites(suiteFiles)), is(Arrays.asList(first, second, third)));
@@ -51,8 +51,8 @@ public class CountBasedTestSplitterCriteriaTest {
 
     @Test
     public void shouldSplitTestsBasedOnSplitFactorForTheFirstJob() {
-        when(talkToService.totalPartitions()).thenReturn(2);
-        when(talkToService.partitionNumber()).thenReturn(1);
+        when(server.totalPartitions()).thenReturn(2);
+        when(server.partitionNumber()).thenReturn(1);
 
         SystemEnvironment env = TestUtil.initEnvironment("job-1");
 
@@ -60,7 +60,7 @@ public class CountBasedTestSplitterCriteriaTest {
         TlbFileResource second = TestUtil.junitFileResource("second");
         List<TlbFileResource> resources = Arrays.asList(first, second, TestUtil.junitFileResource("third"), TestUtil.junitFileResource("fourth"), TestUtil.junitFileResource("fifth"));
 
-        CountBasedTestSplitterCriteria criteria = new CountBasedTestSplitterCriteria(talkToService, env);
+        CountBasedTestSplitter criteria = new CountBasedTestSplitter(server, env);
         logFixture.startListening();
         final SuiteFileConvertor convertor = new SuiteFileConvertor();
         final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
@@ -73,8 +73,8 @@ public class CountBasedTestSplitterCriteriaTest {
 
     @Test
     public void shouldSplitTestsBasedOnSplitFactorForTheSecondJob() {
-        when(talkToService.totalPartitions()).thenReturn(2);
-        when(talkToService.partitionNumber()).thenReturn(2);
+        when(server.totalPartitions()).thenReturn(2);
+        when(server.partitionNumber()).thenReturn(2);
 
         SystemEnvironment env = TestUtil.initEnvironment("job-2");
 
@@ -83,7 +83,7 @@ public class CountBasedTestSplitterCriteriaTest {
         TlbFileResource fifth = TestUtil.junitFileResource("fifth");
         List<TlbFileResource> resources = Arrays.asList(TestUtil.junitFileResource("first"), TestUtil.junitFileResource("second"), third, fourth, fifth);
 
-        CountBasedTestSplitterCriteria criteria = new CountBasedTestSplitterCriteria(talkToService, env);
+        CountBasedTestSplitter criteria = new CountBasedTestSplitter(server, env);
         logFixture.startListening();
         final SuiteFileConvertor convertor = new SuiteFileConvertor();
         final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
@@ -96,7 +96,7 @@ public class CountBasedTestSplitterCriteriaTest {
 
     @Test
     public void shouldSplitTestsBalanced() {
-        when(talkToService.totalPartitions()).thenReturn(3);
+        when(server.totalPartitions()).thenReturn(3);
 
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
@@ -126,7 +126,7 @@ public class CountBasedTestSplitterCriteriaTest {
 
     @Test
     public void shouldSplitTestsWhenTheSplitsAreMoreThanTests() {
-        when(talkToService.totalPartitions()).thenReturn(3);
+        when(server.totalPartitions()).thenReturn(3);
 
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
@@ -147,7 +147,7 @@ public class CountBasedTestSplitterCriteriaTest {
 
     @Test
     public void shouldSplitTestsWhenTheSplitsIsEqualToNumberOfTests() {
-        when(talkToService.totalPartitions()).thenReturn(3);
+        when(server.totalPartitions()).thenReturn(3);
 
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
@@ -168,7 +168,7 @@ public class CountBasedTestSplitterCriteriaTest {
 
     @Test//to assertain it really works as expected
     public void shouldSplitTestsBalancedFor37testsAcross7Jobs() {
-        when(talkToService.totalPartitions()).thenReturn(7);
+        when(server.totalPartitions()).thenReturn(7);
 
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
@@ -207,7 +207,7 @@ public class CountBasedTestSplitterCriteriaTest {
 
     @Test//to assertain it really works as expected
     public void shouldSplitTestsBalancedFor41testsAcross7Jobs() {
-        when(talkToService.totalPartitions()).thenReturn(7);
+        when(server.totalPartitions()).thenReturn(7);
 
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
@@ -246,7 +246,7 @@ public class CountBasedTestSplitterCriteriaTest {
 
     @Test//to assertain it really works as expected
     public void shouldSplitTestsBalancedFor36testsAcross6Jobs() {
-        when(talkToService.totalPartitions()).thenReturn(6);
+        when(server.totalPartitions()).thenReturn(6);
 
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
@@ -279,9 +279,9 @@ public class CountBasedTestSplitterCriteriaTest {
         assertThat(convertor.toTlbFileResources(criteria("job-6", 6).filterSuites(suiteFiles)), is(TestUtil.tlbFileResources(30, 31, 32, 33, 34, 35)));
     }
 
-    private CountBasedTestSplitterCriteria criteria(String jobName, int partitionNumber) {
-        when(talkToService.partitionNumber()).thenReturn(partitionNumber);
-        return new CountBasedTestSplitterCriteria(talkToService, TestUtil.initEnvironment(jobName));
+    private CountBasedTestSplitter criteria(String jobName, int partitionNumber) {
+        when(server.partitionNumber()).thenReturn(partitionNumber);
+        return new CountBasedTestSplitter(server, TestUtil.initEnvironment(jobName));
     }
 
 }

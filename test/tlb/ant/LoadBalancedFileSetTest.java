@@ -9,8 +9,8 @@ import tlb.TestUtil;
 import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
 import tlb.orderer.TestOrderer;
-import tlb.splitter.CountBasedTestSplitterCriteria;
-import tlb.splitter.JobFamilyAwareSplitterCriteria;
+import tlb.splitter.CountBasedTestSplitter;
+import tlb.splitter.JobFamilyAwareSplitter;
 import tlb.utils.FileUtil;
 import tlb.utils.SuiteFileConvertor;
 import tlb.utils.SystemEnvironment;
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static tlb.TlbConstants.Go.GO_SERVER_URL;
-import static tlb.TlbConstants.TLB_CRITERIA;
+import static tlb.TlbConstants.TLB_SPLITTER;
 
 public class LoadBalancedFileSetTest {
     private LoadBalancedFileSet fileSet;
@@ -61,7 +61,7 @@ public class LoadBalancedFileSetTest {
         TestUtil.createFileInFolder(projectDir, "excluded");
         File included = TestUtil.createFileInFolder(projectDir, "included");
 
-        JobFamilyAwareSplitterCriteria criteria = mock(JobFamilyAwareSplitterCriteria.class);
+        JobFamilyAwareSplitter criteria = mock(JobFamilyAwareSplitter.class);
         TlbFileResource fileResource = new JunitFileResource(included);
         final SuiteFileConvertor convertor = new SuiteFileConvertor();
         when(criteria.filterSuites(any(List.class))).thenReturn(convertor.toTlbSuiteFiles(Arrays.asList(fileResource)));
@@ -83,7 +83,7 @@ public class LoadBalancedFileSetTest {
         JunitFileResource resourceTwo = new JunitFileResource(TestUtil.createFileInFolder(projectDir, "B"));
         JunitFileResource resourceThree = new JunitFileResource(TestUtil.createFileInFolder(projectDir, "A"));
 
-        JobFamilyAwareSplitterCriteria criteria = mock(JobFamilyAwareSplitterCriteria.class);
+        JobFamilyAwareSplitter criteria = mock(JobFamilyAwareSplitter.class);
 
         final SuiteFileConvertor convertor = new SuiteFileConvertor();
         when(criteria.filterSuites(any(List.class))).thenReturn(convertor.toTlbSuiteFiles(Arrays.asList((TlbFileResource) resourceOne, resourceTwo, resourceThree)));
@@ -112,14 +112,14 @@ public class LoadBalancedFileSetTest {
 
     @Test
     public void shouldUseSystemPropertyToInstantiateCriteria() {
-        fileSet = new LoadBalancedFileSet(initEnvironment("tlb.splitter.CountBasedTestSplitterCriteria"));
+        fileSet = new LoadBalancedFileSet(initEnvironment("tlb.splitter.CountBasedTestSplitter"));
         fileSet.setDir(projectDir);
-        assertThat(fileSet.getSplitterCriteria(), instanceOf(CountBasedTestSplitterCriteria.class));
+        assertThat(fileSet.getSplitterCriteria(), instanceOf(CountBasedTestSplitter.class));
     }
 
     @Test
     public void shouldSetFileSetDir() throws Exception{
-        JobFamilyAwareSplitterCriteria criteria = mock(JobFamilyAwareSplitterCriteria.class);
+        JobFamilyAwareSplitter criteria = mock(JobFamilyAwareSplitter.class);
         fileSet = new LoadBalancedFileSet(criteria, TestOrderer.NO_OP);
         fileSet.setDir(projectDir);
         verify(criteria).setDir(projectDir);
@@ -128,7 +128,7 @@ public class LoadBalancedFileSetTest {
 
     private SystemEnvironment initEnvironment(String strategyName) {
         Map<String, String> map = new HashMap<String, String>();
-        map.put(TLB_CRITERIA, strategyName);
+        map.put(TLB_SPLITTER, strategyName);
         map.put(GO_SERVER_URL, "https://localhost:8154/cruise");
         return new SystemEnvironment(map);
     }

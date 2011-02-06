@@ -10,10 +10,10 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 
-import static tlb.TlbConstants.Server.TLB_STORE_DIR;
+import static tlb.TlbConstants.Server.DEFAULT_TLB_DATA_DIR;
+import static tlb.TlbConstants.Server.TLB_DATA_DIR;
 
 /**
  * @understands creation of EntryRepo
@@ -29,18 +29,16 @@ public class EntryRepoFactory implements Runnable {
     private final Map<String, EntryRepo> repos;
     private final String tlbStoreDir;
     private final TimeProvider timeProvider;
-    private final double smoothingFactor;
 
     static interface Creator<T> {
         T create();
     }
 
     public EntryRepoFactory(SystemEnvironment env) {
-        this(new File(env.val(TLB_STORE_DIR, TLB_STORE_DIR)), new TimeProvider(), Double.parseDouble(env.val(TlbConstants.SMOOTHING_FACTOR, "1")));
+        this(new File(env.val(TLB_DATA_DIR, DEFAULT_TLB_DATA_DIR)), new TimeProvider(), Double.parseDouble(env.val(TlbConstants.TLB_SMOOTHING_FACTOR, "1")));
     }
 
     EntryRepoFactory(File tlbStoreDir, TimeProvider timeProvider, double smoothingFactor) {
-        this.smoothingFactor = smoothingFactor;
         this.tlbStoreDir = tlbStoreDir.getAbsolutePath();
         repos = new ConcurrentHashMap<String, EntryRepo>();
         this.timeProvider = timeProvider;

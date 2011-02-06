@@ -12,7 +12,7 @@ import org.restlet.Router;
 public class TlbClient extends Application {
     public static final String SPLITTER = "SPLITTER";
     public static final String ORDERER = "ORDERER";
-    public static final String TALK_TO_SERVICE = "TALK_TO_SERVICE";
+    public static final String TALK_TO_SERVICE = "TYPE_OF_SERVER";
     public static final String APP_COMPONENT = "APP_COMPONENT";
 
     public TlbClient(Context context) {

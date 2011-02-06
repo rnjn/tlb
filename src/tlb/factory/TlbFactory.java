@@ -3,12 +3,12 @@ package tlb.factory;
 import tlb.TlbConstants;
 import tlb.server.ServerInitializer;
 import tlb.server.TlbServerInitializer;
-import tlb.service.TalkToService;
-import tlb.splitter.TalksToService;
-import tlb.utils.SystemEnvironment;
-import tlb.splitter.TestSplitterCriteria;
-import tlb.splitter.JobFamilyAwareSplitterCriteria;
+import tlb.service.Server;
+import tlb.service.TalksToServer;
+import tlb.splitter.JobFamilyAwareSplitter;
+import tlb.splitter.TestSplitter;
 import tlb.orderer.TestOrderer;
+import tlb.utils.SystemEnvironment;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -18,9 +18,9 @@ import java.lang.reflect.InvocationTargetException;
 public class TlbFactory<T> {
     private Class<T> klass;
     private T defaultValue;
-    private static TlbFactory<TestSplitterCriteria> criteriaFactory;
+    private static TlbFactory<TestSplitter> criteriaFactory;
     private static TlbFactory<TestOrderer> testOrderer;
-    private static TlbFactory<TalkToService> talkToServiceFactory;
+    private static TlbFactory<Server> talkToServiceFactory;
     private static TlbFactory<ServerInitializer> restletLauncherFactory;
 
     TlbFactory(Class<T> klass, T defaultValue) {
@@ -46,9 +46,9 @@ public class TlbFactory<T> {
     <T> T getInstance(Class<? extends T> actualKlass, SystemEnvironment environment) {
         try {
             T criteria = actualKlass.getConstructor(SystemEnvironment.class).newInstance(environment);
-            if (TalksToService.class.isInstance(criteria)) {
-                TalkToService service = getTalkToService(environment);
-                ((TalksToService)criteria).talksToService(service);
+            if (TalksToServer.class.isInstance(criteria)) {
+                Server service = getTalkToService(environment);
+                ((TalksToServer)criteria).talksToServer(service);
             }
             return criteria;
         } catch (InvocationTargetException e) {
@@ -62,9 +62,9 @@ public class TlbFactory<T> {
         }
     }
 
-    public static TestSplitterCriteria getCriteria(String criteriaName, SystemEnvironment environment) {
+    public static TestSplitter getCriteria(String criteriaName, SystemEnvironment environment) {
         if (criteriaFactory == null)
-            criteriaFactory = new TlbFactory<TestSplitterCriteria>(TestSplitterCriteria.class, JobFamilyAwareSplitterCriteria.MATCH_ALL_FILE_SET);
+            criteriaFactory = new TlbFactory<TestSplitter>(TestSplitter.class, JobFamilyAwareSplitter.MATCH_ALL_FILE_SET);
         return criteriaFactory.getInstance(criteriaName, environment);
     }
 
@@ -74,10 +74,10 @@ public class TlbFactory<T> {
         return testOrderer.getInstance(ordererName, environment);
     }
 
-    public static TalkToService getTalkToService(SystemEnvironment environment) {
+    public static Server getTalkToService(SystemEnvironment environment) {
         if (talkToServiceFactory == null)
-            talkToServiceFactory = new TlbFactory<TalkToService>(TalkToService.class, null);
-        return talkToServiceFactory.getInstance(environment.val(TlbConstants.TALK_TO_SERVICE), environment);
+            talkToServiceFactory = new TlbFactory<Server>(Server.class, null);
+        return talkToServiceFactory.getInstance(environment.val(TlbConstants.TYPE_OF_SERVER), environment);
     }
 
     public static ServerInitializer getRestletLauncher(String restletLauncherName, SystemEnvironment environment) {

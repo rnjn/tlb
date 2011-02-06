@@ -1,14 +1,14 @@
 package tlb.splitter.test;
 
 import tlb.TlbSuiteFile;
-import tlb.splitter.TestSplitterCriteria;
+import tlb.splitter.TestSplitter;
 import tlb.utils.SystemEnvironment;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class LastSelectingCriteria extends TestSplitterCriteria {
-    public LastSelectingCriteria(SystemEnvironment env) {
+public class LastSelectingSplitter extends TestSplitter {
+    public LastSelectingSplitter(SystemEnvironment env) {
         super(env);
     }
 

@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import tlb.*;
-import tlb.service.TalkToGoServer;
+import tlb.service.GoServer;
 import tlb.utils.SuiteFileConvertor;
 import tlb.utils.SystemEnvironment;
 
@@ -17,7 +17,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-public class JobFamilyAwareSplitterCriteriaTest {
+public class JobFamilyAwareSplitterTest {
     private TestUtil.LogFixture logFixture;
 
     @Before
@@ -34,17 +34,17 @@ public class JobFamilyAwareSplitterCriteriaTest {
     public void testFilterShouldPublishNumberOfSuitesSelectedForRunning() {
         HashMap<String, String> envMap = new HashMap<String, String>();
         envMap.put(TlbConstants.Go.GO_JOB_NAME, "build-1");
-        TalkToGoServer toCruise = mock(TalkToGoServer.class);
+        GoServer toCruise = mock(GoServer.class);
         when(toCruise.totalPartitions()).thenReturn(3);
 
-        JobFamilyAwareSplitterCriteria criteria = new JobFamilyAwareSplitterCriteria(new SystemEnvironment(envMap)) {
+        JobFamilyAwareSplitter criteria = new JobFamilyAwareSplitter(new SystemEnvironment(envMap)) {
             protected List<TlbSuiteFile> subset(List<TlbSuiteFile> fileResources) {
                 TlbSuiteFile foo = new TlbSuiteFileImpl("foo");
                 TlbSuiteFile bar = new TlbSuiteFileImpl("bar");
                 return Arrays.asList(foo, bar);
             }
         };
-        criteria.talksToService(toCruise);
+        criteria.talksToServer(toCruise);
         logFixture.startListening();
         final SuiteFileConvertor convertor = new SuiteFileConvertor();
         final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(new ArrayList<TlbFileResource>());

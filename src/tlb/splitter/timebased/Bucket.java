@@ -1,7 +1,6 @@
 package tlb.splitter.timebased;
 
 import tlb.TlbSuiteFile;
-import tlb.splitter.TimeBasedTestSplitterCriteria;
 
 import java.util.ArrayList;
 import java.util.List;

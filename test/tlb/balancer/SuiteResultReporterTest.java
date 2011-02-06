@@ -1,7 +1,7 @@
 package tlb.balancer;
 
 import tlb.TestUtil;
-import tlb.service.TalkToService;
+import tlb.service.Server;
 import org.junit.Before;
 import org.junit.Test;
 import org.restlet.Context;
@@ -24,14 +24,14 @@ import static org.mockito.Mockito.*;
 public class SuiteResultReporterTest {
     protected SuiteResultReporter reporter;
     protected HashMap<String,Object> appCtx;
-    protected TalkToService toService;
+    protected Server toService;
     protected TestUtil.LogFixture logFixture;
 
     @Before
     public void setUp() {
         final Context context = new Context();
         appCtx = new HashMap<String, Object>();
-        toService = mock(TalkToService.class);
+        toService = mock(Server.class);
         appCtx.put(TlbClient.TALK_TO_SERVICE, toService);
         context.setAttributes(this.appCtx);
         reporter = new SuiteResultReporter(context, mock(Request.class), mock(Response.class));

@@ -2,7 +2,7 @@ package tlb.splitter;
 
 import org.apache.log4j.Logger;
 import tlb.TlbSuiteFile;
-import tlb.service.TalkToService;
+import tlb.service.Server;
 import tlb.utils.SystemEnvironment;
 
 import java.util.List;
@@ -11,16 +11,16 @@ import java.util.List;
 /**
  * @understands the criteria for splitting tests based on the number of tests
  */
-public class CountBasedTestSplitterCriteria extends JobFamilyAwareSplitterCriteria {
-    private static final Logger logger = Logger.getLogger(CountBasedTestSplitterCriteria.class.getName());
+public class CountBasedTestSplitter extends JobFamilyAwareSplitter {
+    private static final Logger logger = Logger.getLogger(CountBasedTestSplitter.class.getName());
 
-    public CountBasedTestSplitterCriteria(SystemEnvironment env) {
+    public CountBasedTestSplitter(SystemEnvironment env) {
         super(env);
     }
 
-    CountBasedTestSplitterCriteria(TalkToService talkToService, SystemEnvironment env) {
+    CountBasedTestSplitter(Server server, SystemEnvironment env) {
         this(env);
-        talksToService(talkToService);
+        talksToServer(server);
     }
 
     /**
@@ -34,7 +34,7 @@ public class CountBasedTestSplitterCriteria extends JobFamilyAwareSplitterCriter
      * @return filtered load
      */
     protected List<TlbSuiteFile> subset(List<TlbSuiteFile> files) {
-        int index = talkToService.partitionNumber() - 1;
+        int index = server.partitionNumber() - 1;
         int splitRatio = files.size() / totalPartitions;
         int reminder = files.size() % totalPartitions;
         logger.info(String.format("count balancing to approximately %s files per job with %s extra file to bucket", splitRatio, reminder));

@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.restlet.Component;
 import tlb.TlbConstants;
 import tlb.orderer.FailedFirstOrderer;
-import tlb.service.TalkToTlbServer;
-import tlb.splitter.CountBasedTestSplitterCriteria;
+import tlb.service.TlbServer;
+import tlb.splitter.CountBasedTestSplitter;
 import tlb.utils.SystemEnvironment;
 
 import java.util.HashMap;
@@ -31,15 +31,15 @@ public class BalancerInitializerTest {
 
     @Test
     public void shouldCreateApplicationContextWithNecessaryObjects() throws NoSuchFieldException, IllegalAccessException {
-        updateEnv(env, TlbConstants.TLB_CRITERIA, CountBasedTestSplitterCriteria.class.getCanonicalName());
+        updateEnv(env, TlbConstants.TLB_SPLITTER, CountBasedTestSplitter.class.getCanonicalName());
         updateEnv(env, TlbConstants.TLB_ORDERER, FailedFirstOrderer.class.getCanonicalName());
-        updateEnv(env, TlbConstants.TALK_TO_SERVICE, TalkToTlbServer.class.getCanonicalName());
+        updateEnv(env, TlbConstants.TYPE_OF_SERVER, TlbServer.class.getCanonicalName());
         updateEnv(env, TlbConstants.Balancer.TLB_BALANCER_PORT, "614");
-        updateEnv(env, TlbConstants.TlbServer.URL, "http://foo.bar.com:7019");
+        updateEnv(env, TlbConstants.TlbServer.TLB_BASE_URL, "http://foo.bar.com:7019");
         ConcurrentMap<String,Object> map = initializer.application().getContext().getAttributes();
-        assertThat(map.get(TlbClient.SPLITTER), is(CountBasedTestSplitterCriteria.class));
+        assertThat(map.get(TlbClient.SPLITTER), is(CountBasedTestSplitter.class));
         assertThat(map.get(TlbClient.ORDERER), is(FailedFirstOrderer.class));
-        assertThat(map.get(TlbClient.TALK_TO_SERVICE), is(TalkToTlbServer.class));
+        assertThat(map.get(TlbClient.TALK_TO_SERVICE), is(TlbServer.class));
         assertThat(map.get(TlbClient.APP_COMPONENT), is(Component.class));
         assertThat(map.get(TlbClient.APP_COMPONENT), sameInstance((Object) initializer.init()));
     }

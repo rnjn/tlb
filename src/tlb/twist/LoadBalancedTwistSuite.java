@@ -3,7 +3,7 @@ package tlb.twist;
 import org.apache.log4j.Logger;
 import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
-import tlb.splitter.TestSplitterCriteria;
+import tlb.splitter.TestSplitter;
 import tlb.utils.SuiteFileConvertor;
 import static tlb.utils.FileUtil.toFileList;
 import static tlb.utils.FileUtil.stripExtension;
@@ -25,9 +25,9 @@ import java.util.Iterator;
 public class LoadBalancedTwistSuite {
     private static final Logger logger = Logger.getLogger(LoadBalancedTwistSuite.class.getName());
 
-    private TestSplitterCriteria criteria;
+    private TestSplitter criteria;
 
-    public LoadBalancedTwistSuite(TestSplitterCriteria criteria) {
+    public LoadBalancedTwistSuite(TestSplitter criteria) {
         this.criteria = criteria;
     }
 

@@ -16,7 +16,12 @@
           <root url="file://$MODULE_DIR$/lib/prod" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/attached_sources/httpclient-4.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/attached_sources/httpcore-4.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/attached_sources/httpcore-4.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/attached_sources/httpclient-4.1-sources.jar!/" />
+        </SOURCES>
         <jarDirectory url="file://$MODULE_DIR$/lib/prod" recursive="false" />
       </library>
     </orderEntry>

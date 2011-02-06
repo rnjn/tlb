@@ -2,8 +2,8 @@ package tlb.orderer;
 
 import tlb.TlbSuiteFile;
 import tlb.domain.SuiteResultEntry;
-import tlb.service.TalkToService;
-import tlb.splitter.TalksToService;
+import tlb.service.Server;
+import tlb.service.TalksToServer;
 import tlb.utils.SystemEnvironment;
 import tlb.utils.FileUtil;
 
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 /**
  * @understands ordering to bring failed tests first
  */
-public class FailedFirstOrderer extends TestOrderer implements TalksToService {
-    private TalkToService toService;
+public class FailedFirstOrderer extends TestOrderer implements TalksToServer {
+    private Server toService;
     private List<String> failedTestFiles;
     private FileUtil fileUtil;
 
@@ -39,7 +39,7 @@ public class FailedFirstOrderer extends TestOrderer implements TalksToService {
         return 0;
     }
 
-    public void talksToService(TalkToService service) {
+    public void talksToServer(Server service) {
         toService = service;
     }
 }
