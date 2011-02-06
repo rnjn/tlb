@@ -14,6 +14,7 @@
     <property name="build_lib.dir" location="${lib.dir}/build"/>
     <property name="target.dir" location="target"/>
     <property name="classes.dir" location="${target.dir}/classes"/>
+    <property name="dist.dir" location="${target.dir}/dist"/>
     <property name="emma.dir" location="${target.dir}/emma"/>
     <property name="emma.version" value="2.0.5312"/>
     <property name="test-classes.dir" location="${target.dir}/test-classes"/>
@@ -204,8 +205,12 @@
 
     <target name="package" depends="clean, package.src, package.jar"/>
 
-    <target name="dist" depends="package, -load.short.rev">
-        <property name="archive.name" location="${target.dir}/${tlb.all.basename}.tar.gz"/>
+    <target name="prepare-dist">
+        <mkdir dir="${dist.dir}"/>
+    </target>
+
+    <target name="package-dist-archive" depends="package, prepare-dist, -load.short.rev">
+        <property name="archive.name" location="${dist.dir}/${tlb.all.basename}.tar.gz"/>
         <tar destfile="${archive.name}" compression="gzip">
             <tarfileset dir="${basedir}" prefix="${tlb.all.basename}" >
                 <include name="*.bat"/>
@@ -225,8 +230,29 @@
                 <include name="*.jar"/>
             </tarfileset>
         </tar>
-        <!--<delete dir="${dest_dir}" />-->
     </target>
+
+    <target name="copy-help" depends="prepare-dist">
+        <property name="dist.readme" value="${dist.dir}/README"/>
+        <copyfile src="${basedir}/README.release" dest="${dist.readme}"/>
+    </target>
+
+    <macrodef name="sign">
+        <attribute name="path"/>
+        <sequential>
+            <exec command="gpg">
+                <arg value="-ba"/>
+                <arg value="@{path}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <target name="sign-dist" depends="package-dist-archive, copy-help">
+        <sign path="${archive.name}"/>
+        <sign path="${dist.readme}"/>
+    </target>
+
+    <target name="dist" depends="package-dist-archive, copy-help, sign-dist"/>
 
     <target name="emma.instr" depends="compile">
         <sequential>
