@@ -20,7 +20,6 @@ function start_server {
 
     if [ $status = does-not-exist ]; then
         tlb_jar=`ls -t | grep '^tlb-all.*\.jar$' | head -1` 
-        
         java -jar $tlb_jar 1>$server_out 2>$server_err &
         pid=$!
         disown
@@ -44,7 +43,7 @@ function stop_server {
 function load_status {
     if [ -e $pid_file ]; then
         pid=`cat $pid_file`
-        ps -f -p $pid | grep tlb-all | grep -q java
+        ps u -p $pid | grep tlb-all | grep -q java
         if [ $? -eq 0 ]; then
             status='running'
         else
