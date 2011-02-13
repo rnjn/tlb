@@ -24,7 +24,7 @@ Memory - TLB balancer component should work with about 32MB of RAM for most setu
 
 
 Getting TLB
----------------
+-----------
 
 TLB can be downloaded from http://code.google.com/p/tlb/downloads/list
 
@@ -33,6 +33,18 @@ TLB is distributed as a 'tarred + gziped' file(.tar.gz). Uncompressing the archi
 To unarchive TLB distribution:
 
 You can use "tar -zxvf tlb-XXXX.tar.gz" on *nix(Linux, Unix or MacOS). Windows users can unarchive the distribution using WinRAR, 7z or the Zip Utility(bundled with recent versions of Windows, the zip utility bundled with older versions may not work).
+
+
+Artifacts: TLB(Archive Contents/Downloads)
+------------------------------------------
+
+tlb-all-gXXX.jar         : Standalone TLB jar file. This can be used to spin up the TLB server or balancer server.
+tlb-gXXX.jar             : TLB jar file(not standalone). If using TLB on java project, this is what you need in build/test classpath.
+lib/*.jar                : Libraries that TLB depends on. If you are using TLB in a java project, you need to have these in the build/test classpath too.
+server.sh and server.bat : Utility script to manage TLB server from the command line(for *nix and Windows respectively).
+examples/                : This directory has tiny TLB enabled projects written in different languages, using different build and testing frameworks that TLB supports. The 'examples' directory has multiple sub-projects named after build and/or testing framework used. Every project in examples has a shell script call 'run_balanced.sh' which executes project's test-cases balanced between two partitions. Drop into example/<project-dir> directory and invoke './run_balanced.sh' on the shell to execute one of these.
+
+Note for Ruby users: Ruby example projects depend on the corresponding TLB gem being installed. For instance, you will need to 'gem install tlb-rspec2' before you can execute examples/rspec2_example specs.
 
 
 Usage(Balancer)
@@ -53,14 +65,14 @@ To start the TLB server, execute: "server.sh start"(on *nix) or "server.bat star
 Feel free to make changes to the respective scripts to tweak values TLB Server uses for exposed configuration variables. Please visit the Configuration Reference page on the TLB website(documentation section) to get detailed description of role and possible values for each of these environment variables.
 
 
-Sample Projects
----------------
+Examples
+--------
 
 TLB team maintains a project called sample_projects that has several tiny projects(written in different languages using varity of testing and build frameworks), that are meant to demonstrate balancing/re-ordering and provide new users a working project to play with, before incorporating test-load-balancing in their own projects.
 
 This is also acts as a good proving ground to play around with configuration variables and to understand the effect/implication of changing different parameters.
 
-The tiny projects under this directory have test-cases that are executed by a helper script named 'run_balanced.sh' in a balanced fashion. This helper script does 2 major things:
+The tiny projects under this directory have test-cases that are executed by a helper script named 'run_balanced.sh' in a balanced fashion. The two primary things this helper script does are:
 
     1. Starts the TLB server (Partitions need a server to post/pull data, this server started by the helper script is equivallent to the remote server in your real setup, the URL to which is provided to partitions). This server is started before the first partition starts and is terminated after the last partition finishes.
     2. Executes a loop, which loops as many times as the number of partitions. Each run of this loop sets a different partition number and invokes a project sperific build task(i.e. an Ant task for ant_junit project and a Rake task for rspec2_example).

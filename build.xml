@@ -209,9 +209,21 @@
         <mkdir dir="${dist.dir}"/>
     </target>
 
-    <target name="package-dist-archive" depends="package, prepare-dist, -load.short.rev">
-        <property name="archive.name" location="${dist.dir}/${tlb.all.basename}.tar.gz"/>
-        <tar destfile="${archive.name}" compression="gzip">
+    <target name="archive-sample-projects" depends="prepare-dist">
+        <property name="sample-projects.tar" location="${dist.dir}/examples.tar"/>
+        <property name="sample-projects.archive" location="${dist.dir}/examples.tar.gz"/>
+        <exec command="git" output="${sample-projects.tar}">
+            <arg value="archive"/>
+            <arg value="--remote=${basedir}/../sample_projects"/>
+            <arg value="--format=tar"/>
+            <arg value="master"/>
+        </exec>
+        <gzip srcresource="${sample-projects.tar}" destfile="${sample-projects.archive}"/>
+    </target>
+
+    <target name="package-dist-archive" depends="package, prepare-dist, archive-sample-projects, -load.short.rev">
+        <property name="tlb.archive" location="${dist.dir}/${tlb.all.basename}.tar.gz"/>
+        <tar destfile="${tlb.archive}" compression="gzip">
             <tarfileset dir="${basedir}" prefix="${tlb.all.basename}" >
                 <include name="*.bat"/>
                 <include name="*.cmd"/>
@@ -226,9 +238,10 @@
             <tarfileset dir="${target.dir}" prefix="${tlb.all.basename}">
                 <include name="*.jar"/>
             </tarfileset>
-            <tarfileset dir="${prod-lib.dir}" prefix="${tlb.all.basename}/libs">
+            <tarfileset dir="${prod-lib.dir}" prefix="${tlb.all.basename}/lib">
                 <include name="*.jar"/>
             </tarfileset>
+            <tarfileset src="${sample-projects.tar}" prefix="${tlb.all.basename}/examples"/>
         </tar>
     </target>
 
@@ -248,7 +261,7 @@
     </macrodef>
 
     <target name="sign-dist" depends="package-dist-archive, copy-help">
-        <sign path="${archive.name}"/>
+        <sign path="${tlb.archive}"/>
         <sign path="${dist.readme}"/>
     </target>
 
