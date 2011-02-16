@@ -1,15 +1,15 @@
 package tlb.splitter;
 
-import org.apache.tools.ant.Project;
 import org.junit.Before;
 import org.junit.Test;
+import tlb.DummyTlbFileResource;
 import tlb.TlbConstants;
 import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
-import tlb.ant.JunitFileResource;
 import tlb.utils.SuiteFileConvertor;
 import tlb.utils.SystemEnvironment;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +21,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
 public class DefaultingTestSplitterTest {
-    private Project project;
-
-    @Before
-    public void setUp() throws Exception {
-        project = new Project();
-    }
 
     @Test
     public void shouldAttemptCriterionSpecifiedInOrder() throws Exception{
@@ -77,7 +71,7 @@ public class DefaultingTestSplitterTest {
         }
     }
 
-    private JunitFileResource fileResource(String fileName) {
-        return new JunitFileResource(project, fileName);
+    private TlbFileResource fileResource(final String fileName) {
+        return new DummyTlbFileResource(fileName, null);
     }
 }

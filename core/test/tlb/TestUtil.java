@@ -7,14 +7,11 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
-import org.apache.tools.ant.Project;
-import org.hamcrest.core.Is;
 import org.restlet.Application;
 import org.restlet.Restlet;
 import org.restlet.Route;
 import org.restlet.Router;
 import org.restlet.util.RouteList;
-import tlb.ant.JunitFileResource;
 import tlb.domain.SuiteLevelEntry;
 import tlb.utils.SystemEnvironment;
 
@@ -46,14 +43,12 @@ public class TestUtil {
         return resources;
     }
 
-    public static TlbFileResource junitFileResource(String name) {
-        return new JunitFileResource(new File(name));
+    public static TlbFileResource junitFileResource(final String name) {
+        return new DummyTlbFileResource(name, null);
     }
 
-    public static TlbFileResource tlbFileResource(String dir, String name) {
-        JunitFileResource fileResource = new JunitFileResource(new Project(), new File(dir + "/" + name + ".class").getPath());
-        fileResource.setBaseDir(new File("."));
-        return fileResource;
+    public static TlbFileResource tlbFileResource(final String dir, final String name) {
+        return new DummyTlbFileResource(name, dir);
     }
 
     public static String fileContents(String filePath) throws IOException, URISyntaxException {
@@ -300,4 +295,5 @@ public class TestUtil {
         Object eval(T t) throws Exception;
         T find(Class klass) throws Exception;
     }
+
 }

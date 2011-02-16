@@ -2,10 +2,10 @@ package tlb.splitter;
 
 import org.junit.Before;
 import org.junit.Test;
+import tlb.DummyTlbFileResource;
 import tlb.TestUtil;
 import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
-import tlb.ant.JunitFileResource;
 import tlb.service.GoServer;
 import tlb.service.Server;
 import tlb.utils.SuiteFileConvertor;
@@ -101,7 +101,7 @@ public class CountBasedTestSplitterTest {
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
         for(int i = 0; i < 11; i++) {
-            resources.add(new JunitFileResource(new File("base" + i)));
+            resources.add(junitFileResource("base" + i));
         }
 
         logFixture.startListening();
@@ -131,7 +131,7 @@ public class CountBasedTestSplitterTest {
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
         for(int i = 0; i < 2; i++) {
-            resources.add(new JunitFileResource(new File("base" + i)));
+            resources.add(junitFileResource("base" + i));
         }
 
         final SuiteFileConvertor convertor2 = new SuiteFileConvertor();
@@ -152,7 +152,7 @@ public class CountBasedTestSplitterTest {
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
         for(int i = 0; i < 3; i++) {
-            resources.add(new JunitFileResource(new File("base" + i)));
+            resources.add(junitFileResource("base" + i));
         }
 
         final SuiteFileConvertor convertor2 = new SuiteFileConvertor();
@@ -173,7 +173,7 @@ public class CountBasedTestSplitterTest {
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
         for(int i = 0; i < 37; i++) {
-            resources.add(new JunitFileResource(new File("base" + i)));
+            resources.add(junitFileResource("base" + i));
         }
 
         final SuiteFileConvertor convertor6 = new SuiteFileConvertor();
@@ -212,7 +212,7 @@ public class CountBasedTestSplitterTest {
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
         for(int i = 0; i < 41; i++) {
-            resources.add(new JunitFileResource(new File("base" + i)));
+            resources.add(junitFileResource("base" + i));
         }
 
         final SuiteFileConvertor convertor6 = new SuiteFileConvertor();
@@ -251,7 +251,7 @@ public class CountBasedTestSplitterTest {
         ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
 
         for(int i = 0; i < 36; i++) {
-            resources.add(new JunitFileResource(new File("base" + i)));
+            resources.add(junitFileResource("base" + i));
         }
 
         final SuiteFileConvertor convertor5 = new SuiteFileConvertor();
@@ -277,6 +277,10 @@ public class CountBasedTestSplitterTest {
         final SuiteFileConvertor convertor = new SuiteFileConvertor();
         final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
         assertThat(convertor.toTlbFileResources(criteria("job-6", 6).filterSuites(suiteFiles)), is(TestUtil.tlbFileResources(30, 31, 32, 33, 34, 35)));
+    }
+
+    private TlbFileResource junitFileResource(final String name) {
+        return new DummyTlbFileResource(name, null);
     }
 
     private CountBasedTestSplitter criteria(String jobName, int partitionNumber) {

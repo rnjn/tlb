@@ -2,6 +2,9 @@ package tlb.utils;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.resources.FileResource;
+import org.hamcrest.core.Is;
+import org.hamcrest.core.IsSame;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import tlb.TlbFileResource;
@@ -14,10 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.fail;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertThat;
 
 public class SuiteFileConvertorTest {
     protected SuiteFileConvertor convertor;
@@ -51,13 +51,13 @@ public class SuiteFileConvertorTest {
     @Test
     public void shouldConvertAListOfTlbFileResourceToTlbSuiteFileInOrder() {
         List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
-        assertThat(suiteFiles.size(), is(6));
-        assertThat(suiteFiles.get(0).getName(), is(fooScn.getName()));
-        assertThat(suiteFiles.get(1).getName(), is(barScn.getName()));
-        assertThat(suiteFiles.get(2).getName(), is(bazScn.getName()));
-        assertThat(suiteFiles.get(3).getName(), is(fooTest.getName()));
-        assertThat(suiteFiles.get(4).getName(), is(bazTestResource.getName()));
-        assertThat(suiteFiles.get(5).getName(), is(fileTestResource.getName()));
+        Assert.assertThat(suiteFiles.size(), Is.is(6));
+        Assert.assertThat(suiteFiles.get(0).getName(), is(fooScn.getName()));
+        Assert.assertThat(suiteFiles.get(1).getName(), is(barScn.getName()));
+        Assert.assertThat(suiteFiles.get(2).getName(), is(bazScn.getName()));
+        Assert.assertThat(suiteFiles.get(3).getName(), is(fooTest.getName()));
+        Assert.assertThat(suiteFiles.get(4).getName(), is(bazTestResource.getName()));
+        Assert.assertThat(suiteFiles.get(5).getName(), is(fileTestResource.getName()));
     }
     
     @Test
@@ -65,9 +65,9 @@ public class SuiteFileConvertorTest {
         convertor.toTlbSuiteFiles(resources);
         try {
             convertor.toTlbSuiteFiles(resources);
-            fail("should not have allowed overwriting");
+            Assert.fail("should not have allowed overwriting");
         } catch (IllegalStateException e) {
-            assertThat(e.getMessage(), is("overwriting of suite resource list is not allowed, new instance should be used"));
+            Assert.assertThat(e.getMessage(), Is.is("overwriting of suite resource list is not allowed, new instance should be used"));
         }
     }
 
@@ -80,10 +80,10 @@ public class SuiteFileConvertorTest {
         files.add(new TlbSuiteFileImpl(fooTest.getName()));
         files.add(new TlbSuiteFileImpl(fooScn.getName()));
         List<TlbFileResource> filteredSet = convertor.toTlbFileResources(files);
-        assertThat(filteredSet.size(), is(4));
-        assertThat(filteredSet.get(0), sameInstance((TlbFileResource) bazScn));
-        assertThat(filteredSet.get(1), sameInstance((TlbFileResource) fileTestResource));
-        assertThat(filteredSet.get(2), sameInstance((TlbFileResource) fooTest));
-        assertThat(filteredSet.get(3), sameInstance((TlbFileResource) fooScn));
+        Assert.assertThat(filteredSet.size(), Is.is(4));
+        Assert.assertThat(filteredSet.get(0), IsSame.sameInstance((TlbFileResource) bazScn));
+        Assert.assertThat(filteredSet.get(1), IsSame.sameInstance((TlbFileResource) fileTestResource));
+        Assert.assertThat(filteredSet.get(2), IsSame.sameInstance((TlbFileResource) fooTest));
+        Assert.assertThat(filteredSet.get(3), IsSame.sameInstance((TlbFileResource) fooScn));
     }
 }

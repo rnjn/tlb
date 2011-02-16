@@ -246,7 +246,8 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/tlb.iml" filepath="$PROJECT_DIR$/tlb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/java.iml" filepath="$PROJECT_DIR$/java/java.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
@@ -384,5 +385,23 @@
     <mapping directory="" vcs="" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
+  <component name="libraryTable">
+    <library name="prod">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/core/lib/prod" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/core/lib/prod" recursive="false" />
+    </library>
+    <library name="test">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/core/lib/test" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/core/lib/test" recursive="false" />
+    </library>
+  </component>
 </project>
 

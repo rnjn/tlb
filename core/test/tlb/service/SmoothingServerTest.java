@@ -1,6 +1,6 @@
 package tlb.service;
 
-import org.apache.tools.ant.util.FileUtils;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.verification.Times;
@@ -11,6 +11,8 @@ import tlb.domain.SuiteTimeEntry;
 import tlb.storage.TlbEntryRepository;
 import tlb.utils.SystemEnvironment;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ public class SmoothingServerTest {
     private SmoothingServer delegate;
 
     @Before
-    public void setUp() throws IllegalAccessException {
+    public void setUp() throws IllegalAccessException, IOException {
         fetchedEntries = new ArrayList<SuiteTimeEntry>();
         HashMap<String, String> variables = new HashMap<String, String>();
         variables.put(TlbConstants.TLB_SMOOTHING_FACTOR, "0.05");
@@ -38,7 +40,10 @@ public class SmoothingServerTest {
 
         delegate = mock(SmoothingServer.class);
         server = new DelegatingSmoothingServer(delegate, env);
-        FileUtils.delete(testTimeCacheRepo().getFile());
+        File file = testTimeCacheRepo().getFile();
+        if (file.exists()) {
+            FileUtils.forceDelete(file);
+        }
 
         logFixture = new TestUtil.LogFixture();
     }

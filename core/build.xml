@@ -1,33 +1,20 @@
 <?xml version="1.0"?>
 <!DOCTYPE project [
-        <!ENTITY manifest SYSTEM "misc/manifest.xml">
-        <!ENTITY extension-name SYSTEM "misc/extension-name.xml">
+        <!ENTITY manifest SYSTEM "../misc/manifest.xml">
+        <!ENTITY extension-name SYSTEM "../misc/extension-name.xml">
 ]>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="tlb" basedir="." default="all">
-    <property name="core.dir" location="core"/>
-    <property name="core.src.dir" location="${core.dir}/src"/>
-    <property name="core.test.dir" location="${core.dir}/test"/>
-    <property name="core.integration-test.dir" location="${core.dir}/integration-test"/>
-    <property name="core.test-resources.dir" location="${core.test.dir}/resources"/>
-    <property name="core.lib.dir" location="${core.dir}/lib"/>
-    <property name="core.prod-lib.dir" location="${core.lib.dir}/prod"/>
-    <property name="core.test-lib.dir" location="${core.lib.dir}/test"/>
-    <property name="core.build_lib.dir" location="${core.lib.dir}/build"/>
-
-    <property name="java.dir" location="java"/>
-    <property name="java.src.dir" location="${java.dir}/src"/>
-    <property name="java.test.dir" location="${java.dir}/test"/>
-    <property name="java.test-resources.dir" location="${core.test.dir}/resources"/>
-    <property name="java.lib.dir" location="${core.dir}/lib"/>
-    <property name="java.prod-lib.dir" location="${core.lib.dir}/prod"/>
-    <property name="java.test-lib.dir" location="${core.lib.dir}/test"/>
-    <property name="java.build_lib.dir" location="${core.lib.dir}/build"/>
+    <property name="src.dir" location="src"/>
+    <property name="test.dir" location="test"/>
+    <property name="test-resources.dir" location="${test.dir}/resources"/>
+    <property name="integration-test.dir" location="integration-test"/>
+    <property name="lib.dir" location="lib"/>
+    <property name="prod-lib.dir" location="${lib.dir}/prod"/>
+    <property name="test-lib.dir" location="${lib.dir}/test"/>
+    <property name="build_lib.dir" location="${lib.dir}/build"/>
 
     <property name="target.dir" location="target"/>
-    <property name="core.target.dir" location="${target.dir}/${core.dir}"/>
-    <property name="java.target.dir" location="${target.dir}/${java.dir}"/>
-
-    <property name="core.classes.dir" location="${target.dir}/classes"/>
+    <property name="classes.dir" location="${target.dir}/classes"/>
 
     <property name="dist.dir" location="${target.dir}/dist"/>
     <property name="emma.dir" location="${target.dir}/emma"/>
@@ -102,11 +89,7 @@
     </target>
 
     <target name="resolve" depends="init-ivy">
-        <ivy:retrieve file="" pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
-    </target>
-
-    <target name="resolve-core" depends="init-ivy">
-        <ivy:retrieve file="" pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
+        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
     </target>
 
     <target name="init" depends="resolve">
@@ -132,13 +115,6 @@
 
     <target name="clean">
         <delete dir="${target.dir}" includeemptydirs="true"/>
-    </target>
-
-    <target name="compile-core" depends="init, resolve">
-        <javac destdir="${classes.dir}" target="1.5" source="1.5" debug="true" includeantruntime="false">
-            <classpath refid="src.classpath"/>
-            <src path="${src.dir}"/>
-        </javac>
     </target>
 
     <target name="compile" depends="init, resolve">

@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static tlb.TestUtil.initEnvironment;
 
-public class FailedFirstOrdererTest {
+public class JunitFailedFirstOrdererTest {
     private FailedFirstOrderer orderer;
     private GoServer toCruise;
     private Project project;

@@ -229,7 +229,8 @@ public class TimeBasedTestSplitterTest {
 
         final SuiteFileConvertor convertor1 = new SuiteFileConvertor();
         final List<TlbSuiteFile> suiteFiles1 = convertor1.toTlbSuiteFiles(resources);
-        assertThat(convertor1.toTlbFileResources(criteria.filterSuites(suiteFiles1)), is(Arrays.asList(second)));
+        List<TlbFileResource> resourceList = convertor1.toTlbFileResources(criteria.filterSuites(suiteFiles1));
+        assertThat(resourceList, is(Arrays.asList(second)));
         logFixture.assertHeard("got total of 3 files to balance");
         logFixture.assertHeard("total jobs to distribute load [ 2 ]");
         logFixture.assertHeard("historical test time data has entries for 5 suites");
