@@ -3,6 +3,7 @@ package tlb.ant;
 import tlb.TlbConstants;
 import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
+import tlb.factory.TlbBalancerFactory;
 import tlb.splitter.TestSplitter;
 import tlb.utils.SuiteFileConvertor;
 import org.apache.tools.ant.types.FileSet;
@@ -34,8 +35,8 @@ public class LoadBalancedFileSet extends FileSet {
     }
 
     public LoadBalancedFileSet(SystemEnvironment systemEnvironment) {
-        this(TlbFactory.getCriteria(systemEnvironment.val(TLB_SPLITTER), systemEnvironment),
-                TlbFactory.getOrderer(systemEnvironment.val(TlbConstants.TLB_ORDERER), systemEnvironment));
+        this(TlbBalancerFactory.getCriteria(systemEnvironment.val(TLB_SPLITTER), systemEnvironment),
+                TlbBalancerFactory.getOrderer(systemEnvironment.val(TlbConstants.TLB_ORDERER), systemEnvironment));
     }
 
     public LoadBalancedFileSet() {

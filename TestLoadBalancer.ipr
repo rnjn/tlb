@@ -248,9 +248,13 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/alien/alien.iml" filepath="$PROJECT_DIR$/alien/alien.iml" />
       <module fileurl="file://$PROJECT_DIR$/balancer/balancer.iml" filepath="$PROJECT_DIR$/balancer/balancer.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/java.iml" filepath="$PROJECT_DIR$/java/java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/restlet/restlet.iml" filepath="$PROJECT_DIR$/restlet/restlet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/restlet/restlets.iml" filepath="$PROJECT_DIR$/restlet/restlets.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
     </modules>
   </component>
   <component name="ProjectResources">
@@ -271,7 +275,7 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="tlb" />
+      <module name="server" />
       <envs>
         <env name="TLB_URL" value="http://localhost:7019" />
         <env name="JOB_VERSION" value="bar1" />
@@ -306,7 +310,7 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="tlb" />
+      <module name="server" />
       <envs>
         <env name="TLB_URL" value="http://localhost:7019" />
         <env name="JOB_VERSION" value="bar1" />
@@ -341,7 +345,7 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="tlb" />
+      <module name="server" />
       <envs>
         <env name="SMOOTHING_FACTOR" value="0.1" />
       </envs>

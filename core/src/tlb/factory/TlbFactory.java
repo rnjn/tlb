@@ -1,13 +1,8 @@
 package tlb.factory;
 
 import tlb.TlbConstants;
-import tlb.server.ServerInitializer;
-import tlb.server.TlbServerInitializer;
 import tlb.service.Server;
 import tlb.service.TalksToServer;
-import tlb.splitter.JobFamilyAwareSplitter;
-import tlb.splitter.TestSplitter;
-import tlb.orderer.TestOrderer;
 import tlb.utils.SystemEnvironment;
 
 import java.lang.reflect.InvocationTargetException;
@@ -18,10 +13,8 @@ import java.lang.reflect.InvocationTargetException;
 public class TlbFactory<T> {
     private Class<T> klass;
     private T defaultValue;
-    private static TlbFactory<TestSplitter> criteriaFactory;
-    private static TlbFactory<TestOrderer> testOrderer;
+
     private static TlbFactory<Server> talkToServiceFactory;
-    private static TlbFactory<ServerInitializer> restletLauncherFactory;
 
     TlbFactory(Class<T> klass, T defaultValue) {
         this.klass = klass;
@@ -62,27 +55,10 @@ public class TlbFactory<T> {
         }
     }
 
-    public static TestSplitter getCriteria(String criteriaName, SystemEnvironment environment) {
-        if (criteriaFactory == null)
-            criteriaFactory = new TlbFactory<TestSplitter>(TestSplitter.class, JobFamilyAwareSplitter.MATCH_ALL_FILE_SET);
-        return criteriaFactory.getInstance(criteriaName, environment);
-    }
-
-    public static TestOrderer getOrderer(String ordererName, SystemEnvironment environment) {
-        if (testOrderer == null)
-            testOrderer = new TlbFactory<TestOrderer>(TestOrderer.class, TestOrderer.NO_OP);
-        return testOrderer.getInstance(ordererName, environment);
-    }
-
     public static Server getTalkToService(SystemEnvironment environment) {
         if (talkToServiceFactory == null)
             talkToServiceFactory = new TlbFactory<Server>(Server.class, null);
         return talkToServiceFactory.getInstance(environment.val(TlbConstants.TYPE_OF_SERVER), environment);
     }
 
-    public static ServerInitializer getRestletLauncher(String restletLauncherName, SystemEnvironment environment) {
-        if (restletLauncherFactory == null)
-            restletLauncherFactory = new TlbFactory<ServerInitializer>(ServerInitializer.class, new TlbServerInitializer(environment));
-        return restletLauncherFactory.getInstance(restletLauncherName, environment);
-    }
 }

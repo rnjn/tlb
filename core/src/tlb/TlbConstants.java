@@ -49,5 +49,6 @@ public interface TlbConstants {
         static final String DEFAULT_TLB_DATA_DIR = "tlb_store";
         static final String LISTING_VERSION = "listing_version";
         static final String TLB_VERSION_LIFE_IN_DAYS = "TLB_VERSION_LIFE_IN_DAYS";
+        static final String DEFAULT_SERVER_INITIALIZER = "tlb.server.TlbServerInitializer";
     }
 }

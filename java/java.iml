@@ -9,7 +9,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="core" />
     <orderEntry type="module-library">
       <library name="prod">
         <CLASSES>
@@ -30,6 +29,8 @@
         <jarDirectory url="file://$MODULE_DIR$/lib/test" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="balancer" />
+    <orderEntry type="module" module-name="core" />
   </component>
 </module>
 

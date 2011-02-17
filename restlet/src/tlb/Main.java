@@ -1,7 +1,6 @@
 package tlb;
 
-import org.apache.log4j.Logger;
-import tlb.factory.TlbFactory;
+import tlb.factory.TlbServerFactory;
 import tlb.server.ServerInitializer;
 import tlb.utils.SystemEnvironment;
 
@@ -19,6 +18,7 @@ public class Main {
     }
 
     ServerInitializer restletInitializer(SystemEnvironment environment) {
-        return TlbFactory.getRestletLauncher(environment.val(TlbConstants.TLB_APP), environment);
+        //TODO: we are using 2 different jars for server and balancer. no need to take a ServerInitializer through TLB_APP anymore, just default it in both cases.
+        return TlbServerFactory.getRestletLauncher(environment.val(TlbConstants.TLB_APP, TlbConstants.Server.DEFAULT_SERVER_INITIALIZER), environment);
     }
 }

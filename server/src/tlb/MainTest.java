@@ -1,6 +1,5 @@
 package tlb;
 
-import tlb.balancer.BalancerInitializer;
 import tlb.server.TlbServerInitializer;
 import tlb.utils.SystemEnvironment;
 import org.junit.Test;
@@ -18,12 +17,6 @@ public class MainTest {
         assertThat(main.restletInitializer(new SystemEnvironment(new HashMap<String, String>())), is(TlbServerInitializer.class));
     }
 
-    @Test
-    public void shouldCreateServerInitializerWhenTlbAppSetToBalancer() {
-        final Main main = new Main();
-        assertThat(main.restletInitializer(new SystemEnvironment(Collections.singletonMap(TlbConstants.TLB_APP, "tlb.balancer.BalancerInitializer"))), is(BalancerInitializer.class));
-    }
-    
     @Test
     public void shouldCreateServerInitializerWhenTlbAppSetToTlbServer() {
         final Main main = new Main();

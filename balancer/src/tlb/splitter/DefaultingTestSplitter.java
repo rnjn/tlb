@@ -3,6 +3,7 @@ package tlb.splitter;
 import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 import tlb.TlbSuiteFile;
+import tlb.factory.TlbBalancerFactory;
 import tlb.factory.TlbFactory;
 import tlb.utils.SystemEnvironment;
 
@@ -24,7 +25,7 @@ public class DefaultingTestSplitter extends TestSplitter {
         criterion = new ArrayList<TestSplitter>();
         String[] criteriaNames = criteriaNames(env);
         for (String criteriaName : criteriaNames) {
-            TestSplitter splitter = TlbFactory.getCriteria(criteriaName, env);
+            TestSplitter splitter = TlbBalancerFactory.getCriteria(criteriaName, env);
             criterion.add(splitter);
         }
     }
