@@ -3,13 +3,13 @@ package tlb.service;
 import tlb.TlbConstants;
 import tlb.domain.SuiteResultEntry;
 import tlb.domain.SuiteTimeEntry;
-import tlb.server.repo.EntryRepoFactory;
 import tlb.service.http.DefaultHttpAction;
 import tlb.service.http.HttpAction;
 import tlb.utils.SystemEnvironment;
 
 import java.util.List;
 
+import static tlb.TlbConstants.Server.EntryRepoFactory.*;
 import static tlb.TlbConstants.TlbServer.TLB_JOB_NAME;
 import static tlb.TlbConstants.TlbServer.TLB_BASE_URL;
 
@@ -34,7 +34,7 @@ public class TlbServer extends SmoothingServer {
     }
 
     private String suiteTimeRepoName() {
-        return EntryRepoFactory.SUITE_TIME;
+        return SUITE_TIME;
     }
 
     public void testClassFailure(String className, boolean hasFailed) {
@@ -50,7 +50,7 @@ public class TlbServer extends SmoothingServer {
     }
 
     public void publishSubsetSize(int size) {
-        httpAction.post(getUrl(jobName(), EntryRepoFactory.SUBSET_SIZE), String.valueOf(size));
+        httpAction.post(getUrl(jobName(), SUBSET_SIZE), String.valueOf(size));
     }
 
     public void clearOtherCachingFiles() {
@@ -76,7 +76,7 @@ public class TlbServer extends SmoothingServer {
     }
 
     private String suiteResultUrl() {
-        return getUrl(namespace(), EntryRepoFactory.SUITE_RESULT);
+        return getUrl(namespace(), SUITE_RESULT);
     }
 
     private String jobName() {

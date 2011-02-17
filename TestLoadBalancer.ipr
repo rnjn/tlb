@@ -251,6 +251,7 @@
       <module fileurl="file://$PROJECT_DIR$/alien/alien.iml" filepath="$PROJECT_DIR$/alien/alien.iml" />
       <module fileurl="file://$PROJECT_DIR$/balancer/balancer.iml" filepath="$PROJECT_DIR$/balancer/balancer.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/integration_tests/integration_tests.iml" filepath="$PROJECT_DIR$/integration_tests/integration_tests.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/java.iml" filepath="$PROJECT_DIR$/java/java.iml" />
       <module fileurl="file://$PROJECT_DIR$/restlet/restlet.iml" filepath="$PROJECT_DIR$/restlet/restlet.iml" />
       <module fileurl="file://$PROJECT_DIR$/restlet/restlet.iml" filepath="$PROJECT_DIR$/restlet/restlet.iml" />

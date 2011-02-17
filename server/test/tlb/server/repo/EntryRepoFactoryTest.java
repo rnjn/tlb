@@ -25,6 +25,7 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Mockito.*;
 import static tlb.TestUtil.deref;
+import static tlb.TlbConstants.Server.EntryRepoFactory.SUBSET_SIZE;
 import static tlb.server.repo.EntryRepoFactory.LATEST_VERSION;
 
 
@@ -158,7 +159,7 @@ public class EntryRepoFactoryTest {
     public void shouldUseWorkingDirAsDiskStorageRootWhenNotGiven() throws IOException, ClassNotFoundException {
         final File workingDirStorage = new File(TlbConstants.Server.DEFAULT_TLB_DATA_DIR);
         workingDirStorage.mkdirs();
-        File file = new File(workingDirStorage, EntryRepoFactory.name("foo", LATEST_VERSION, EntryRepoFactory.SUBSET_SIZE));
+        File file = new File(workingDirStorage, EntryRepoFactory.name("foo", LATEST_VERSION, SUBSET_SIZE));
         FileUtils.writeStringToFile(file, "1\n2\n3\n");
         EntryRepoFactory factory = new EntryRepoFactory(new SystemEnvironment(new HashMap<String, String>()));
         SubsetSizeRepo repo = factory.createSubsetRepo("foo", LATEST_VERSION);
@@ -168,7 +169,7 @@ public class EntryRepoFactoryTest {
     @Test
     public void shouldLoadDiskDumpFromStorageRoot() throws IOException, ClassNotFoundException {
         baseDir.mkdirs();
-        File file = new File(baseDir, EntryRepoFactory.name("foo", LATEST_VERSION, EntryRepoFactory.SUBSET_SIZE));
+        File file = new File(baseDir, EntryRepoFactory.name("foo", LATEST_VERSION, SUBSET_SIZE));
         FileUtils.writeStringToFile(file, "1\n2\n3\n");
         SubsetSizeRepo repo = factory.createSubsetRepo("foo", LATEST_VERSION);
         assertThat(repo.list(), is((Collection<SubsetSizeEntry>) Arrays.asList(new SubsetSizeEntry(1), new SubsetSizeEntry(2), new SubsetSizeEntry(3))));
@@ -177,7 +178,7 @@ public class EntryRepoFactoryTest {
     @Test
     public void shouldNotLoadDiskDumpWhenUsingARepoThatIsAlreadyCreated() throws ClassNotFoundException, IOException {
         SubsetSizeRepo fooRepo = factory.createSubsetRepo("foo", LATEST_VERSION);
-        File file = new File(baseDir, EntryRepoFactory.name("foo", LATEST_VERSION, EntryRepoFactory.SUBSET_SIZE));
+        File file = new File(baseDir, EntryRepoFactory.name("foo", LATEST_VERSION, SUBSET_SIZE));
         ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream(file));
         outStream.writeObject(new ArrayList<SubsetSizeEntry>(Arrays.asList(new SubsetSizeEntry(1), new SubsetSizeEntry(2), new SubsetSizeEntry(3))));
         outStream.close();

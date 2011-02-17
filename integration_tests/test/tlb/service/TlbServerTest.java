@@ -1,9 +1,8 @@
 package tlb.service;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.hamcrest.core.Is;
+import org.junit.*;
+import org.junit.matchers.JUnitMatchers;
 import org.restlet.Component;
 import tlb.TestUtil;
 import tlb.TlbConstants;
@@ -72,11 +71,11 @@ public class TlbServerTest {
         server.publishSubsetSize(10);
         server.publishSubsetSize(20);
         server.publishSubsetSize(17);
-        assertThat(httpAction.get(String.format("http://localhost:%s/job-4/subset_size", freePort)), is("10\n20\n17\n"));
+        Assert.assertThat(httpAction.get(String.format("http://localhost:%s/job-4/subset_size", freePort)), Is.is("10\n20\n17\n"));
         updateEnv(env, TlbConstants.TlbServer.TLB_PARTITION_NUMBER, "5");
         server.publishSubsetSize(12);
         server.publishSubsetSize(13);
-        assertThat(httpAction.get(String.format("http://localhost:%s/job-5/subset_size", freePort)), is("12\n13\n"));
+        Assert.assertThat(httpAction.get(String.format("http://localhost:%s/job-5/subset_size", freePort)), Is.is("12\n13\n"));
     }
 
     @Test
@@ -89,11 +88,11 @@ public class TlbServerTest {
         server.testClassTime("com.quux.Quux", 137);
         final String response = httpAction.get(String.format("http://localhost:%s/job/suite_time", freePort));
         final List<SuiteTimeEntry> entryList = SuiteTimeEntry.parse(response);
-        assertThat(entryList.size(), is(4));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.foo.Foo", 100)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.bar.Bar", 120)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.baz.Baz", 15)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.quux.Quux", 137)));
+        Assert.assertThat(entryList.size(), Is.is(4));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.foo.Foo", 100)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.bar.Bar", 120)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.baz.Baz", 15)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.quux.Quux", 137)));
     }
 
     @Test
@@ -114,11 +113,11 @@ public class TlbServerTest {
         server.testClassTime("com.quux.Quux", 160);
         String response = httpAction.get(suiteTimeUrl);
         List<SuiteTimeEntry> entryList = SuiteTimeEntry.parse(response);
-        assertThat(entryList.size(), is(4));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.foo.Foo", 150)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.bar.Bar", 140)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.baz.Baz", 15)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.quux.Quux", 90)));
+        Assert.assertThat(entryList.size(), Is.is(4));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.foo.Foo", 150)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.bar.Bar", 140)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.baz.Baz", 15)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.quux.Quux", 90)));
     }
 
     @Test
@@ -131,11 +130,11 @@ public class TlbServerTest {
         server.testClassFailure("com.quux.Quux", true);
         final String response = httpAction.get(String.format("http://localhost:%s/job/suite_result", freePort));
         final List<SuiteResultEntry> entryList = SuiteResultEntry.parse(response);
-        assertThat(entryList.size(), is(4));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.foo.Foo", true)));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.bar.Bar", false)));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.baz.Baz", true)));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.quux.Quux", true)));
+        Assert.assertThat(entryList.size(), Is.is(4));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.foo.Foo", true)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.bar.Bar", false)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.baz.Baz", true)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.quux.Quux", true)));
     }
 
     @Test
@@ -147,42 +146,42 @@ public class TlbServerTest {
         httpAction.put(url, "com.quux.Quux: 150");
 
         List<SuiteTimeEntry> entryList = server.getLastRunTestTimes();
-        assertThat(entryList.size(), is(4));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.foo.Foo", 10)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.bar.Bar", 12)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.baz.Baz", 17)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.quux.Quux", 150)));
+        Assert.assertThat(entryList.size(), Is.is(4));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.foo.Foo", 10)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.bar.Bar", 12)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.baz.Baz", 17)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.quux.Quux", 150)));
 
         server = new TlbServer(env, httpAction);
         httpAction.put(url, "com.foo.Foo: 18");
         httpAction.put(url, "com.foo.Bang: 103");
 
         entryList = server.getLastRunTestTimes();
-        assertThat(entryList.size(), is(4));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.foo.Foo", 10)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.bar.Bar", 12)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.baz.Baz", 17)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.quux.Quux", 150)));
+        Assert.assertThat(entryList.size(), Is.is(4));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.foo.Foo", 10)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.bar.Bar", 12)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.baz.Baz", 17)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.quux.Quux", 150)));
 
         updateEnv(env, TlbConstants.TlbServer.TLB_PARTITION_NUMBER, "2");
         server = new TlbServer(env, httpAction);
         entryList = server.getLastRunTestTimes();
-        assertThat(entryList.size(), is(4));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.foo.Foo", 10)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.bar.Bar", 12)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.baz.Baz", 17)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.quux.Quux", 150)));
+        Assert.assertThat(entryList.size(), Is.is(4));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.foo.Foo", 10)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.bar.Bar", 12)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.baz.Baz", 17)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.quux.Quux", 150)));
 
         //should fetch latest for unknown version
         updateEnv(env, TlbConstants.TlbServer.TLB_JOB_VERSION, "bar");
         server = new TlbServer(env, httpAction);
         entryList = server.getLastRunTestTimes();
-        assertThat(entryList.size(), is(5));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.foo.Foo", 18)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.bar.Bar", 12)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.baz.Baz", 17)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.quux.Quux", 150)));
-        assertThat(entryList, hasItem(new SuiteTimeEntry("com.foo.Bang", 103)));
+        Assert.assertThat(entryList.size(), Is.is(5));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.foo.Foo", 18)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.bar.Bar", 12)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.baz.Baz", 17)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.quux.Quux", 150)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteTimeEntry("com.foo.Bang", 103)));
     }
 
     @Test
@@ -194,25 +193,25 @@ public class TlbServerTest {
         httpAction.put(url, "com.quux.Quux: true");
 
         List<SuiteResultEntry> entryList = server.getLastRunFailedTests();
-        assertThat(entryList.size(), is(4));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.foo.Foo", true)));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.bar.Bar", false)));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.baz.Baz", false)));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.quux.Quux", true)));
+        Assert.assertThat(entryList.size(), Is.is(4));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.foo.Foo", true)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.bar.Bar", false)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.baz.Baz", false)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.quux.Quux", true)));
 
         updateEnv(env, TlbConstants.TlbServer.TLB_PARTITION_NUMBER, "2");
         entryList = server.getLastRunFailedTests();
-        assertThat(entryList.size(), is(4));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.foo.Foo", true)));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.bar.Bar", false)));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.baz.Baz", false)));
-        assertThat(entryList, hasItem(new SuiteResultEntry("com.quux.Quux", true)));
+        Assert.assertThat(entryList.size(), Is.is(4));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.foo.Foo", true)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.bar.Bar", false)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.baz.Baz", false)));
+        Assert.assertThat(entryList, JUnitMatchers.hasItem(new SuiteResultEntry("com.quux.Quux", true)));
     }
     
     @Test
     public void shouldReadTotalPartitionsFromEnvironmentVariables() throws NoSuchFieldException, IllegalAccessException {
-        assertThat(server.totalPartitions(), is(15));
+        Assert.assertThat(server.totalPartitions(), Is.is(15));
         updateEnv(env, TlbConstants.TlbServer.TLB_TOTAL_PARTITIONS, "7");
-        assertThat(server.totalPartitions(), is(7));
+        Assert.assertThat(server.totalPartitions(), Is.is(7));
     }
 }

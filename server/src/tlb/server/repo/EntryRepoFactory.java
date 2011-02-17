@@ -13,6 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 import static tlb.TlbConstants.Server.DEFAULT_TLB_DATA_DIR;
+import static tlb.TlbConstants.Server.EntryRepoFactory.SUBSET_SIZE;
+import static tlb.TlbConstants.Server.EntryRepoFactory.SUITE_RESULT;
+import static tlb.TlbConstants.Server.EntryRepoFactory.SUITE_TIME;
 import static tlb.TlbConstants.Server.TLB_DATA_DIR;
 
 /**
@@ -20,9 +23,6 @@ import static tlb.TlbConstants.Server.TLB_DATA_DIR;
  */
 public class EntryRepoFactory implements Runnable {
     public static final String DELIMITER = "_";
-    public static final String SUBSET_SIZE = "subset_size";
-    public static final String SUITE_TIME = "suite_time";
-    public static final String SUITE_RESULT = "suite_result";
     public static final String LATEST_VERSION = "LATEST";
     private static final Logger logger = Logger.getLogger(EntryRepoFactory.class.getName());
 

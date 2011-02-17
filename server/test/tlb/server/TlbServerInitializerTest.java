@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static tlb.TlbConstants.Server.EntryRepoFactory.SUBSET_SIZE;
 import static tlb.TlbConstants.Server.TLB_VERSION_LIFE_IN_DAYS;
 import static tlb.server.repo.EntryRepoFactory.LATEST_VERSION;
 
@@ -89,7 +90,7 @@ public class TlbServerInitializerTest {
     public void shouldInitializeEntryRepoFactoryWithPresentWorkingDirectoryAsDiskStorageRoot() throws IOException, ClassNotFoundException {
         EntryRepoFactory factory = initializer.repoFactory();
         File dir = TestUtil.mkdirInPwd("tlb_store");
-        File file = new File(dir, EntryRepoFactory.name("foo", LATEST_VERSION, EntryRepoFactory.SUBSET_SIZE));
+        File file = new File(dir, EntryRepoFactory.name("foo", LATEST_VERSION, SUBSET_SIZE));
         List<SubsetSizeEntry> entries = writeEntriedTo(file);
         SubsetSizeRepo repo = factory.createSubsetRepo("foo", LATEST_VERSION);
         assertThat((List<SubsetSizeEntry>) repo.list(), is(entries));
@@ -111,7 +112,7 @@ public class TlbServerInitializerTest {
         systemEnv.put(TlbConstants.Server.TLB_DATA_DIR, tmpDir);
         initializer = new TlbServerInitializer(new SystemEnvironment(systemEnv));
         EntryRepoFactory factory = initializer.repoFactory();
-        File file = new File(tmpDir, EntryRepoFactory.name("quux", LATEST_VERSION, EntryRepoFactory.SUBSET_SIZE));
+        File file = new File(tmpDir, EntryRepoFactory.name("quux", LATEST_VERSION, SUBSET_SIZE));
         writeEntriedTo(file);
         SubsetSizeRepo repo = factory.createSubsetRepo("quux", LATEST_VERSION);
         assertThat((List<SubsetSizeEntry>) repo.list(), is(Arrays.asList(new SubsetSizeEntry(1), new SubsetSizeEntry(2), new SubsetSizeEntry(3))));

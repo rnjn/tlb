@@ -6,7 +6,7 @@ package tlb;
 public interface TlbConstants {
     static final String TYPE_OF_SERVER = "TYPE_OF_SERVER";
 
-    public interface Go {
+    public static interface Go {
         static final String GO_SERVER_URL = "GO_SERVER_URL";
         static final String GO_PIPELINE_NAME = "GO_PIPELINE_NAME";
         static final String GO_STAGE_NAME = "GO_STAGE_NAME";
@@ -17,7 +17,7 @@ public interface TlbConstants {
         static final String GO_STAGE_FEED_MAX_SEARCH_DEPTH = "GO_STAGE_FEED_MAX_SEARCH_DEPTH";
     }
 
-    public interface TlbServer {
+    public static interface TlbServer {
         static final String TLB_JOB_NAME = "TLB_JOB_NAME";
         static final String TLB_BASE_URL = "TLB_BASE_URL";
         static final String TLB_PARTITION_NUMBER = "TLB_PARTITION_NUMBER";
@@ -36,12 +36,12 @@ public interface TlbConstants {
 
     static final String TLB_APP = "TLB_APP";
 
-    public interface Balancer {
+    public static interface Balancer {
         static final String TLB_BALANCER_PORT = "TLB_BALANCER_PORT";
         static final String QUERY = "query";
     }
 
-    public interface Server {
+    public static interface Server {
         static final String REPO_FACTORY = "repo_factory";
         static final String REQUEST_NAMESPACE = "namespace";
         static final String TLB_SERVER_PORT = "TLB_SERVER_PORT";
@@ -50,5 +50,11 @@ public interface TlbConstants {
         static final String LISTING_VERSION = "listing_version";
         static final String TLB_VERSION_LIFE_IN_DAYS = "TLB_VERSION_LIFE_IN_DAYS";
         static final String DEFAULT_SERVER_INITIALIZER = "tlb.server.TlbServerInitializer";
+
+        public static interface EntryRepoFactory {
+            static final String SUBSET_SIZE = "subset_size";
+            static final String SUITE_TIME = "suite_time";
+            static final String SUITE_RESULT = "suite_result";
+        }
     }
 }
