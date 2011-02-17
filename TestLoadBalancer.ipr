@@ -253,7 +253,7 @@
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/java.iml" filepath="$PROJECT_DIR$/java/java.iml" />
       <module fileurl="file://$PROJECT_DIR$/restlet/restlet.iml" filepath="$PROJECT_DIR$/restlet/restlet.iml" />
-      <module fileurl="file://$PROJECT_DIR$/restlet/restlets.iml" filepath="$PROJECT_DIR$/restlet/restlets.iml" />
+      <module fileurl="file://$PROJECT_DIR$/restlet/restlet.iml" filepath="$PROJECT_DIR$/restlet/restlet.iml" />
       <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
     </modules>
   </component>

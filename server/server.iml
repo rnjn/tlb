@@ -10,7 +10,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="prod" level="project" />
     <orderEntry type="library" name="test" level="project" />
-    <orderEntry type="module" module-name="restlets" />
+    <orderEntry type="module" module-name="restlet" />
     <orderEntry type="module" module-name="core" />
   </component>
 </module>
