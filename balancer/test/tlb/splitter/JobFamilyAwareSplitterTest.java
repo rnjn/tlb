@@ -3,9 +3,11 @@ package tlb.splitter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import tlb.*;
+import tlb.TestUtil;
+import tlb.TlbConstants;
+import tlb.TlbSuiteFile;
+import tlb.TlbSuiteFileImpl;
 import tlb.service.GoServer;
-import tlb.utils.SuiteFileConvertor;
 import tlb.utils.SystemEnvironment;
 
 import java.util.ArrayList;
@@ -46,9 +48,7 @@ public class JobFamilyAwareSplitterTest {
         };
         criteria.talksToServer(toCruise);
         logFixture.startListening();
-        final SuiteFileConvertor convertor = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(new ArrayList<TlbFileResource>());
-        List<TlbFileResource> resources = convertor.toTlbFileResources(criteria.filterSuites(suiteFiles));
+        List<TlbSuiteFile> resources = criteria.filterSuites(new ArrayList<TlbSuiteFile>());
         logFixture.assertHeard("got total of 0 files to balance");
         logFixture.assertHeard("total jobs to distribute load [ 3 ]");
         logFixture.assertHeard("assigned total of 2 files to [ build-1 ]");

@@ -2,13 +2,13 @@ package tlb.splitter;
 
 import org.junit.Before;
 import org.junit.Test;
-import tlb.*;
+import tlb.TestUtil;
+import tlb.TlbSuiteFile;
+import tlb.TlbSuiteFileImpl;
 import tlb.service.GoServer;
 import tlb.service.Server;
-import tlb.utils.SuiteFileConvertor;
 import tlb.utils.SystemEnvironment;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

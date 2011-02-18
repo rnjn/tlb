@@ -1,15 +1,11 @@
 package tlb.splitter;
 
-import org.junit.Before;
 import org.junit.Test;
-import tlb.DummyTlbFileResource;
 import tlb.TlbConstants;
-import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
-import tlb.utils.SuiteFileConvertor;
+import tlb.TlbSuiteFileImpl;
 import tlb.utils.SystemEnvironment;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -26,11 +22,10 @@ public class DefaultingTestSplitterTest {
     public void shouldAttemptCriterionSpecifiedInOrder() throws Exception{
         TestSplitter criteria = defaultingCriteriaWith("tlb.splitter.test.UnusableSplitter1:tlb.splitter.test.UnusableSplitter2:tlb.splitter.test.LastSelectingSplitter");
 
-        TlbFileResource foo = fileResource("foo");
-        TlbFileResource bar = fileResource("bar");
-        final SuiteFileConvertor convertor = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(Arrays.asList(foo, bar));
-        List<TlbFileResource> filteredResources = convertor.toTlbFileResources(criteria.filterSuites(suiteFiles));
+        TlbSuiteFile foo = new TlbSuiteFileImpl("foo");
+        TlbSuiteFile bar = new TlbSuiteFileImpl("bar");
+        final List<TlbSuiteFile> suiteFiles = Arrays.asList(foo, bar);
+        List<TlbSuiteFile> filteredResources = criteria.filterSuites(suiteFiles);
         assertThat(filteredResources.size(), is(1));
         assertThat(filteredResources, hasItem(bar));
     }
@@ -39,11 +34,10 @@ public class DefaultingTestSplitterTest {
     public void shouldAcceptSpacesBetweenCriterionNamesSpecified() throws Exception{
         TestSplitter criteria = defaultingCriteriaWith("tlb.splitter.test.UnusableSplitter1   :   tlb.splitter.test.UnusableSplitter2 :   tlb.splitter.test.LastSelectingSplitter");
 
-        TlbFileResource foo = fileResource("foo");
-        TlbFileResource bar = fileResource("bar");
-        final SuiteFileConvertor convertor = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(Arrays.asList(foo, bar));
-        List<TlbFileResource> filteredResources = convertor.toTlbFileResources(criteria.filterSuites(suiteFiles));
+        TlbSuiteFile foo = new TlbSuiteFileImpl("foo");
+        TlbSuiteFile bar = new TlbSuiteFileImpl("bar");
+
+        List<TlbSuiteFile> filteredResources = criteria.filterSuites(Arrays.asList(foo, bar));
         assertThat(filteredResources.size(), is(1));
         assertThat(filteredResources, hasItem(bar));
     }
@@ -59,19 +53,13 @@ public class DefaultingTestSplitterTest {
     public void shouldBombIfNoCriteriaCanBeUsedSuccessfully() throws Exception{
         TestSplitter criteria = defaultingCriteriaWith("tlb.splitter.test.UnusableSplitter1:tlb.splitter.test.UnusableSplitter2");
 
-        TlbFileResource foo = fileResource("foo");
-        TlbFileResource bar = fileResource("bar");
+        TlbSuiteFile foo = new TlbSuiteFileImpl("foo");
+        TlbSuiteFile bar = new TlbSuiteFileImpl("bar");
         try {
-            final SuiteFileConvertor convertor = new SuiteFileConvertor();
-            final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(Arrays.asList(foo, bar));
-            convertor.toTlbFileResources(criteria.filterSuites(suiteFiles));
+            criteria.filterSuites(Arrays.asList(foo, bar));
             fail("should have raised exception as no usable criteria specified");
         } catch (Exception e) {
             assertThat(e.getMessage(), is("None of [tlb.splitter.test.UnusableSplitter1, tlb.splitter.test.UnusableSplitter2] could successfully split the test suites."));
         }
-    }
-
-    private TlbFileResource fileResource(final String fileName) {
-        return new DummyTlbFileResource(fileName, null);
     }
 }
