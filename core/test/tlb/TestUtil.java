@@ -35,22 +35,6 @@ public class TestUtil {
     private static final int MIN_ANONYMOUS_PORT = 1024;
     private static final int MAX_PORT_NUMBER = 65536;
 
-    public static List<TlbFileResource> tlbFileResources(int ... numbers) {
-        ArrayList<TlbFileResource> resources = new ArrayList<TlbFileResource>();
-        for (int number : numbers) {
-            resources.add(junitFileResource("base" + number));
-        }
-        return resources;
-    }
-
-    public static TlbFileResource junitFileResource(final String name) {
-        return new DummyTlbFileResource(name, null);
-    }
-
-    public static TlbFileResource tlbFileResource(final String dir, final String name) {
-        return new DummyTlbFileResource(name, dir);
-    }
-
     public static String fileContents(String filePath) throws IOException, URISyntaxException {
         return FileUtils.readFileToString(new File(TestUtil.class.getClassLoader().getResource(filePath).toURI()));
     }

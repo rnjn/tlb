@@ -4,17 +4,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import tlb.TestUtil;
-import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
+import tlb.TlbSuiteFileImpl;
 import tlb.domain.SuiteTimeEntry;
 import tlb.service.Server;
-import tlb.utils.SuiteFileConvertor;
 import tlb.utils.SystemEnvironment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.io.File;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -46,16 +45,14 @@ public class TimeBasedTestSplitterTest {
 
         SystemEnvironment env = new SystemEnvironment();
 
-        TlbFileResource first = TestUtil.junitFileResource("first");
-        TlbFileResource second = TestUtil.junitFileResource("second");
-        TlbFileResource third = TestUtil.junitFileResource("third");
-        List<TlbFileResource> resources = Arrays.asList(first, second, third);
+        TlbSuiteFile first = new TlbSuiteFileImpl("first");
+        TlbSuiteFile second = new TlbSuiteFileImpl("second");
+        TlbSuiteFile third = new TlbSuiteFileImpl("third");
+        List<TlbSuiteFile> resources = Arrays.asList(first, second, third);
 
         TimeBasedTestSplitter criteria = new TimeBasedTestSplitter(server, env);
         logFixture.startListening();
-        final SuiteFileConvertor convertor = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
-        assertThat(convertor.toTlbFileResources(criteria.filterSuites(suiteFiles)), is(Arrays.asList(first, second, third)));
+        assertThat(criteria.filterSuites(resources), is(Arrays.asList(first, second, third)));
         logFixture.assertHeard("total jobs to distribute load [ 1 ]");
     }
 
@@ -66,24 +63,20 @@ public class TimeBasedTestSplitterTest {
         List<SuiteTimeEntry> entries = testTimes();
         when(server.getLastRunTestTimes()).thenReturn(entries);
 
-        TlbFileResource first = TestUtil.tlbFileResource("com/foo", "First");
-        TlbFileResource second = TestUtil.tlbFileResource("com/foo", "Second");
-        TlbFileResource third = TestUtil.tlbFileResource("com/bar", "Third");
-        TlbFileResource fourth = TestUtil.tlbFileResource("foo/baz", "Fourth");
-        TlbFileResource fifth = TestUtil.tlbFileResource("foo/bar", "Fourth");
-        List<TlbFileResource> resources = Arrays.asList(first, second, third, fourth, fifth);
+        TlbSuiteFile first = new TlbSuiteFileImpl("com/foo/First.class");
+        TlbSuiteFile second = new TlbSuiteFileImpl("com/foo/Second.class");
+        TlbSuiteFile third = new TlbSuiteFileImpl("com/bar/Third.class");
+        TlbSuiteFile fourth = new TlbSuiteFileImpl("foo/baz/Fourth.class");
+        TlbSuiteFile fifth = new TlbSuiteFileImpl("foo/bar/Fourth.class");
+        List<TlbSuiteFile> resources = Arrays.asList(first, second, third, fourth, fifth);
         when(server.partitionNumber()).thenReturn(1);
 
         TimeBasedTestSplitter criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-1"));
-        final SuiteFileConvertor convertor1 = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles1 = convertor1.toTlbSuiteFiles(resources);
-        assertThat(convertor1.toTlbFileResources(criteria.filterSuites(suiteFiles1)), is(Arrays.asList(second, first, third)));
+        assertThat(criteria.filterSuites(resources), is(Arrays.asList(second, first, third)));
 
         when(server.partitionNumber()).thenReturn(2);
         criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-2"));
-        final SuiteFileConvertor convertor = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
-        assertThat(convertor.toTlbFileResources(criteria.filterSuites(suiteFiles)), is(Arrays.asList(fourth, fifth)));
+        assertThat(criteria.filterSuites(resources), is(Arrays.asList(fourth, fifth)));
     }
 
     @Test
@@ -92,12 +85,12 @@ public class TimeBasedTestSplitterTest {
 
         when(server.getLastRunTestTimes()).thenReturn(new ArrayList<SuiteTimeEntry>());
 
-        TlbFileResource first = TestUtil.tlbFileResource("com/foo", "First");
-        TlbFileResource second = TestUtil.tlbFileResource("com/foo", "Second");
-        TlbFileResource third = TestUtil.tlbFileResource("com/bar", "Third");
-        TlbFileResource fourth = TestUtil.tlbFileResource("foo/baz", "Fourth");
-        TlbFileResource fifth = TestUtil.tlbFileResource("foo/bar", "Fourth");
-        List<TlbFileResource> resources = Arrays.asList(first, second, third, fourth, fifth);
+        TlbSuiteFile first = new TlbSuiteFileImpl("com/foo/First.class");
+        TlbSuiteFile second = new TlbSuiteFileImpl("com/foo/Second.class");
+        TlbSuiteFile third = new TlbSuiteFileImpl("com/bar/Third.class");
+        TlbSuiteFile fourth = new TlbSuiteFileImpl("foo/baz/Fourth.class");
+        TlbSuiteFile fifth = new TlbSuiteFileImpl("foo/bar/Fourth.class");
+        List<TlbSuiteFile> resources = Arrays.asList(first, second, third, fourth, fifth);
 
         when(server.partitionNumber()).thenReturn(1);
         TimeBasedTestSplitter criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-1"));
@@ -117,11 +110,9 @@ public class TimeBasedTestSplitterTest {
         assertAbortsForNoHistoricalTimeData(resources, criteria);
     }
 
-    private void assertAbortsForNoHistoricalTimeData(List<TlbFileResource> resources, TimeBasedTestSplitter criteria) {
+    private void assertAbortsForNoHistoricalTimeData(List<TlbSuiteFile> resources, TimeBasedTestSplitter criteria) {
         try {
-            final SuiteFileConvertor convertor = new SuiteFileConvertor();
-            final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
-            convertor.toTlbFileResources(criteria.filterSuites(suiteFiles));
+            criteria.filterSuites(resources);
             fail("should have aborted, as no historical test time data was given");
         } catch (Exception e) {
             String message = "no historical test time data, aborting attempt to balance based on time";
@@ -136,36 +127,28 @@ public class TimeBasedTestSplitterTest {
         when(server.totalPartitions()).thenReturn(4);
         when(server.getLastRunTestTimes()).thenReturn(testTimes());
 
-        TlbFileResource first = TestUtil.tlbFileResource("com/foo", "First");
-        TlbFileResource second = TestUtil.tlbFileResource("com/foo", "Second");
-        TlbFileResource third = TestUtil.tlbFileResource("com/bar", "Third");
-        TlbFileResource fourth = TestUtil.tlbFileResource("foo/baz", "Fourth");
-        TlbFileResource fifth = TestUtil.tlbFileResource("foo/bar", "Fourth");
-        List<TlbFileResource> resources = Arrays.asList(first, second, third, fourth, fifth);
+        TlbSuiteFile first = new TlbSuiteFileImpl("com/foo/First.class");
+        TlbSuiteFile second = new TlbSuiteFileImpl("com/foo/Second.class");
+        TlbSuiteFile third = new TlbSuiteFileImpl("com/bar/Third.class");
+        TlbSuiteFile fourth = new TlbSuiteFileImpl("foo/baz/Fourth.class");
+        TlbSuiteFile fifth = new TlbSuiteFileImpl("foo/bar/Fourth.class");
+        List<TlbSuiteFile> resources = Arrays.asList(first, second, third, fourth, fifth);
 
         when(server.partitionNumber()).thenReturn(1);
         TimeBasedTestSplitter criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-1"));
-        final SuiteFileConvertor convertor3 = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles3 = convertor3.toTlbSuiteFiles(resources);
-        assertThat(convertor3.toTlbFileResources(criteria.filterSuites(suiteFiles3)), is(Arrays.asList(second)));
+        assertThat(criteria.filterSuites(resources), is(Arrays.asList(second)));
 
         when(server.partitionNumber()).thenReturn(2);
         criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-2"));
-        final SuiteFileConvertor convertor2 = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles2 = convertor2.toTlbSuiteFiles(resources);
-        assertThat(convertor2.toTlbFileResources(criteria.filterSuites(suiteFiles2)), is(Arrays.asList(fourth)));
+        assertThat(criteria.filterSuites(resources), is(Arrays.asList(fourth)));
 
         when(server.partitionNumber()).thenReturn(3);
         criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-3"));
-        final SuiteFileConvertor convertor1 = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles1 = convertor1.toTlbSuiteFiles(resources);
-        assertThat(convertor1.toTlbFileResources(criteria.filterSuites(suiteFiles1)), is(Arrays.asList(fifth)));
+        assertThat(criteria.filterSuites(resources), is(Arrays.asList(fifth)));
 
         when(server.partitionNumber()).thenReturn(4);
         criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-4"));
-        final SuiteFileConvertor convertor = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
-        assertThat(convertor.toTlbFileResources(criteria.filterSuites(suiteFiles)), is(Arrays.asList(first, third)));
+        assertThat(criteria.filterSuites(resources), is(Arrays.asList(first, third)));
     }
 
     @Test
@@ -173,21 +156,19 @@ public class TimeBasedTestSplitterTest {
         when(server.totalPartitions()).thenReturn(2);
         when(server.getLastRunTestTimes()).thenReturn(testTimes());
 
-        TlbFileResource first = TestUtil.tlbFileResource("com/foo", "First");
-        TlbFileResource second = TestUtil.tlbFileResource("com/foo", "Second");
-        TlbFileResource third = TestUtil.tlbFileResource("com/bar", "Third");
-        TlbFileResource fourth = TestUtil.tlbFileResource("foo/baz", "Fourth");
-        TlbFileResource fifth = TestUtil.tlbFileResource("foo/bar", "Fourth");
-        TlbFileResource firstNew = TestUtil.tlbFileResource("foo/quux", "First");
-        TlbFileResource secondNew = TestUtil.tlbFileResource("foo/quux", "Second");
-        List<TlbFileResource> resources = Arrays.asList(first, second, third, fourth, fifth, firstNew, secondNew);
+        TlbSuiteFile first = new TlbSuiteFileImpl("com/foo/First.class");
+        TlbSuiteFile second = new TlbSuiteFileImpl("com/foo/Second.class");
+        TlbSuiteFile third = new TlbSuiteFileImpl("com/bar/Third.class");
+        TlbSuiteFile fourth = new TlbSuiteFileImpl("foo/baz/Fourth.class");
+        TlbSuiteFile fifth = new TlbSuiteFileImpl("foo/bar/Fourth.class");
+        TlbSuiteFile firstNew = new TlbSuiteFileImpl("foo/quux/First.class");
+        TlbSuiteFile secondNew = new TlbSuiteFileImpl("foo/quux/Second.class");
+        List<TlbSuiteFile> resources = Arrays.asList(first, second, third, fourth, fifth, firstNew, secondNew);
 
         when(server.partitionNumber()).thenReturn(1);
         TimeBasedTestSplitter criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-1"));
         logFixture.startListening();
-        final SuiteFileConvertor convertor1 = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles1 = convertor1.toTlbSuiteFiles(resources);
-        List<TlbFileResource> filteredResources = convertor1.toTlbFileResources(criteria.filterSuites(suiteFiles1));
+        List<TlbSuiteFile> filteredResources = criteria.filterSuites(resources);
         logFixture.assertHeard("got total of 7 files to balance");
         logFixture.assertHeard("total jobs to distribute load [ 2 ]");
         logFixture.assertHeard("historical test time data has entries for 5 suites");
@@ -199,9 +180,7 @@ public class TimeBasedTestSplitterTest {
 
         when(server.partitionNumber()).thenReturn(2);
         criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-2"));
-        final SuiteFileConvertor convertor = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
-        filteredResources = convertor.toTlbFileResources(criteria.filterSuites(suiteFiles));
+        filteredResources = criteria.filterSuites(resources);
         logFixture.assertHeard("got total of 7 files to balance", 2);
         logFixture.assertHeard("total jobs to distribute load [ 2 ]", 2);
         logFixture.assertHeard("historical test time data has entries for 5 suites", 2);
@@ -217,20 +196,17 @@ public class TimeBasedTestSplitterTest {
         when(server.totalPartitions()).thenReturn(2);
         when(server.getLastRunTestTimes()).thenReturn(testTimes());
 
-        TlbFileResource first = TestUtil.tlbFileResource("com/foo", "First");
-        TlbFileResource second = TestUtil.tlbFileResource("com/foo", "Second");
-        TlbFileResource third = TestUtil.tlbFileResource("com/bar", "Third");
+        TlbSuiteFile first = new TlbSuiteFileImpl("com/foo/First.class");
+        TlbSuiteFile second = new TlbSuiteFileImpl("com/foo/Second.class");
+        TlbSuiteFile third = new TlbSuiteFileImpl("com/bar/Third.class");
 
-        List<TlbFileResource> resources = Arrays.asList(second, first, third);
+        List<TlbSuiteFile> resources = Arrays.asList(second, first, third);
 
         when(server.partitionNumber()).thenReturn(1);
         TimeBasedTestSplitter criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-1"));
         logFixture.startListening();
 
-        final SuiteFileConvertor convertor1 = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles1 = convertor1.toTlbSuiteFiles(resources);
-        List<TlbFileResource> resourceList = convertor1.toTlbFileResources(criteria.filterSuites(suiteFiles1));
-        assertThat(resourceList, is(Arrays.asList(second)));
+        assertThat(criteria.filterSuites(resources), is(Arrays.asList(second)));
         logFixture.assertHeard("got total of 3 files to balance");
         logFixture.assertHeard("total jobs to distribute load [ 2 ]");
         logFixture.assertHeard("historical test time data has entries for 5 suites");
@@ -241,9 +217,7 @@ public class TimeBasedTestSplitterTest {
         when(server.partitionNumber()).thenReturn(2);
         criteria = new TimeBasedTestSplitter(server, TestUtil.initEnvironment("job-2"));
 
-        final SuiteFileConvertor convertor = new SuiteFileConvertor();
-        final List<TlbSuiteFile> suiteFiles = convertor.toTlbSuiteFiles(resources);
-        assertThat(convertor.toTlbFileResources(criteria.filterSuites(suiteFiles)), is(Arrays.asList(first, third)));
+        assertThat(criteria.filterSuites(resources), is(Arrays.asList(first, third)));
         logFixture.assertHeard("got total of 3 files to balance", 2);
         logFixture.assertHeard("total jobs to distribute load [ 2 ]", 2);
         logFixture.assertHeard("historical test time data has entries for 5 suites", 2);
