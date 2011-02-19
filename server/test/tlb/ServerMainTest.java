@@ -10,7 +10,7 @@ import java.util.HashMap;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class MainTest {
+public class ServerMainTest {
     @Test
     public void shouldCreateServerInitializer() {
         final Main main = new Main();
@@ -22,5 +22,4 @@ public class MainTest {
         final Main main = new Main();
         assertThat(main.restletInitializer(new SystemEnvironment(Collections.singletonMap(TlbConstants.TLB_APP, "tlb.server.TlbServerInitializer"))), is(TlbServerInitializer.class));
     }
-
 }

@@ -20,11 +20,10 @@ import java.io.OutputStream;
 public class JunitDataRecorder implements JUnitResultFormatter {
     private static final Logger logger = Logger.getLogger(JunitDataRecorder.class.getName());
     private Server server;
-    private final SystemEnvironment environment;
     private final FileUtil fileUtil;
 
     public JunitDataRecorder(Server server, SystemEnvironment environment) {
-        this(server, environment, new FileUtil(environment));
+        this(server, new FileUtil(environment));
     }
 
     public JunitDataRecorder() {//default constructor
@@ -35,9 +34,8 @@ public class JunitDataRecorder implements JUnitResultFormatter {
         this(TlbFactory.getTalkToService(systemEnvironment), systemEnvironment);
     }
 
-    JunitDataRecorder(Server server, SystemEnvironment environment, FileUtil fileUtil) {
+    JunitDataRecorder(Server server, FileUtil fileUtil) {
         this.server = server;
-        this.environment = environment;
         this.fileUtil = fileUtil;
     }
 

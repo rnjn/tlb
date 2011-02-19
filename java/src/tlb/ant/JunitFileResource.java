@@ -58,8 +58,4 @@ public class JunitFileResource implements TlbFileResource {
                 "fileResource=" + fileResource +
                 '}';
     }
-
-    public String dump() {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
 }

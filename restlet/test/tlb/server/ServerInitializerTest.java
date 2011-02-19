@@ -1,6 +1,5 @@
 package tlb.server;
 
-import tlb.utils.SystemEnvironment;
 import org.junit.Before;
 import org.junit.Test;
 import org.restlet.Component;
@@ -13,17 +12,15 @@ import org.restlet.util.ServerList;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class ServerInitializerTest {
-    protected TestMain main;
+    protected TestServerInitializer serverInitializer;
 
-    class TestMain extends TlbServerInitializer {
-        TestMain(SystemEnvironment env) {
-            super(env);
-        }
+    class TestServerInitializer extends ServerInitializer {
 
         @Override
-        protected TlbApplication application() {
+        protected Restlet application() {
             return app;
         }
 
@@ -34,13 +31,13 @@ public class ServerInitializerTest {
     }
 
     protected Component component;
-    protected TlbApplication app;
+    protected Restlet app;
 
     @Before
     public void setUp() {
-        app = new TlbApplication(new Context());
-        main = new TestMain(new SystemEnvironment());
-        component = main.init();
+        app = mock(Restlet.class);
+        serverInitializer = new TestServerInitializer();
+        component = serverInitializer.init();
     }
 
     @Test
@@ -57,12 +54,12 @@ public class ServerInitializerTest {
         RouteList routeList = component.getDefaultHost().getRoutes();
         assertThat(routeList.size(), is(1));
         Restlet application = routeList.get(0).getNext();
-        assertThat(application, sameInstance((Restlet) app));
+        assertThat(application, sameInstance(app));
     }
     
     @Test
     public void shouldCacheComponentInitialization() {
-        assertThat(main.init(), sameInstance(component));
+        assertThat(serverInitializer.init(), sameInstance(component));
     }
 
 }

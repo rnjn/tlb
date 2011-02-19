@@ -2,7 +2,6 @@ package tlb.factory;
 
 import org.junit.Test;
 import tlb.server.ServerInitializer;
-import tlb.server.TlbServerInitializer;
 import tlb.utils.SystemEnvironment;
 
 import java.util.HashMap;
@@ -11,14 +10,12 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
-/**
- * @understands
- */
 public class TlbServerFactoryTest {
+
     @Test
     public void shouldReturnTlbServerRestletLauncher() {
-        ServerInitializer launcher = TlbServerFactory.getRestletLauncher("tlb.server.TlbServerInitializer", new SystemEnvironment(new HashMap<String, String>()));
-        assertThat(launcher, is(TlbServerInitializer.class));
+        ServerInitializer launcher = TlbServerFactory.getRestletLauncher(TestInitializer.class.getCanonicalName(), new SystemEnvironment(new HashMap<String, String>()));
+        assertThat(launcher, is(TestInitializer.class));
     }
 
     @Test
