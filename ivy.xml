@@ -28,9 +28,6 @@
         <dependency org="com.noelios.restlet" name="com.noelios.restlet" rev="1.1.10" conf="restlet"/>
         <dependency org="com.noelios.restlet" name="com.noelios.restlet.ext.servlet" rev="1.1.10" conf="restlet"/>
         
-        <!--dependency org="commons-logging" name="commons-logging" rev="1.1.1"/>
-
-        <dependency org="jaxen" name="jaxen" rev="1.1.1"/-->
         <dependency name="junit" rev="4.7" org="junit" conf="test;java"/>
 
         <dependency org="org.mockito" name="mockito-all" rev="1.8.2" conf="test->default"/>

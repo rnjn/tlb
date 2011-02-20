@@ -14,6 +14,7 @@
     <property name="restlet.dir" location="${basedir}/restlet"/>
     <property name="alien.dir" location="${basedir}/alien"/>
     <property name="java.dir" location="${basedir}/java"/>
+    <property name="server.dir" location="${basedir}/server"/>
 
     <property name="dist.dir" location="${target.dir}/dist"/>
     <property name="emma.dir" location="${target.dir}/emma"/>
@@ -69,8 +70,9 @@
     <import file="${restlet.dir}/build.xml"/>
     <import file="${alien.dir}/build.xml"/>
     <import file="${java.dir}/build.xml"/>
+    <import file="${server.dir}/build.xml"/>
 
-    <target name="init" depends="resolve, core.init, balancer.init, java.init, restlet.init, alien.init">
+    <target name="init" depends="resolve, core.init, balancer.init, java.init, restlet.init, alien.init, server.init">
         <mkdir dir="${target.dir}"/>
         <!--taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
 
