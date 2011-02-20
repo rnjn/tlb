@@ -20,7 +20,9 @@
         <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.1" conf="balancer"/>
 
         <dependency org="org.apache.ant" name="ant" rev="1.7.1" conf="java"/>
-        <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="java"/>
+        <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="java">
+            <exclude org="junit" conf="java"/>
+        </dependency>
 
         <dependency org="org.restlet" name="org.restlet" rev="1.1.10" conf="restlet"/>
         <dependency org="com.noelios.restlet" name="com.noelios.restlet" rev="1.1.10" conf="restlet"/>
@@ -29,12 +31,12 @@
         <!--dependency org="commons-logging" name="commons-logging" rev="1.1.1"/>
 
         <dependency org="jaxen" name="jaxen" rev="1.1.1"/-->
+        <dependency name="junit" rev="4.7" org="junit" conf="test;java"/>
 
-        <dependency name="junit" rev="4.7" org="junit" conf="test"/>
-        <dependency org="org.mockito" name="mockito-all" rev="1.8.2" conf="test"/>
-        <dependency org="junit.ext" name="junit-ext" rev="1.0-junit-4.5-RC-3" conf="test"/>
-        <dependency org="org.mortbay.jetty" name="jetty" rev="6.1.26" conf="test"/>
-        <dependency org="bouncycastle" name="bcprov-jdk16" rev="140" conf="test"/>
+        <dependency org="org.mockito" name="mockito-all" rev="1.8.2" conf="test->default"/>
+        <dependency org="junit.ext" name="junit-ext" rev="1.0-junit-4.5-RC-3" conf="test->default"/>
+        <dependency org="org.mortbay.jetty" name="jetty" rev="6.1.26" conf="test->default"/>
+        <dependency org="bouncycastle" name="bcprov-jdk16" rev="140" conf="test->default"/>
 
         <dependency org="emma" name="emma" rev="2.0.5312" conf="build"/>
         <dependency org="emma" name="emma_ant" rev="2.0.5312" conf="build"/>
