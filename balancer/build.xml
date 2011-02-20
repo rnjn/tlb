@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="tlb-core" basedir="..">
+<project name="tlb-balancer" basedir="..">
     <property name="balancer.dir" location="${basedir}/core"/>
     <property name="balancer.src.dir" location="${balancer.dir}/src"/>
     <property name="balancer.test.dir" location="${balancer.dir}/test"/>
@@ -16,15 +16,16 @@
     </path>
 
     <path id="balancer.src.classpath">
-        <path refid="core.src.classpath"/>
-        <path refid="balancer.dependencies"/>
         <pathelement path="${balancer.classes.dir}"/>
+        <pathelement path="${core.classes.dir}"/>
+        <path refid="balancer.dependencies"/>
+        <path refid="core.dependencies"/>
     </path>
 
     <path id="balancer.test.classpath">
         <pathelement path="${balancer.test.classes.dir}"/>
+        <pathelement path="${core.test.classes.dir}"/>
         <path refid="balancer.src.classpath"/>
-        <path refid="core.test.classpath"/>
         <path refid="test.dependencies"/>
     </path>
 
