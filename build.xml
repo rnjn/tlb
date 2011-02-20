@@ -15,6 +15,7 @@
     <property name="alien.dir" location="${basedir}/alien"/>
     <property name="java.dir" location="${basedir}/java"/>
     <property name="server.dir" location="${basedir}/server"/>
+    <property name="integration_tests.dir" location="${basedir}/integration_tests"/>
 
     <property name="dist.dir" location="${target.dir}/dist"/>
     <property name="emma.dir" location="${target.dir}/emma"/>
@@ -72,7 +73,9 @@
     <import file="${java.dir}/java-build.xml"/>
     <import file="${server.dir}/server-build.xml"/>
 
-    <target name="init" depends="resolve, core.init, balancer.init, java.init, restlet.init, alien.init, server.init">
+    <import file="${integration_tests.dir}/integration-tests-build.xml"/>
+
+    <target name="init" depends="resolve, core.init, balancer.init, java.init, restlet.init, alien.init, server.init, integration-tests.init">
         <mkdir dir="${target.dir}"/>
         <!--taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
 
@@ -229,7 +232,7 @@
     </target>
 -->
 
-    <target name="test" depends="init, core.test, balancer.test, java.test, restlet.test, alien.test, server.test"/>
+    <target name="test" depends="init, core.test, balancer.test, java.test, restlet.test, alien.test, server.test, integration-tests.test"/>
 
 <!--
     <target name="run_balancer" depends="compile">

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="tlb-java" basedir="..">
-    <property name="java.dir" location="${basedir}/core"/>
+    <property name="java.dir" location="${basedir}/java"/>
     <property name="java.src.dir" location="${java.dir}/src"/>
     <property name="java.test.dir" location="${java.dir}/test"/>
     <property name="java.test.resources.dir" location="${java.test.dir}/resources"/>

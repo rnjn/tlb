@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="tlb-balancer" basedir="..">
-    <property name="balancer.dir" location="${basedir}/core"/>
+    <property name="balancer.dir" location="${basedir}/balancer"/>
     <property name="balancer.src.dir" location="${balancer.dir}/src"/>
     <property name="balancer.test.dir" location="${balancer.dir}/test"/>
     <property name="balancer.test.resources.dir" location="${balancer.test.dir}/resources"/>

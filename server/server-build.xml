@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="tlb-server" basedir="..">
-    <property name="server.dir" location="${basedir}/core"/>
+    <property name="server.dir" location="${basedir}/server"/>
     <property name="server.src.dir" location="${server.dir}/src"/>
     <property name="server.test.dir" location="${server.dir}/test"/>
     <property name="server.lib.dir" location="${lib.dir}/server"/>

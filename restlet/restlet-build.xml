@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="tlb-restlet" basedir="..">
-    <property name="restlet.dir" location="${basedir}/core"/>
+    <property name="restlet.dir" location="${basedir}/restlet"/>
     <property name="restlet.src.dir" location="${restlet.dir}/src"/>
     <property name="restlet.test.dir" location="${restlet.dir}/test"/>
     <property name="restlet.test.resources.dir" location="${restlet.test.dir}/resources"/>

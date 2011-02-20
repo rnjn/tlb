@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="tlb-alien" basedir="..">
-    <property name="alien.dir" location="${basedir}/core"/>
+    <property name="alien.dir" location="${basedir}/alien"/>
     <property name="alien.src.dir" location="${alien.dir}/src"/>
     <property name="alien.test.dir" location="${alien.dir}/test"/>
     <property name="alien.test.resources.dir" location="${alien.test.dir}/resources"/>
