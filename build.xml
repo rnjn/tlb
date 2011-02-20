@@ -10,6 +10,7 @@
     <property name="target.dir" location="${basedir}/target"/>
 
     <property name="core.dir" location="${basedir}/core"/>
+    <property name="balancer.dir" location="${basedir}/balancer"/>
 
     <property name="dist.dir" location="${target.dir}/dist"/>
     <property name="emma.dir" location="${target.dir}/emma"/>
@@ -61,8 +62,9 @@
     </target>
 
     <import file="${core.dir}/build.xml"/>
+    <import file="${balancer.dir}/build.xml"/>
 
-    <target name="init" depends="resolve, core.init">
+    <target name="init" depends="resolve, core.init, balancer.init">
         <mkdir dir="${target.dir}"/>
         <!--taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
 

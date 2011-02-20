@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" name="tlb-core" basedir="..">
+<project name="tlb-core" basedir="..">
     <property name="core.dir" location="${basedir}/core"/>
     <property name="core.src.dir" location="${core.dir}/src"/>
     <property name="core.test.dir" location="${core.dir}/test"/>
