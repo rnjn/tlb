@@ -65,12 +65,12 @@
         <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
     </target>
 
-    <import file="${core.dir}/build.xml"/>
-    <import file="${balancer.dir}/build.xml"/>
-    <import file="${restlet.dir}/build.xml"/>
-    <import file="${alien.dir}/build.xml"/>
-    <import file="${java.dir}/build.xml"/>
-    <import file="${server.dir}/build.xml"/>
+    <import file="${core.dir}/core-build.xml"/>
+    <import file="${balancer.dir}/balancer-build.xml"/>
+    <import file="${restlet.dir}/restlet-build.xml"/>
+    <import file="${alien.dir}/alien-build.xml"/>
+    <import file="${java.dir}/java-build.xml"/>
+    <import file="${server.dir}/server-build.xml"/>
 
     <target name="init" depends="resolve, core.init, balancer.init, java.init, restlet.init, alien.init, server.init">
         <mkdir dir="${target.dir}"/>
@@ -94,36 +94,6 @@
         <delete dir="${target.dir}" includeemptydirs="true"/>
     </target>
 
-    <target name="compile-core" depends="init, resolve">
-        <javac destdir="${classes.dir}" target="1.5" source="1.5" debug="true" includeantruntime="false">
-            <classpath refid="src.classpath"/>
-            <src path="${src.dir}"/>
-        </javac>
-    </target>
-
-    <target name="compile" depends="init, resolve">
-        <javac destdir="${classes.dir}" target="1.5" source="1.5" debug="true" includeantruntime="false">
-            <classpath refid="src.classpath"/>
-            <src path="${src.dir}"/>
-        </javac>
-    </target>
-
-    <target name="compile-tests" depends="compile, init">
-        <javac destdir="${test-classes.dir}" target="1.5" source="1.5" includeantruntime="false">
-            <classpath refid="test.classpath"/>
-            <src path="${test.dir}"/>
-        </javac>
-        <copy todir="${test-target-resources.dir}">
-            <fileset dir="${test-resources.dir}"/>
-        </copy>
-    </target>
-
-    <target name="compile-integration-tests" depends="compile, init">
-        <javac destdir="${integration-test-classes.dir}" target="1.5" source="1.5">
-            <classpath refid="integration-test.classpath"/>
-            <src path="${integration-test.dir}"/>
-        </javac>
-    </target>
 
     <target name="-load.short.rev">
         <exec executable="git" outputproperty="short_rev">
@@ -164,6 +134,7 @@
         </tlb-jar>
     </target>
 
+<!--
     <target name="package.jar" depends="init, compile, -load.short.rev">
         <property name="tlb_jar" value="${target.dir}/${tlb.jar.name}"/>
         <tlb-jar dest="${tlb_jar}">
@@ -189,13 +160,15 @@
             </lib>
         </onejar>
     </target>
+-->
 
-    <target name="package" depends="clean, package.src, package.jar"/>
+    <!--<target name="package" depends="clean, package.src, package.jar"/>-->
 
     <target name="prepare-dist">
         <mkdir dir="${dist.dir}"/>
     </target>
 
+<!--
     <target name="package-dist-archive" depends="package, prepare-dist, -load.short.rev">
         <property name="archive.name" location="${dist.dir}/${tlb.all.basename}.tar.gz"/>
         <tar destfile="${archive.name}" compression="gzip">
@@ -218,6 +191,7 @@
             </tarfileset>
         </tar>
     </target>
+-->
 
     <target name="copy-help" depends="prepare-dist">
         <property name="dist.readme" value="${dist.dir}/README"/>
@@ -234,13 +208,16 @@
         </sequential>
     </macrodef>
 
+<!--
     <target name="sign-dist" depends="package-dist-archive, copy-help">
         <sign path="${archive.name}"/>
         <sign path="${dist.readme}"/>
     </target>
+-->
 
-    <target name="dist" depends="package-dist-archive, copy-help, sign-dist"/>
+    <!--<target name="dist" depends="package-dist-archive, copy-help, sign-dist"/>-->
 
+<!--
     <target name="emma.instr" depends="compile">
         <sequential>
             <mkdir dir="${emma.dir}"/>
@@ -250,24 +227,11 @@
             </emma>
         </sequential>
     </target>
+-->
 
-    <target name="test" depends="compile, compile-tests">
-        <junit failureproperty="test.failure" printsummary="yes" haltonfailure="true" fork="true">
-            <classpath location="${emma.dir}"/>
-            <classpath refid="test.classpath"/>
+    <target name="test" depends="init, core.test, balancer.test, java.test, restlet.test, alien.test, server.test"/>
 
-            <classpath refid="emma.classpath"/>
-
-            <jvmarg value="-Demma.coverage.out.file=${emma.dir}/coverage.emma"/>
-            <jvmarg value="-Demma.coverage.out.merge=true"/>
-
-            <batchtest todir="${reports.dir}">
-                <fileset dir="${test-classes.dir}" includes="**/*Test.class*"/>
-                <formatter type="plain"/>
-            </batchtest>
-        </junit>
-    </target>
-
+<!--
     <target name="run_balancer" depends="compile">
         <java classname="tlb.Main" fork="true">
             <env key="TLB_BASE_URL" value="http://localhost:7019"/>
@@ -283,7 +247,9 @@
             <classpath refid="src.classpath"/>
         </java>
     </target>
+-->
 
+<!--
     <target name="coverage" depends="emma.instr, test">
         <emma enabled="true">
             <report sort="+name" metrics="method:85,block:90,line:90,class:90" sourcepath="${src.dir}">
@@ -295,7 +261,9 @@
             </report>
         </emma>
     </target>
+-->
 
+<!--
     <target name="test.count_balanced" depends="package, compile-tests">
         <typedef name="load-balanced-fileset" classname="tlb.ant.LoadBalancedFileSet" classpathref="dog.food.classpath"/>
         <junit failureproperty="test.failure" printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
@@ -306,7 +274,9 @@
             </batchtest>
         </junit>
     </target>
+-->
 
+<!--
     <target name="test.time_balanced" depends="package, compile-tests">
         <typedef name="load-balanced-fileset" classname="tlb.ant.LoadBalancedFileSet" classpathref="dog.food.classpath"/>
         <junit failureproperty="test.failure" printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
@@ -318,7 +288,9 @@
             </batchtest>
         </junit>
     </target>
+-->
 
+<!--
     <target name="integration-test.time_balanced" depends="package, compile-integration-tests">
         <description>
             Running integration tests makes sence only in a load balanced job(in cruise).
@@ -335,13 +307,16 @@
             </batchtest>
         </junit>
     </target>
+-->
 
+<!--
     <target name="server" depends="package.jar">
         <java fork="true" classname="tlb.Main">
             <classpath path="${tlb_jar}"/>
             <classpath refid="dependencies"/>
         </java>
     </target>
+-->
 
-    <target name="all" depends="clean, coverage, package"/>
+    <!--<target name="all" depends="clean, coverage, package"/>-->
 </project>
