@@ -13,7 +13,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
-import static tlb.TestUtil.getRoutePatternsAndResources;
+import static tlb.RestletTestUtil.getRoutePatternsAndResources;
 
 public class TlbClientTest {
     private TlbClient app;

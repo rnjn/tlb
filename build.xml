@@ -4,70 +4,30 @@
         <!ENTITY extension-name SYSTEM "misc/extension-name.xml">
 ]>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="tlb" basedir="." default="all">
-    <property name="core.dir" location="core"/>
-    <property name="core.src.dir" location="${core.dir}/src"/>
-    <property name="core.test.dir" location="${core.dir}/test"/>
-    <property name="core.integration-test.dir" location="${core.dir}/integration-test"/>
-    <property name="core.test-resources.dir" location="${core.test.dir}/resources"/>
-    <property name="core.lib.dir" location="${core.dir}/lib"/>
-    <property name="core.prod-lib.dir" location="${core.lib.dir}/prod"/>
-    <property name="core.test-lib.dir" location="${core.lib.dir}/test"/>
-    <property name="core.build_lib.dir" location="${core.lib.dir}/build"/>
+    <property name="lib.dir" location="${basedir}/lib"/>
+    <property name="test.lib.dir" location="${lib.dir}/test"/>
 
-    <property name="java.dir" location="java"/>
-    <property name="java.src.dir" location="${java.dir}/src"/>
-    <property name="java.test.dir" location="${java.dir}/test"/>
-    <property name="java.test-resources.dir" location="${core.test.dir}/resources"/>
-    <property name="java.lib.dir" location="${core.dir}/lib"/>
-    <property name="java.prod-lib.dir" location="${core.lib.dir}/prod"/>
-    <property name="java.test-lib.dir" location="${core.lib.dir}/test"/>
-    <property name="java.build_lib.dir" location="${core.lib.dir}/build"/>
+    <property name="target.dir" location="${basedir}/target"/>
 
-    <property name="target.dir" location="target"/>
-    <property name="core.target.dir" location="${target.dir}/${core.dir}"/>
-    <property name="java.target.dir" location="${target.dir}/${java.dir}"/>
-
-    <property name="core.classes.dir" location="${target.dir}/classes"/>
+    <property name="core.dir" location="${basedir}/core"/>
 
     <property name="dist.dir" location="${target.dir}/dist"/>
     <property name="emma.dir" location="${target.dir}/emma"/>
     <property name="emma.version" value="2.0.5312"/>
-
-    <property name="test-classes.dir" location="${target.dir}/test-classes"/>
-    <property name="integration-test-classes.dir" location="${target.dir}/integration-test-classes"/>
-    <property name="reports.dir" location="${target.dir}/reports"/>
-    <property name="test-target-resources.dir" location="${test-classes.dir}/resources"/>
 
     <property name="title" value="TLB - Test Load Balancer"/>
     <property name="vendor" value="TLB Core Team - Janmejay Singh, Pavan KS"/><!-- follow alpha first name -->
     <property name="license" value="2-clause BSD License"/>
     <property name="description" value="A tool to load-balance tests across multiple processes or machines"/>
 
-    <path id="dependencies">
-        <fileset dir="${prod-lib.dir}" includes="*.jar"/>
+    <path id="test.dependencies">
+        <fileset dir="${test.lib.dir}" includes="*.jar"/>
     </path>
 
-    <path id="src.classpath">
-        <path refid="dependencies"/>
-        <pathelement path="${classes.dir}"/>
-    </path>
-
-    <path id="test.classpath">
-        <path refid="src.classpath"/>
-        <pathelement path="${test-classes.dir}"/>
-        <fileset dir="${test-lib.dir}" includes="*.jar"/>
-    </path>
-
-    <path id="integration-test.classpath">
-        <path refid="src.classpath"/>
-        <pathelement path="${integration-test-classes.dir}"/>
-        <fileset dir="${test-lib.dir}" includes="*.jar"/>
-    </path>
-
-    <path id="dog.food.classpath">
+    <!--path id="dog.food.classpath">
         <fileset dir="${prod-lib.dir}" includes="*.jar"/>
         <fileset dir="${target.dir}" includes="tlb*.jar"/>
-    </path>
+    </path-->
 
     <path id="emma.classpath">
         <pathelement location="${build_lib.dir}/emma-${emma.version}.jar"/>
@@ -86,15 +46,10 @@
 
     <target name="download-ivy" unless="offline">
         <mkdir dir="${ivy.jar.dir}"/>
-        <!-- download Ivy from web site so that it can be used even without any special installation -->
         <get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true"/>
     </target>
 
     <target name="init-ivy" depends="download-ivy">
-      <!-- try to load ivy here from ivy home, in case the user has not already dropped
-              it into ant's lib dir (note that the latter copy will always take precedence).
-              We will not fail as long as local lib dir exists (it may be empty) and
-              ivy is in at least one of ant's lib dir or the local lib dir. -->
         <path id="ivy.lib.path">
             <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
         </path>
@@ -102,19 +57,14 @@
     </target>
 
     <target name="resolve" depends="init-ivy">
-        <ivy:retrieve file="" pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
+        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
     </target>
 
-    <target name="resolve-core" depends="init-ivy">
-        <ivy:retrieve file="" pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
-    </target>
+    <import file="${core.dir}/build.xml"/>
 
-    <target name="init" depends="resolve">
-        <mkdir dir="${classes.dir}"/>
-        <mkdir dir="${test-classes.dir}"/>
-        <mkdir dir="${integration-test-classes.dir}"/>
-        <mkdir dir="${reports.dir}"/>
-        <taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
+    <target name="init" depends="resolve, core.init">
+        <mkdir dir="${target.dir}"/>
+        <!--taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
 
         <property name="one-jar.dist.dir" value="./dist"/>
         <property name="one-jar.version" value="0.96"/>
@@ -123,7 +73,7 @@
             <classpath>
                 <pathelement location="${build_lib.dir}/one-jar-ant-task-${one-jar.version}.jar"/>
             </classpath>
-        </taskdef>
+        </taskdef-->
         <tstamp>
             <format property="build-time" pattern="MMM/dd/yyyy hh:mm aa"  timezone="${ENV.TZ}"/>
         </tstamp>

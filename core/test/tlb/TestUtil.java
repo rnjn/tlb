@@ -7,11 +7,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
-import org.restlet.Application;
-import org.restlet.Restlet;
-import org.restlet.Route;
-import org.restlet.Router;
-import org.restlet.util.RouteList;
 import tlb.domain.SuiteLevelEntry;
 import tlb.utils.SystemEnvironment;
 
@@ -96,16 +91,6 @@ public class TestUtil {
             }
         });
         return entryList;
-    }
-
-    public static HashMap<String, Restlet> getRoutePatternsAndResources(final Application app) {
-        Router router = (Router) app.createRoot();
-        RouteList routeList = router.getRoutes();
-        HashMap<String, Restlet> map = new HashMap<String, Restlet>();
-        for (Route route : routeList) {
-            map.put(route.getTemplate().getPattern(), route.getNext());
-        }
-        return map;
     }
 
     public static class LogFixture extends AppenderSkeleton {
