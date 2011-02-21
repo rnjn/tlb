@@ -12,7 +12,7 @@
     <property name="java.test.reports.dir" location="${java.target.dir}/reports"/>
 
     <path id="java.dependencies">
-        <fileset dir="${java.lib.dir}" includes="*.jar"/>
+        <fileset dir="${java.lib.dir}" includes="*.jar" id="java.dependencies"/>
     </path>
 
     <path id="java.src.classpath">

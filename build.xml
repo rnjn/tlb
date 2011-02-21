@@ -5,6 +5,7 @@
 ]>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="tlb" basedir="." default="all">
     <property name="lib.dir" location="${basedir}/lib"/>
+    <property name="build.lib.dir" location="${basedir}/lib/build"/>
     <property name="test.lib.dir" location="${lib.dir}/test"/>
 
     <property name="target.dir" location="${basedir}/target"/>
@@ -36,8 +37,8 @@
     </path-->
 
     <path id="emma.classpath">
-        <pathelement location="${build_lib.dir}/emma-${emma.version}.jar"/>
-        <pathelement location="${build_lib.dir}/emma_ant-${emma.version}.jar"/>
+        <pathelement location="${build.lib.dir}/emma-${emma.version}.jar"/>
+        <pathelement location="${build.lib.dir}/emma_ant-${emma.version}.jar"/>
     </path>
 
     <property name="ivy.install.version" value="2.2.0" />
@@ -73,20 +74,20 @@
     <import file="${java.dir}/java-build.xml"/>
     <import file="${server.dir}/server-build.xml"/>
 
-    <import file="${integration_tests.dir}/integration-tests-build.xml"/>
+    <import file="${integration_tests.dir}/integration_tests-build.xml"/>
 
     <target name="init" depends="resolve, core.init, balancer.init, java.init, restlet.init, alien.init, server.init, integration-tests.init">
         <mkdir dir="${target.dir}"/>
-        <!--taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
+        <taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
 
         <property name="one-jar.dist.dir" value="./dist"/>
         <property name="one-jar.version" value="0.96"/>
 
         <taskdef name="onejar" classname="com.simontuffs.onejar.ant.OneJarTask">
             <classpath>
-                <pathelement location="${build_lib.dir}/one-jar-ant-task-${one-jar.version}.jar"/>
+                <pathelement location="${build.lib.dir}/one-jar-ant-task-${one-jar.version}.jar"/>
             </classpath>
-        </taskdef-->
+        </taskdef>
         <tstamp>
             <format property="build-time" pattern="MMM/dd/yyyy hh:mm aa"  timezone="${ENV.TZ}"/>
         </tstamp>
@@ -97,15 +98,14 @@
         <delete dir="${target.dir}" includeemptydirs="true"/>
     </target>
 
-
     <target name="-load.short.rev">
         <exec executable="git" outputproperty="short_rev">
             <arg line="describe --always"/>
         </exec>
         <property name="tlb.basename" value="tlb-g${short_rev}"/>
-        <property name="tlb.all.basename" value="tlb-all-g${short_rev}"/>
+        <property name="tlb.server.basename" value="tlb-server-g${short_rev}"/>
         <property name="tlb.jar.name" value="${tlb.basename}.jar"/>
-        <property name="tlb.all.jar.name" value="${tlb.all.basename}.jar"/>
+        <property name="tlb.server.jar.name" value="${tlb.server.basename}.jar"/>
         <property name="tlb.src.jar.name" value="${tlb.basename}-src.jar"/>
     </target>
 
@@ -128,42 +128,58 @@
         </sequential>
     </macrodef>
 
+    <macrodef name="onejar-restlet">
+        <attribute name="jar-name"/>
+        <attribute name="one-jar-name"/>
+        <sequential>
+            <onejar destfile="${target.dir}/@{one-jar-name}">
+                <manifest>
+                    &extension-name;
+                    &manifest;
+                </manifest>
+                <main jar="@{jar-name}"/>
+                <lib>
+                    <fileset refid="core.dependencies"/>
+                    <fileset refid="restlet.dependencies"/>
+                </lib>
+            </onejar>
+        </sequential>
+    </macrodef>
+
+    <target name="compile" depends="core.compile, balancer.compile, restlet.compile, alien.compile, java.compile, server.compile"/>
+
     <target name="package.src" depends="init, -load.short.rev">
         <property name="tlb.src.jar" value="${target.dir}/${tlb.src.jar.name}"/>
         <tlb-jar dest="${tlb.src.jar}">
             <content>
-                <fileset dir="src"/>
+                <fileset dir="core/src"/>
+                <fileset dir="balancer/src"/>
+                <fileset dir="restlet/src"/>
+                <fileset dir="java/src"/>
+                <fileset dir="alien/src"/>
+                <fileset dir="server/src"/>
             </content>
         </tlb-jar>
     </target>
 
-<!--
-    <target name="package.jar" depends="init, compile, -load.short.rev">
-        <property name="tlb_jar" value="${target.dir}/${tlb.jar.name}"/>
-        <tlb-jar dest="${tlb_jar}">
+    <target name="package.server.jar" depends="init, compile, -load.short.rev">
+        <property name="tlb_server_jar" value="${target.dir}/tlb-server.jar"/>
+        <tlb-jar dest="${tlb_server_jar}">
             <extra-manifest>
                 <attribute name="Main-Class" value="tlb.Main"/>
             </extra-manifest>
             <content>
-                <fileset dir="${classes.dir}"/>
-                <fileset dir="${src.dir}">
+                <fileset dir="${server.classes.dir}"/>
+                <fileset dir="${restlet.classes.dir}"/>
+                <fileset dir="${core.classes.dir}"/>
+                <fileset dir="${core.src.dir}">
                     <include name="log4j.properties"/>
                 </fileset>
             </content>
         </tlb-jar>
 
-        <onejar destfile="${target.dir}/${tlb.all.jar.name}">
-            <manifest>
-                &extension-name;
-                &manifest;
-            </manifest>
-            <main jar="${tlb_jar}"/>
-            <lib>
-                <fileset dir="${prod-lib.dir}"/>
-            </lib>
-        </onejar>
+        <onejar-restlet jar-name="${tlb.server.jar.name}" one-jar-name="${tlb_server_jar}"/>
     </target>
--->
 
     <!--<target name="package" depends="clean, package.src, package.jar"/>-->
 

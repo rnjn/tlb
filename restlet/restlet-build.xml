@@ -12,7 +12,7 @@
     <property name="restlet.test.reports.dir" location="${restlet.target.dir}/reports"/>
 
     <path id="restlet.dependencies">
-        <fileset dir="${restlet.lib.dir}" includes="*.jar"/>
+        <fileset dir="${restlet.lib.dir}" includes="*.jar" id="restlet.dependencies"/>
     </path>
 
     <path id="restlet.src.classpath">

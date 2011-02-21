@@ -11,16 +11,11 @@
     <property name="alien.test.classes.dir" location="${alien.target.dir}/test-classes"/>
     <property name="alien.test.reports.dir" location="${alien.target.dir}/reports"/>
 
-    <!--path id="alien.dependencies">
-        <fileset dir="${alien.lib.dir}" includes="*.jar"/>
-    </path-->
-
     <path id="alien.src.classpath">
         <pathelement path="${alien.classes.dir}"/>
         <pathelement path="${restlet.classes.dir}"/>
         <pathelement path="${balancer.classes.dir}"/>
         <pathelement path="${core.classes.dir}"/>
-        <!--path refid="alien.dependencies"/-->
         <path refid="restlet.dependencies"/>
         <path refid="balancer.dependencies"/>
         <path refid="core.dependencies"/>
