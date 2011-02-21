@@ -104,8 +104,10 @@
         </exec>
         <property name="tlb.basename" value="tlb-g${short_rev}"/>
         <property name="tlb.server.basename" value="tlb-server-g${short_rev}"/>
+        <property name="tlb.alien.basename" value="tlb-alien-g${short_rev}"/>
         <property name="tlb.jar.name" value="${tlb.basename}.jar"/>
         <property name="tlb.server.jar.name" value="${tlb.server.basename}.jar"/>
+        <property name="tlb.alien.jar.name" value="${tlb.alien.basename}.jar"/>
         <property name="tlb.src.jar.name" value="${tlb.basename}-src.jar"/>
     </target>
 
@@ -128,11 +130,32 @@
         </sequential>
     </macrodef>
 
+    <macrodef name="jar-restlet">
+        <attribute name="jar-name"/>
+        <element name="class-dirs"/>
+        <sequential>
+            <tlb-jar dest="@{jar-name}">
+                <extra-manifest>
+                    <attribute name="Main-Class" value="tlb.Main"/>
+                </extra-manifest>
+                <content>
+                    <class-dirs/>
+                    <fileset dir="${restlet.classes.dir}"/>
+                    <fileset dir="${core.classes.dir}"/>
+                    <fileset dir="${core.src.dir}">
+                        <include name="log4j.properties"/>
+                    </fileset>
+                </content>
+            </tlb-jar>
+        </sequential>
+    </macrodef>
+
     <macrodef name="onejar-restlet">
         <attribute name="jar-name"/>
-        <attribute name="one-jar-name"/>
+        <attribute name="name"/>
+        <element name="additional-dependencies" optional="true"/>
         <sequential>
-            <onejar destfile="${target.dir}/@{one-jar-name}">
+            <onejar destfile="${target.dir}/@{name}">
                 <manifest>
                     &extension-name;
                     &manifest;
@@ -141,6 +164,7 @@
                 <lib>
                     <fileset refid="core.dependencies"/>
                     <fileset refid="restlet.dependencies"/>
+                    <additional-dependencies/>
                 </lib>
             </onejar>
         </sequential>
@@ -164,21 +188,29 @@
 
     <target name="package.server.jar" depends="init, compile, -load.short.rev">
         <property name="tlb_server_jar" value="${target.dir}/tlb-server.jar"/>
-        <tlb-jar dest="${tlb_server_jar}">
-            <extra-manifest>
-                <attribute name="Main-Class" value="tlb.Main"/>
-            </extra-manifest>
-            <content>
+        <jar-restlet jar-name="${tlb_server_jar}">
+            <class-dirs>
                 <fileset dir="${server.classes.dir}"/>
-                <fileset dir="${restlet.classes.dir}"/>
-                <fileset dir="${core.classes.dir}"/>
-                <fileset dir="${core.src.dir}">
-                    <include name="log4j.properties"/>
-                </fileset>
-            </content>
-        </tlb-jar>
+            </class-dirs>
+        </jar-restlet>
 
-        <onejar-restlet jar-name="${tlb.server.jar.name}" one-jar-name="${tlb_server_jar}"/>
+        <onejar-restlet jar-name="${tlb_server_jar}" name="${tlb.server.jar.name}"/>
+    </target>
+
+    <target name="package.alien.jar" depends="init, compile, -load.short.rev">
+        <property name="tlb_alien_jar" value="${target.dir}/tlb-alien.jar"/>
+        <jar-restlet jar-name="${tlb_alien_jar}">
+            <class-dirs>
+                <fileset dir="${alien.classes.dir}"/>
+                <fileset dir="${balancer.classes.dir}"/>
+            </class-dirs>
+        </jar-restlet>
+
+        <onejar-restlet jar-name="${tlb_alien_jar}" name="${tlb.alien.jar.name}">
+            <additional-dependencies>
+                <fileset refid="balancer.dependencies"/>
+            </additional-dependencies>
+        </onejar-restlet>
     </target>
 
     <!--<target name="package" depends="clean, package.src, package.jar"/>-->
