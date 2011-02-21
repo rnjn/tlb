@@ -11,7 +11,7 @@
     <property name="core.test.reports.dir" location="${core.target.dir}/reports"/>
 
     <path id="core.dependencies">
-        <fileset dir="${core.lib.dir}" includes="*.jar" id="core.dependencies"/>
+        <fileset dir="${core.lib.dir}" includes="*.jar" id="core.dependencies.fileset"/>
     </path>
 
     <path id="core.src.classpath">

@@ -12,7 +12,7 @@
     <property name="balancer.test.reports.dir" location="${balancer.target.dir}/reports"/>
 
     <path id="balancer.dependencies">
-        <fileset dir="${balancer.lib.dir}" includes="*.jar" id="balancer.dependencies"/>
+        <fileset dir="${balancer.lib.dir}" includes="*.jar" id="balancer.dependencies.fileset"/>
     </path>
 
     <path id="balancer.src.classpath">

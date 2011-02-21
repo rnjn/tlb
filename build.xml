@@ -105,9 +105,11 @@
         <property name="tlb.basename" value="tlb-g${short_rev}"/>
         <property name="tlb.server.basename" value="tlb-server-g${short_rev}"/>
         <property name="tlb.alien.basename" value="tlb-alien-g${short_rev}"/>
+        <property name="tlb.java.basename" value="tlb-java-g${short_rev}"/>
         <property name="tlb.jar.name" value="${tlb.basename}.jar"/>
         <property name="tlb.server.jar.name" value="${tlb.server.basename}.jar"/>
         <property name="tlb.alien.jar.name" value="${tlb.alien.basename}.jar"/>
+        <property name="tlb.java.jar.name" value="${tlb.java.basename}.jar"/>
         <property name="tlb.src.jar.name" value="${tlb.basename}-src.jar"/>
     </target>
 
@@ -162,8 +164,8 @@
                 </manifest>
                 <main jar="@{jar-name}"/>
                 <lib>
-                    <fileset refid="core.dependencies"/>
-                    <fileset refid="restlet.dependencies"/>
+                    <fileset refid="core.dependencies.fileset"/>
+                    <fileset refid="restlet.dependencies.fileset"/>
                     <additional-dependencies/>
                 </lib>
             </onejar>
@@ -195,6 +197,8 @@
         </jar-restlet>
 
         <onejar-restlet jar-name="${tlb_server_jar}" name="${tlb.server.jar.name}"/>
+
+        <delete file="${tlb_server_jar}"/>
     </target>
 
     <target name="package.alien.jar" depends="init, compile, -load.short.rev">
@@ -208,12 +212,27 @@
 
         <onejar-restlet jar-name="${tlb_alien_jar}" name="${tlb.alien.jar.name}">
             <additional-dependencies>
-                <fileset refid="balancer.dependencies"/>
+                <fileset refid="balancer.dependencies.fileset"/>
             </additional-dependencies>
         </onejar-restlet>
+
+        <delete file="${tlb_alien_jar}"/>
     </target>
 
-    <!--<target name="package" depends="clean, package.src, package.jar"/>-->
+    <target name="package.java.jar" depends="init, compile, -load.short.rev">
+        <tlb-jar dest="${target.dir}/${tlb.java.jar.name}">
+            <content>
+                <fileset dir="${java.classes.dir}"/>
+                <fileset dir="${balancer.classes.dir}"/>
+                <fileset dir="${core.classes.dir}"/>
+                <fileset dir="${core.src.dir}">
+                    <include name="log4j.properties"/>
+                </fileset>
+            </content>
+        </tlb-jar>
+    </target>
+
+    <target name="package" depends="clean, package.src, package.java.jar, package.alien.jar, package.server.jar"/>
 
     <target name="prepare-dist">
         <mkdir dir="${dist.dir}"/>
