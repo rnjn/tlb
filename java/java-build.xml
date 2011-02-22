@@ -54,10 +54,10 @@
 
     <target name="java.test" depends="java.compile.tests, java.compile">
         <junit failureproperty="test.failure" printsummary="yes" haltonfailure="true" fork="true">
-            <!--classpath location="${emma.dir}"/>
+
             <classpath refid="emma.classpath"/>
-            <jvmarg value="-Demma.coverage.out.file=${emma.dir}/coverage.emma"/>
-            <jvmarg value="-Demma.coverage.out.merge=true"/-->
+            <jvmarg value="-Demma.coverage.out.file=${java.emma.file}"/>
+            <jvmarg value="-Demma.coverage.out.merge=true"/>
 
             <classpath refid="java.test.classpath"/>
             <batchtest todir="${java.test.reports.dir}">
@@ -65,5 +65,9 @@
                 <formatter type="plain"/>
             </batchtest>
         </junit>
+    </target>
+
+    <target name="emma.instr.java" depends="java.compile">
+        <emma-instr classes-dir="${java.classes.dir}" name="java"/>
     </target>
 </project>

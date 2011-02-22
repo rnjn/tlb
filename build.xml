@@ -20,6 +20,7 @@
 
     <property name="dist.dir" location="${target.dir}/dist"/>
     <property name="emma.dir" location="${target.dir}/emma"/>
+    <property name="emma.tmp.dir" location="${target.dir}/emma-tmp"/>
     <property name="emma.version" value="2.0.5312"/>
 
     <property name="title" value="TLB - Test Load Balancer"/>
@@ -78,7 +79,6 @@
 
     <target name="init" depends="resolve, core.init, balancer.init, java.init, restlet.init, alien.init, server.init, integration-tests.init">
         <mkdir dir="${target.dir}"/>
-        <taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
 
         <property name="one-jar.dist.dir" value="./dist"/>
         <property name="one-jar.version" value="0.96"/>
@@ -287,17 +287,41 @@
 
     <!--<target name="dist" depends="package-dist-archive, copy-help, sign-dist"/>-->
 
-<!--
-    <target name="emma.instr" depends="compile">
+    <target name="emma.prepare">
+        <taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
+        <mkdir dir="${emma.dir}"/>
+    </target>
+
+    <macrodef name="emma-instr">
+        <attribute name="classes-dir"/>
+        <attribute name="name"/>
         <sequential>
-            <mkdir dir="${emma.dir}"/>
-            <property name="junit.fail.on.error" value="false"/>
+            <delete dir="${emma.tmp.dir}" quiet="true"/>
+            <move file="@{classes-dir}" tofile="${emma.tmp.dir}"/>
+            <delete dir="@{classes-dir}"/>
+            <property name="@{name}.emma.file" location="${emma.dir}/@{name}.emma"/>
             <emma enabled="true">
-                <instr instrpath="${classes.dir}" destdir="${emma.dir}" metadatafile="${emma.dir}/metadata.emma" merge="true"/>
+                <instr instrpath="${emma.tmp.dir}" destdir="@{classes-dir}/.." metadatafile="${@{name}.emma.file}" merge="true" mode="fullcopy"/>
             </emma>
         </sequential>
+    </macrodef>
+
+    <target name="emma.instr" depends="emma.prepare, emma.instr.core, emma.instr.balancer, emma.instr.restlet, emma.instr.java, emma.instr.alien, emma.instr.server">
+        <property name="junit.fail.on.error" value="false"/>
+        <property name="emma-enabled" value="true"/>
     </target>
--->
+
+    <target name="coverage" depends="emma.instr, test">
+        <emma enabled="true">
+            <report sort="+name" metrics="method:85,block:90,line:90,class:90" sourcepath="${src.dir}">
+                <fileset dir="${emma.dir}">
+                    <include name="**/*.emma"/>
+                </fileset>
+                <html outfile="${emma.dir}/coverage.html"/>
+                <xml outfile="${emma.dir}/coverage.xml"/>
+            </report>
+        </emma>
+    </target>
 
     <target name="test" depends="init, core.test, balancer.test, java.test, restlet.test, alien.test, server.test, integration-tests.test"/>
 
@@ -316,20 +340,6 @@
 
             <classpath refid="src.classpath"/>
         </java>
-    </target>
--->
-
-<!--
-    <target name="coverage" depends="emma.instr, test">
-        <emma enabled="true">
-            <report sort="+name" metrics="method:85,block:90,line:90,class:90" sourcepath="${src.dir}">
-                <fileset dir="${emma.dir}">
-                    <include name="**/*.emma"/>
-                </fileset>
-                <html outfile="${emma.dir}/coverage.html"/>
-                <xml outfile="${emma.dir}/coverage.xml"/>
-            </report>
-        </emma>
     </target>
 -->
 
