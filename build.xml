@@ -313,7 +313,7 @@
 
     <target name="coverage" depends="emma.instr, test">
         <emma enabled="true">
-            <report sort="+name" metrics="method:85,block:90,line:90,class:90" sourcepath="${src.dir}">
+            <report sort="+name" metrics="method:85,block:90,line:90,class:90" sourcepath="${core.src.dir},${balancer.src.dir},${java.src.dir},${restlet.src.dir},${alien.src.dir},${server.src.dir}">
                 <fileset dir="${emma.dir}">
                     <include name="**/*.emma"/>
                 </fileset>
