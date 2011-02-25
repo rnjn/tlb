@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<project name="tlb-core" basedir="..">
+    <property name="core.dir" location="${basedir}/core"/>
+    <property name="core.src.dir" location="${core.dir}/src"/>
+    <property name="core.test.dir" location="${core.dir}/test"/>
+    <property name="core.lib.dir" location="${lib.dir}/core"/>
+
+    <property name="core.target.dir" location="${target.dir}/core"/>
+    <property name="core.classes.dir" location="${core.target.dir}/classes"/>
+    <property name="core.test.classes.dir" location="${core.target.dir}/test-classes"/>
+    <property name="core.test.reports.dir" location="${core.target.dir}/reports"/>
+
+    <path id="core.dependencies">
+        <fileset dir="${core.lib.dir}" includes="*.jar" id="core.dependencies.fileset"/>
+    </path>
+
+    <path id="core.src.classpath">
+        <path refid="core.dependencies"/>
+        <pathelement path="${core.classes.dir}"/>
+    </path>
+
+    <path id="core.test.classpath">
+        <path refid="core.src.classpath"/>
+        <pathelement path="${core.test.classes.dir}"/>
+        <path refid="test.dependencies"/>
+    </path>
+
+    <target name="core.init">
+        <mkdir dir="${core.classes.dir}"/>
+        <mkdir dir="${core.test.classes.dir}"/>
+        <mkdir dir="${core.test.reports.dir}"/>
+    </target>
+
+    <target name="core.compile" depends="init">
+        <javac destdir="${core.classes.dir}" target="1.5" source="1.5" debug="true" includeantruntime="false">
+            <classpath refid="core.src.classpath"/>
+            <src path="${core.src.dir}"/>
+        </javac>
+    </target>
+
+    <target name="core.compile.tests" depends="core.compile, init">
+        <javac destdir="${core.test.classes.dir}" target="1.5" source="1.5" includeantruntime="false">
+            <classpath refid="core.test.classpath"/>
+            <src path="${core.test.dir}"/>
+        </javac>
+    </target>
+
+    <target name="core.test" depends="core.compile.tests, core.compile">
+        <junit failureproperty="test.failure" printsummary="yes" haltonfailure="true" fork="true">
+            <classpath refid="emma.classpath"/>
+            <jvmarg value="-Demma.coverage.out.file=${core.emma.file}"/>
+            <jvmarg value="-Demma.coverage.out.merge=true"/>
+
+            <classpath refid="core.test.classpath"/>
+            <batchtest todir="${core.test.reports.dir}">
+                <fileset dir="${core.test.classes.dir}" includes="**/*Test.class*"/>
+                <formatter type="plain"/>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="emma.instr.core" depends="core.compile">
+        <emma-instr classes-dir="${core.classes.dir}" name="core"/>
+    </target>
+</project>

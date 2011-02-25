@@ -74,6 +74,7 @@
           <option name="IGNORE_DEPRECATED" value="false" />
           <option name="IGNORE_JAVADOC_PERIOD" value="true" />
           <option name="IGNORE_DUPLICATED_THROWS" value="false" />
+          <option name="IGNORE_POINT_TO_ITSELF" value="false" />
           <option name="myAdditionalJavadocTags" value="understands" />
         </inspection_tool>
         <inspection_tool class="JpaQlInspection" enabled="false" level="ERROR" enabled_by_default="false" />
@@ -83,12 +84,13 @@
     <option name="PROJECT_PROFILE" value="Project Default" />
     <option name="USE_PROJECT_PROFILE" value="true" />
     <version value="1.0" />
-    <list size="5">
+    <list size="6">
       <item index="0" class="java.lang.String" itemvalue="SERVER PROBLEM" />
-      <item index="1" class="java.lang.String" itemvalue="INFO" />
-      <item index="2" class="java.lang.String" itemvalue="TYPO" />
-      <item index="3" class="java.lang.String" itemvalue="WARNING" />
-      <item index="4" class="java.lang.String" itemvalue="ERROR" />
+      <item index="1" class="java.lang.String" itemvalue="WEAK WARNING" />
+      <item index="2" class="java.lang.String" itemvalue="INFO" />
+      <item index="3" class="java.lang.String" itemvalue="TYPO" />
+      <item index="4" class="java.lang.String" itemvalue="WARNING" />
+      <item index="5" class="java.lang.String" itemvalue="ERROR" />
     </list>
   </component>
   <component name="JavadocGenerationManager">
@@ -246,8 +248,17 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/tlb.iml" filepath="$PROJECT_DIR$/tlb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/alien/alien.iml" filepath="$PROJECT_DIR$/alien/alien.iml" />
+      <module fileurl="file://$PROJECT_DIR$/balancer/balancer.iml" filepath="$PROJECT_DIR$/balancer/balancer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/integration_tests/integration_tests.iml" filepath="$PROJECT_DIR$/integration_tests/integration_tests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/java.iml" filepath="$PROJECT_DIR$/java/java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/restlet/restlet.iml" filepath="$PROJECT_DIR$/restlet/restlet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
     </modules>
+  </component>
+  <component name="ProjectResources">
+    <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
@@ -255,7 +266,6 @@
   <component name="ProjectRunConfigurationManager">
     <configuration default="false" name="TlbBalancer_2" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" />
-      <extension name="snapshooter" />
       <option name="MAIN_CLASS_NAME" value="tlb.Main" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -265,7 +275,7 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="tlb" />
+      <module name="server" />
       <envs>
         <env name="TLB_URL" value="http://localhost:7019" />
         <env name="JOB_VERSION" value="bar1" />
@@ -291,7 +301,6 @@
     </configuration>
     <configuration default="false" name="TlbBalancer_1" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" />
-      <extension name="snapshooter" />
       <option name="MAIN_CLASS_NAME" value="tlb.Main" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -301,7 +310,7 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="tlb" />
+      <module name="server" />
       <envs>
         <env name="TLB_URL" value="http://localhost:7019" />
         <env name="JOB_VERSION" value="bar1" />
@@ -327,7 +336,6 @@
     </configuration>
     <configuration default="false" name="TlbServer" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" />
-      <extension name="snapshooter" />
       <option name="MAIN_CLASS_NAME" value="tlb.Main" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -337,7 +345,7 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="tlb" />
+      <module name="server" />
       <envs>
         <env name="SMOOTHING_FACTOR" value="0.1" />
       </envs>
@@ -384,5 +392,47 @@
     <mapping directory="" vcs="" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
+  <component name="libraryTable">
+    <library name="balancer">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/balancer" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/balancer" recursive="false" />
+    </library>
+    <library name="core">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/core" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/core" recursive="false" />
+    </library>
+    <library name="java">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/java" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/java" recursive="false" />
+    </library>
+    <library name="restlet">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/restlet" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/restlet" recursive="false" />
+    </library>
+    <library name="test">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/test" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/test" recursive="false" />
+    </library>
+  </component>
 </project>
 
