@@ -9,28 +9,12 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library name="prod">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/lib/prod" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/lib/prod" recursive="false" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="test">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/lib/test" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/lib/test" recursive="false" />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="balancer" />
     <orderEntry type="module" module-name="core" />
+    <orderEntry type="library" name="java" level="project" />
+    <orderEntry type="library" scope="TEST" name="test" level="project" />
+    <orderEntry type="library" name="core" level="project" />
+    <orderEntry type="library" name="balancer" level="project" />
   </component>
 </module>
 

@@ -393,23 +393,45 @@
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
-    <library name="prod">
+    <library name="balancer">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/core/lib/prod" />
-        <root url="file://$PROJECT_DIR$/core/lib/build" />
+        <root url="file://$PROJECT_DIR$/lib/balancer" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/core/lib/build" recursive="false" />
-      <jarDirectory url="file://$PROJECT_DIR$/core/lib/prod" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/balancer" recursive="false" />
+    </library>
+    <library name="core">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/core" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/core" recursive="false" />
+    </library>
+    <library name="java">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/java" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/java" recursive="false" />
+    </library>
+    <library name="restlet">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/restlet" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/restlet" recursive="false" />
     </library>
     <library name="test">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/core/lib/test" />
+        <root url="file://$PROJECT_DIR$/lib/test" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/core/lib/test" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/test" recursive="false" />
     </library>
   </component>
 </project>

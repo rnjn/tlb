@@ -13,8 +13,11 @@
     <orderEntry type="module" module-name="java" />
     <orderEntry type="module" module-name="restlet" />
     <orderEntry type="module" module-name="server" />
-    <orderEntry type="library" name="prod" level="project" />
     <orderEntry type="library" name="test" level="project" />
+    <orderEntry type="library" name="restlet" level="project" />
+    <orderEntry type="library" name="balancer" level="project" />
+    <orderEntry type="library" name="core" level="project" />
+    <orderEntry type="library" name="java" level="project" />
   </component>
 </module>
 

@@ -9,10 +9,12 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="balancer" />
-    <orderEntry type="library" name="prod" level="project" />
-    <orderEntry type="library" name="test" level="project" />
     <orderEntry type="module" module-name="restlet" />
     <orderEntry type="module" module-name="core" />
+    <orderEntry type="library" scope="TEST" name="test" level="project" />
+    <orderEntry type="library" name="balancer" level="project" />
+    <orderEntry type="library" name="core" level="project" />
+    <orderEntry type="library" name="restlet" level="project" />
   </component>
 </module>
 
