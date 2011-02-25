@@ -34,11 +34,6 @@
         <fileset dir="${test.lib.dir}" includes="*.jar"/>
     </path>
 
-    <!--path id="dog.food.classpath">
-        <fileset dir="${prod-lib.dir}" includes="*.jar"/>
-        <fileset dir="${target.dir}" includes="tlb*.jar"/>
-    </path-->
-
     <path id="emma.classpath">
         <pathelement location="${build.lib.dir}/emma-${emma.version}.jar"/>
         <pathelement location="${build.lib.dir}/emma_ant-${emma.version}.jar"/>
@@ -121,6 +116,7 @@
         <element name="extra-manifest" optional="true"/>
         <element name="content"/>
         <sequential>
+            <fail message="Packaging aborted, classes are instrumented" if="cov.instrd"/>
             <jar destfile="@{dest}">
                 <manifest>
                     <extra-manifest/>
@@ -312,7 +308,7 @@
 
     <target name="emma.instr" depends="emma.prepare, emma.instr.core, emma.instr.balancer, emma.instr.restlet, emma.instr.java, emma.instr.alien, emma.instr.server">
         <property name="junit.fail.on.error" value="false"/>
-        <property name="emma-enabled" value="true"/>
+        <property name="cov.instrd" value="true"/>
     </target>
 
     <target name="coverage" depends="emma.instr, test">
@@ -386,47 +382,17 @@
         </junit>
     </target>
 
-<!--
-    <target name="test.time_balanced" depends="package, compile-tests">
-        <typedef name="load-balanced-fileset" classname="tlb.ant.LoadBalancedFileSet" classpathref="dog.food.classpath"/>
+    <target name="test.time_balanced" depends="merge.test.dirs">
+        <typedef name="lbfs" classname="tlb.ant.LoadBalancedFileSet" classpathref="all.classpath"/>
         <junit failureproperty="test.failure" printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
-            <classpath refid="test.classpath"/>
-            <batchtest todir="${reports.dir}">
-                <load-balanced-fileset dir="${test-classes.dir}" includes="**/*Test.class"/>
+            <classpath refid="all.classpath"/>
+            <batchtest todir="${dog-fooding.reports.target.dir}">
+                <lbfs dir="${all.tests.dir}" includes="**/*Test.class"/>
                 <formatter classname="tlb.ant.JunitDataRecorder"/>
                 <formatter type="plain"/>
             </batchtest>
         </junit>
     </target>
--->
 
-<!--
-    <target name="integration-test.time_balanced" depends="package, compile-integration-tests">
-        <description>
-            Running integration tests makes sence only in a load balanced job(in cruise).
-            These tests are meant to play dummy 'to be run' tests, that tlb is being used to balance.
-            These do not test much themselfs.
-        </description>
-        <typedef name="load-balanced-fileset" classname="tlb.ant.LoadBalancedFileSet" classpathref="dog.food.classpath"/>
-        <junit failureproperty="test.failure" printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
-            <classpath refid="integration-test.classpath"/>
-            <batchtest todir="${reports.dir}">
-                <load-balanced-fileset dir="${integration-test-classes.dir}" includes="**/*Test.class"/>
-                <formatter classname="tlb.ant.JunitDataRecorder"/>
-                <formatter type="plain"/>
-            </batchtest>
-        </junit>
-    </target>
--->
-
-<!--
-    <target name="server" depends="package.jar">
-        <java fork="true" classname="tlb.Main">
-            <classpath path="${tlb_jar}"/>
-            <classpath refid="dependencies"/>
-        </java>
-    </target>
--->
-
-    <!--<target name="all" depends="clean, coverage, package"/>-->
+    <target name="all" depends="clean, test, package"/>
 </project>

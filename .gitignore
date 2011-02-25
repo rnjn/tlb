@@ -8,3 +8,4 @@ lib
 *.out
 *.err
 attached_sources
+coverage.ec

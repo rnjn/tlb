@@ -92,7 +92,6 @@ public class ControlResourceTest {
 
     @Test
     @RunIf(value = OSChecker.class, arguments = OSChecker.LINUX)
-    @Ignore("MODULARIZATION: we need to fix the ant task for this one. Remove ignore tag before merge with master")
     public void shouldStopServer() throws InterruptedException, IOException {
         final String port = unpriviledgedPort();
         final File buildFile = new File("build.xml");
