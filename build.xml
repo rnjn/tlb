@@ -189,7 +189,7 @@
         </tlb-jar>
     </target>
 
-    <target name="package.server.jar" depends="init, compile, -load.short.rev">
+    <target name="package.server.jar" depends="init, compile, test, -load.short.rev">
         <property name="tlb_server_jar" value="${target.dir}/tlb-server.jar"/>
         <jar-restlet jar-name="${tlb_server_jar}">
             <class-dirs>
@@ -202,7 +202,7 @@
         <delete file="${tlb_server_jar}"/>
     </target>
 
-    <target name="package.alien.jar" depends="init, compile, -load.short.rev">
+    <target name="package.alien.jar" depends="init, compile, test, -load.short.rev">
         <property name="tlb_alien_jar" value="${target.dir}/tlb-alien.jar"/>
         <jar-restlet jar-name="${tlb_alien_jar}">
             <class-dirs>
@@ -220,7 +220,7 @@
         <delete file="${tlb_alien_jar}"/>
     </target>
 
-    <target name="package.java.jar" depends="init, compile, -load.short.rev">
+    <target name="package.java.jar" depends="init, compile, test, -load.short.rev">
         <tlb-jar dest="${target.dir}/${tlb.java.jar.name}">
             <content>
                 <fileset dir="${java.classes.dir}"/>
@@ -233,7 +233,7 @@
         </tlb-jar>
     </target>
 
-    <target name="package" depends="clean, package.src, package.java.jar, package.alien.jar, package.server.jar"/>
+    <target name="package" depends="clean, package.src, test, package.java.jar, package.alien.jar, package.server.jar"/>
 
     <target name="prepare-dist">
         <mkdir dir="${dist.dir}"/>
@@ -294,14 +294,12 @@
         </sequential>
     </macrodef>
 
-<!--
     <target name="sign-dist" depends="package-dist-archive, copy-help">
         <sign path="${archive.name}"/>
         <sign path="${dist.readme}"/>
     </target>
--->
 
-    <!--<target name="dist" depends="package-dist-archive, copy-help, sign-dist"/>-->
+    <target name="dist" depends="package-dist-archive, copy-help, sign-dist"/>
 
     <target name="emma.prepare">
         <taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
