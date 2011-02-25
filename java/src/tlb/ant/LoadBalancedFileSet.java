@@ -39,7 +39,7 @@ public class LoadBalancedFileSet extends FileSet {
                 TlbBalancerFactory.getOrderer(systemEnvironment.val(TlbConstants.TLB_ORDERER), systemEnvironment));
     }
 
-    public LoadBalancedFileSet() {
+    public LoadBalancedFileSet() {//used by ant
         this(new SystemEnvironment());
     }
 
@@ -69,11 +69,5 @@ public class LoadBalancedFileSet extends FileSet {
 
     public TestSplitter getSplitterCriteria() {
         return criteria;
-    }
-
-    @Override
-    public void setDir(File dir) throws BuildException {
-        super.setDir(dir);
-        criteria.setDir(dir);
     }
 }

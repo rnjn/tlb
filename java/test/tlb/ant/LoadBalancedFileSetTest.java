@@ -117,15 +117,6 @@ public class LoadBalancedFileSetTest {
         assertThat(fileSet.getSplitterCriteria(), instanceOf(CountBasedTestSplitter.class));
     }
 
-    @Test
-    public void shouldSetFileSetDir() throws Exception{
-        JobFamilyAwareSplitter criteria = mock(JobFamilyAwareSplitter.class);
-        fileSet = new LoadBalancedFileSet(criteria, TestOrderer.NO_OP);
-        fileSet.setDir(projectDir);
-        verify(criteria).setDir(projectDir);
-        assertThat(fileSet.getDir(), is(projectDir));
-    }
-
     private SystemEnvironment initEnvironment(String strategyName) {
         Map<String, String> map = new HashMap<String, String>();
         map.put(TLB_SPLITTER, strategyName);

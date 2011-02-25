@@ -396,9 +396,11 @@
     <library name="prod">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/core/lib/prod" />
+        <root url="file://$PROJECT_DIR$/core/lib/build" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/core/lib/build" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/core/lib/prod" recursive="false" />
     </library>
     <library name="test">
