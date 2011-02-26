@@ -352,7 +352,7 @@
         </tar>
     </target>
 
-    <target name="copy-help" depends="prepare-dist">
+    <target name="release-files" depends="prepare-dist">
         <property name="dist.readme" value="${dist.dir}/README"/>
         <copyfile src="${basedir}/README.release" dest="${dist.readme}"/>
     </target>
@@ -367,7 +367,7 @@
         </sequential>
     </macrodef>
 
-    <target name="sign-dist" depends="dist-complete, dist-examples, dist-server, dist-java, copy-help">
+    <target name="sign-dist" depends="dist">
         <sign path="${dist.readme}"/>
         <sign path="${dist-server.archive}"/>
         <sign path="${dist-java.archive}"/>
@@ -375,7 +375,9 @@
         <sign path="${example-projects.archive}"/>
     </target>
 
-    <target name="dist" depends="dist-complete, copy-help, sign-dist"/>
+    <target name="dist" depends="dist-complete, dist-examples, dist-server, dist-java, release-files"/>
+
+    <target name="release" depends="dist, sign-dist"/>
 
     <target name="emma.prepare">
         <taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
