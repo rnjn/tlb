@@ -36,6 +36,19 @@
         <mkdir dir="${java.classes.dir}"/>
         <mkdir dir="${java.test.classes.dir}"/>
         <mkdir dir="${java.test.reports.dir}"/>
+        <property name="java.dependencies.dir" location="${java.dir}/lib"/>
+        <mkdir dir="${java.dependencies.dir}"/>
+        <copy todir="${java.dependencies.dir}"><!-- remove this duplication(either depend on this, or derive this from dependencies) -->
+            <fileset dir="${core.lib.dir}">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${balancer.lib.dir}">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${java.lib.dir}">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="java.compile" depends="init, balancer.compile">

@@ -21,9 +21,12 @@
     <property name="integration_tests.dir" location="${basedir}/integration_tests"/>
 
     <property name="dist.dir" location="${target.dir}/dist"/>
+    <property name="tmp.dir" location="${target.dir}/tmp"/>
     <property name="emma.dir" location="${target.dir}/emma"/>
     <property name="emma.tmp.dir" location="${target.dir}/emma-tmp"/>
     <property name="emma.version" value="2.0.5312"/>
+
+    <property name="sample-projects.dir" location="${basedir}/../sample_projects"/>
 
     <property name="title" value="TLB - Test Load Balancer"/>
     <property name="vendor" value="TLB Core Team - Janmejay Singh, Pavan KS"/><!-- follow alpha first name -->
@@ -76,6 +79,7 @@
 
     <target name="init" depends="resolve, core.init, balancer.init, java.init, restlet.init, alien.init, server.init, integration-tests.init">
         <mkdir dir="${target.dir}"/>
+        <mkdir dir="${tmp.dir}"/>
         <mkdir dir="${dog-fooding.reports.target.dir}"/>
 
         <property name="one-jar.dist.dir" value="./dist"/>
@@ -110,6 +114,7 @@
         <property name="tlb.java.jar.name" value="${tlb.java.basename}.jar"/>
         <property name="tlb.src.jar.name" value="${tlb.basename}-src.jar"/>
         <property name="tlb.complete.basename" value="tlb-complete-g${short_rev}"/>
+        <property name="tlb.examples.basename" value="setup-examples-g${short_rev}"/>
     </target>
 
     <macrodef name="tlb-jar">
@@ -233,28 +238,48 @@
         </tlb-jar>
     </target>
 
-    <target name="package" depends="clean, package.src, test, package.java.jar, package.alien.jar, package.server.jar"/>
+    <target name="package" depends="clean, init, package.src, test, package.java.jar, package.alien.jar, package.server.jar"/>
 
-    <target name="prepare-dist">
+    <target name="prepare-dist" depends="init">
         <mkdir dir="${dist.dir}"/>
     </target>
 
-    <target name="archive-sample-projects" depends="prepare-dist, -load.short.rev">
-        <property name="example-projects.tar" location="${dist.dir}/examples.tar"/>
-        <property name="example-projects.archive" location="${dist.dir}/tlb-examples-g${short_rev}.tar.gz"/>
-        <exec command="git" output="${example-projects.tar}">
+    <target name="tar-examples" depends="prepare-dist, -load.short.rev">
+        <property name="example-projects.tar" location="${tmp.dir}/examples.tar"/>
+        <exec executable="git" output="${example-projects.tar}">
             <arg value="archive"/>
-            <arg value="--remote=${basedir}/../sample_projects"/>
+            <arg value="--remote=${sample-projects.dir}"/>
             <arg value="--format=tar"/>
-            <arg value="--prefix=tlb-setup-examples"/>
+            <arg value="--prefix=examples/"/>
             <arg value="master"/>
         </exec>
-        <gzip srcresource="${example-projects.tar}" destfile="${example-projects.archive}"/>
     </target>
 
-    <target name="package-dist-archive" depends="package, prepare-dist, archive-sample-projects, -load.short.rev">
-        <property name="archive.name" location="${dist.dir}/${tlb.complete.basename}.tar.gz"/>
-        <tar destfile="${archive.name}" compression="gzip">
+    <target name="dist-examples" depends="package, tar-examples">
+        <property name="example-projects.archive" location="${dist.dir}/${tlb.examples.basename}.tar.gz"/>
+        <tar destfile="${example-projects.archive}" compression="gzip">
+            <tarfileset dir="${sample-projects.dir}" fullpath="${tlb.examples.basename}">
+                <include name="README"/>
+            </tarfileset>
+            <tarfileset dir="${basedir}" prefix="${tlb.examples.basename}">
+                <include name="LICENSE"/>
+            </tarfileset>
+            <tarfileset src="${example-projects.tar}" prefix="${tlb.examples.basename}"/>
+            <tarfileset dir="${target.dir}" prefix="${tlb.examples.basename}/java">
+                <include name="tlb-java*.jar"/>
+            </tarfileset>
+            <tarfileset dir="${java.dependencies.dir}" prefix="${tlb.examples.basename}/java/libs">
+                <include name="*.jar"/>
+            </tarfileset>
+            <tarfileset dir="${target.dir}" prefix="${tlb.examples.basename}/server">
+                <include name="tlb-server*.jar"/>
+            </tarfileset>
+        </tar>
+    </target>
+
+    <target name="dist-complete" depends="package, prepare-dist, tar-examples, -load.short.rev">
+        <property name="dist-complete.archive" location="${dist.dir}/${tlb.complete.basename}.tar.gz"/>
+        <tar destfile="${dist-complete.archive}" compression="gzip">
             <tarfileset dir="${basedir}" fullpath="${tlb.complete.basename}/README">
                 <include name="README.release"/>
             </tarfileset>
@@ -280,18 +305,11 @@
             <tarfileset dir="${target.dir}" prefix="${tlb.complete.basename}/java">
                 <include name="tlb-java*.jar"/>
             </tarfileset>
-            <tarfileset dir="${core.lib.dir}" prefix="${tlb.complete.basename}/java/libs">
-                <include name="*.jar"/>
-            </tarfileset>
-            <tarfileset dir="${balancer.lib.dir}" prefix="${tlb.complete.basename}/java/libs">
-                <include name="*.jar"/>
-            </tarfileset>
-            <tarfileset dir="${java.lib.dir}" prefix="${tlb.complete.basename}/java/libs">
+            <tarfileset dir="${java.dependencies.dir}" prefix="${tlb.complete.basename}/java/libs">
                 <include name="*.jar"/>
             </tarfileset>
             <tarfileset src="${example-projects.tar}" prefix="${tlb.complete.basename}"/>
         </tar>
-        <delete file="${example-projects.tar}"/>
     </target>
 
     <target name="copy-help" depends="prepare-dist">
@@ -309,12 +327,13 @@
         </sequential>
     </macrodef>
 
-    <target name="sign-dist" depends="package-dist-archive, copy-help">
-        <sign path="${archive.name}"/>
+    <target name="sign-dist" depends="dist-complete, dist-examples, copy-help">
+        <sign path="${dist-complete.archive}"/>
         <sign path="${dist.readme}"/>
+        <sign path="${example-projects.archive}"/>
     </target>
 
-    <target name="dist" depends="package-dist-archive, copy-help, sign-dist"/>
+    <target name="dist" depends="dist-complete, copy-help, sign-dist"/>
 
     <target name="emma.prepare">
         <taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
