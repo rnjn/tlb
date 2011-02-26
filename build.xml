@@ -258,7 +258,7 @@
     <target name="dist-examples" depends="package, tar-examples">
         <property name="example-projects.archive" location="${dist.dir}/${tlb.examples.basename}.tar.gz"/>
         <tar destfile="${example-projects.archive}" compression="gzip">
-            <tarfileset dir="${sample-projects.dir}" fullpath="${tlb.examples.basename}">
+            <tarfileset dir="${sample-projects.dir}" prefix="${tlb.examples.basename}">
                 <include name="README"/>
             </tarfileset>
             <tarfileset dir="${basedir}" prefix="${tlb.examples.basename}">
@@ -272,6 +272,46 @@
                 <include name="*.jar"/>
             </tarfileset>
             <tarfileset dir="${target.dir}" prefix="${tlb.examples.basename}/server">
+                <include name="tlb-server*.jar"/>
+            </tarfileset>
+        </tar>
+    </target>
+
+    <target name="dist-java" depends="package, prepare-dist, -load.short.rev">
+        <property name="dist-java.archive" location="${dist.dir}/${tlb.java.basename}.tar.gz"/>
+        <tar destfile="${dist-java.archive}" compression="gzip">
+            <tarfileset dir="${basedir}" fullpath="${tlb.java.basename}/README">
+                <include name="README.release"/>
+            </tarfileset>
+            <tarfileset dir="${basedir}" prefix="${tlb.java.basename}">
+                <include name="LICENSE"/>
+            </tarfileset>
+            <tarfileset dir="${target.dir}" prefix="${tlb.java.basename}">
+                <include name="tlb-java*.jar"/>
+            </tarfileset>
+            <tarfileset dir="${java.dependencies.dir}" prefix="${tlb.java.basename}/libs">
+                <include name="*.jar"/>
+            </tarfileset>
+        </tar>
+    </target>
+
+    <target name="dist-server" depends="package, prepare-dist, -load.short.rev">
+        <property name="dist-server.archive" location="${dist.dir}/${tlb.server.basename}.tar.gz"/>
+        <tar destfile="${dist-server.archive}" compression="gzip">
+            <tarfileset dir="${basedir}" fullpath="${tlb.server.basename}/README">
+                <include name="README.release"/>
+            </tarfileset>
+            <tarfileset dir="${basedir}" prefix="${tlb.server.basename}">
+                <include name="LICENSE"/>
+            </tarfileset>
+            <tarfileset dir="${basedir}" prefix="${tlb.server.basename}" filemode="0755">
+                <include name="*.sh"/>
+            </tarfileset>
+            <tarfileset dir="${basedir}" prefix="${tlb.server.basename}" >
+                <include name="*.bat"/>
+                <include name="*.cmd"/>
+            </tarfileset>
+            <tarfileset dir="${target.dir}" prefix="${tlb.server.basename}">
                 <include name="tlb-server*.jar"/>
             </tarfileset>
         </tar>
@@ -327,9 +367,11 @@
         </sequential>
     </macrodef>
 
-    <target name="sign-dist" depends="dist-complete, dist-examples, copy-help">
-        <sign path="${dist-complete.archive}"/>
+    <target name="sign-dist" depends="dist-complete, dist-examples, dist-server, dist-java, copy-help">
         <sign path="${dist.readme}"/>
+        <sign path="${dist-server.archive}"/>
+        <sign path="${dist-java.archive}"/>
+        <sign path="${dist-complete.archive}"/>
         <sign path="${example-projects.archive}"/>
     </target>
 
