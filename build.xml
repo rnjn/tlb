@@ -242,6 +242,7 @@
 
     <target name="prepare-dist" depends="init">
         <mkdir dir="${dist.dir}"/>
+        <property name="java.dist.libs.dir" value="java/${java.dist.libs.dir.basename}"/>
     </target>
 
     <target name="tar-examples" depends="prepare-dist, -load.short.rev">
@@ -255,7 +256,7 @@
         </exec>
     </target>
 
-    <target name="dist-examples" depends="package, tar-examples">
+    <target name="dist-examples" depends="prepare-dist, package, tar-examples">
         <property name="example-projects.archive" location="${dist.dir}/${tlb.examples.basename}.tar.gz"/>
         <tar destfile="${example-projects.archive}" compression="gzip">
             <tarfileset dir="${sample-projects.dir}" prefix="${tlb.examples.basename}">
@@ -268,7 +269,7 @@
             <tarfileset dir="${target.dir}" prefix="${tlb.examples.basename}/java">
                 <include name="tlb-java*.jar"/>
             </tarfileset>
-            <tarfileset dir="${java.dependencies.dir}" prefix="${tlb.examples.basename}/java/libs">
+            <tarfileset dir="${java.dependencies.dir}" prefix="${tlb.examples.basename}/${java.dist.libs.dir}">
                 <include name="*.jar"/>
             </tarfileset>
             <tarfileset dir="${target.dir}" prefix="${tlb.examples.basename}/server">
@@ -289,7 +290,7 @@
             <tarfileset dir="${target.dir}" prefix="${tlb.java.basename}">
                 <include name="tlb-java*.jar"/>
             </tarfileset>
-            <tarfileset dir="${java.dependencies.dir}" prefix="${tlb.java.basename}/libs">
+            <tarfileset dir="${java.dependencies.dir}" prefix="${tlb.java.basename}/${java.dist.libs.dir.basename}">
                 <include name="*.jar"/>
             </tarfileset>
         </tar>
@@ -345,7 +346,7 @@
             <tarfileset dir="${target.dir}" prefix="${tlb.complete.basename}/java">
                 <include name="tlb-java*.jar"/>
             </tarfileset>
-            <tarfileset dir="${java.dependencies.dir}" prefix="${tlb.complete.basename}/java/libs">
+            <tarfileset dir="${java.dependencies.dir}" prefix="${tlb.complete.basename}/${java.dist.libs.dir}">
                 <include name="*.jar"/>
             </tarfileset>
             <tarfileset src="${example-projects.tar}" prefix="${tlb.complete.basename}"/>
