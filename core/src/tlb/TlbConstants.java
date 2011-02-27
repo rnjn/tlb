@@ -1,7 +1,7 @@
 package tlb;
 
 /**
- * @understands TBL constants
+ * @understands TLB constants
  */
 public interface TlbConstants {
     static final String TYPE_OF_SERVER = "TYPE_OF_SERVER";

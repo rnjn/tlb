@@ -4,10 +4,10 @@
 #uncomment statements to override variable values, comments show the default
 
 #The port the TLB server would listen to
-#TLB_PORT=7019 
+#TLB_SERVER_PORT=7019 
 
 #Store is the directory under which the test information(running-time, results etc) are stored
-#tlb_store=tlb_store #in current working directory
+#TLB_DATA_DIR=tlb_store #in current working directory
 
 
 pid_file=.server.pid
@@ -19,7 +19,7 @@ function start_server {
     check_if_already_running
 
     if [ $status = does-not-exist ]; then
-        tlb_jar=`ls -t | grep '^tlb-all.*\.jar$' | head -1` 
+        tlb_jar=`ls -t | grep '^tlb-server.*\.jar$' | head -1` 
         java -jar $tlb_jar 1>$server_out 2>$server_err &
         pid=$!
         disown
@@ -43,7 +43,7 @@ function stop_server {
 function load_status {
     if [ -e $pid_file ]; then
         pid=`cat $pid_file`
-        ps u -p $pid | grep tlb-all | grep -q java
+        ps u -p $pid | grep tlb-server | grep -q java
         if [ $? -eq 0 ]; then
             status='running'
         else

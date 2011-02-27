@@ -305,10 +305,10 @@
             <tarfileset dir="${basedir}" prefix="${tlb.server.basename}">
                 <include name="LICENSE"/>
             </tarfileset>
-            <tarfileset dir="${basedir}" prefix="${tlb.server.basename}" filemode="0755">
+            <tarfileset dir="${server.dir}" prefix="${tlb.server.basename}" filemode="0755">
                 <include name="*.sh"/>
             </tarfileset>
-            <tarfileset dir="${basedir}" prefix="${tlb.server.basename}" >
+            <tarfileset dir="${server.dir}" prefix="${tlb.server.basename}" >
                 <include name="*.bat"/>
                 <include name="*.cmd"/>
             </tarfileset>
@@ -327,10 +327,10 @@
             <tarfileset dir="${basedir}" prefix="${tlb.complete.basename}">
                 <include name="LICENSE"/>
             </tarfileset>
-            <tarfileset dir="${basedir}" prefix="${tlb.complete.basename}/server" filemode="0755">
+            <tarfileset dir="${server.dir}" prefix="${tlb.complete.basename}/server" filemode="0755">
                 <include name="*.sh"/>
             </tarfileset>
-            <tarfileset dir="${basedir}" prefix="${tlb.complete.basename}/server" >
+            <tarfileset dir="${server.dir}" prefix="${tlb.complete.basename}/server" >
                 <include name="*.bat"/>
                 <include name="*.cmd"/>
             </tarfileset>
