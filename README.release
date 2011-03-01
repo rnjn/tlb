@@ -16,9 +16,9 @@ For details, refer to the online documentation page.
 System Requirements
 -------------------
 
-Platform - Since TLB is written in Java, it is platform independent. Though we have tested it on Linux, Windows and MacOS, it should work on any platform that is Java enabled.
+Platform - Since TLB is written in Java, it is platform independent. Though we have tested it only on GNU/Linux, Windows and MacOS, it should work on any platform that is Java enabled.
 
-Java - JRE/JDK 1.6 (We recommend using Sun(Oracle) Java, however, it should work as well with OpenJDK too.)
+Java - JRE/JDK 1.6 (We recommend using Sun(Oracle) Java, however, it should work as well with OpenJDK)
 
 Memory - TLB balancer component should work with about 32MB of RAM for most setups.
 
@@ -28,31 +28,77 @@ Getting TLB
 
 TLB can be downloaded from http://code.google.com/p/tlb/downloads/list
 
-TLB is distributed as a 'tarred + gziped' file(.tar.gz). Uncompressing the archive produces a directory named 'tlb-XXXX'.
+TLB is distributed as 'tarred + gziped' files(.tar.gz). Uncompressing the archive produces a directory containing the artifacts.
+
+TLB is bundled in various combinations so as to allow users to download exactly what they need. Here is a short discription of the contents of each such distributable.
+
+Archive Name                   Contents
+------------                   --------
+tlb-complete-gXXX.tar.gz        Has everything(all tlb artifacts and example projects bundled). If you are a new user or are unsure of what you want to go with, go with this. You do not need to download any of other packages if you pull this one.
+tlb-java-gXXX.tar.gz            Contains TLB java support library and its dependencies. Dependencies are shipped in a directory named 'lib'. Java users will need to drop both tlb-java jar and its dependencies in build and test class-path(s).
+tlb-server-gXXX.tar.gz          Contains TLB server, and 'shell-script'(for *nix) and 'bat-script'(for Windows) to manage the server process.
+setup-examples-gXXX.tar.gz      Contains tiny projects that demonstrate TLB hookup in projects written using different languages and/or testing and build frameworks. This will be useful for people trying to setup TLB on their own project(s)/wanting to see TLB work before they set it up on their project.
 
 To unarchive TLB distribution:
-
-You can use "tar -zxvf tlb-XXXX.tar.gz" on *nix(Linux, Unix or MacOS). Windows users can unarchive the distribution using WinRAR, 7z or the Zip Utility(bundled with recent versions of Windows, the zip utility bundled with older versions may not work).
+You can use "tar -zxvf tlb-YYY-XXXX.tar.gz" on *nix(GNU/Linux, Unix or MacOS). Windows users can unarchive the distribution using WinRAR, 7z or the Zip Utility(bundled with recent versions of Windows, the zip utility bundled with older versions may not work).
 
 
 Artifacts: TLB(Archive Contents/Downloads)
 ------------------------------------------
 
-tlb-all-gXXX.jar         : Standalone TLB jar file. This can be used to spin up the TLB server or balancer server.
-tlb-gXXX.jar             : TLB jar file(not standalone). If using TLB on java project, this is what you need in build/test classpath.
-lib/*.jar                : Libraries that TLB depends on. If you are using TLB in a java project, you need to have these in the build/test classpath too.
-server.sh and server.bat : Utility script to manage TLB server from the command line(for *nix and Windows respectively).
-examples/                : This directory has tiny TLB enabled projects written in different languages, using different build and testing frameworks that TLB supports. The 'examples' directory has multiple sub-projects named after build and/or testing framework used. Every project in examples has a shell script call 'run_balanced.sh' which executes project's test-cases balanced between two partitions. Drop into example/<project-dir> directory and invoke './run_balanced.sh' on the shell to execute one of these.
+tlb-complete
+------------
+    server/
+        tlb-server-gXXX.jar                 : Standalone TLB server jar file. This can be used to spin up the TLB server, which is a very lightweight restful http server.
+        server.sh and server.bat            : Utility script to manage TLB server from the command line(for *nix and Windows respectively).
+    java/
+        tlb-java-gXXX.jar                   : TLB Java support library(Java users would want to add this to their build and test classpath.
+        lib/                                : Libraries TLB Java support library depends on. These jars need to be added to the build/test classpath as well. If the subject Java project already has dependency on a few of the libraries TLB depends on, they can be omitted(so TLB will .
+    alien/
+        tlb-alien-gXXX.jar                  : (Matters only for people developing/maintaining TLB support libraries for other languages) TLB alien environment(non-java environment) support library. This is a standalone jar too. Jar invocation runs very lightweight http server. Alien language support library maintainers bundle this library, so as an end user you do not need to worry about this artifact.
+    examples/                               : Has several tiny example projects made to demonstrate TLB in action, hooked up in projects written using different languages and/or testing and build frameworks. Check examples/README for details.
+    source/
+        tlb-gXXX-src.jar                    : TLB source archive. Note: TLB is a multi-module project, to keep things simple for reference purposes we bundle all the module sources merged into one. While this is good for debugging and reference purposes, its not appropriate for contributing-to/patching TLB. Please use the upstream repository for patch work.
+    README                                  : This file.
+    LICENSE                                 : License file.
+
+tlb-server
+----------
+    tlb-server-gXXX.jar                     : Standalone TLB server jar file. This can be used to spin up the TLB server, which is a very lightweight restful http server.
+    server.sh and server.bat                : Utility script to manage TLB server from the command line(for *nix and Windows respectively).
+    README                                  : This file.
+    LICENSE                                 : License file.
+
+tlb-java
+--------
+    tlb-java-gXXX.jar                       : TLB Java support library(Java users would want to add this to their build and test classpath.
+    lib/                                    : Libraries TLB Java support library depends on. These jars need to be added to the build/test classpath as well. If the subject Java project already has dependency on a few of the libraries TLB depends on, they can be omitted(so TLB will .
+    README                                  : This file.
+    LICENSE                                 : License file.
+
+setup-example (some of the TLB artifacts are bundled in to meet example dependencies)
+-------------
+    server/
+        tlb-server-gXXX.jar                 : Standalone TLB server jar file. This can be used to spin up the TLB server, which is a very lightweight restful http server.
+    java/
+        tlb-java-gXXX.jar                   : TLB Java support library(Java users would want to add this to their build and test classpath.
+        lib/                                : Libraries TLB Java support library depends on. These jars need to be added to the build/test classpath as well. If the subject Java project already has dependency on a few of the libraries TLB depends on, they can be omitted(so TLB will .
+    examples/                               : Has several tiny example projects made to demonstrate TLB in action, hooked up in projects written using different languages and/or testing and build frameworks. Check examples/README for details.
+    README                                  : This file.
+    LICENSE                                 : License file.
+   
 
 Note for Ruby users: Ruby example projects depend on the corresponding TLB gem being installed. For instance, you will need to 'gem install tlb-rspec2' before you can execute examples/rspec2_example specs.
+
+If you have pulled down the tlb-complete archive, java libraries should be found under top-level-dir/java and server artifacts would be found in top-level-dir/server, as opposed to top-level-dir if you have pulled down tlb-java or tlb-server archive respectively.
 
 
 Usage(Balancer)
 ---------------
 
-Please ensure a suitable version of Java is installed. We highly recomend reading 'Quick Start' page on TLB website. This page has typical build script fragments you can borrow, or refer to, while setting up 'load-balanced-test-runner' task in your build script(s).
+Please ensure a suitable version of Java is installed. We highly recomend refering to 'Quick Start' page on TLB website. This page has typical build script fragments you can borrow, or refer to, while setting up 'load-balanced-test-runner' task in your build script(s).
 
-If you are using TLB in a Java project, you can add the jars in this distribution to your test classpath. This means, you will have to copy tlb-gXXXX.jar and other jars that TLB depends on(which are bundled alongwith, in the sub-directory named 'lib'), to your project's classpath.
+If you are using TLB in a Java project, you can add the jars in this distribution to your test classpath. This means, you will have to copy tlb-java-gXXXX.jar and other jars that tlb-java jar depends on(which are bundled alongwith, in the sub-directory named 'lib'), to your project's classpath.
 
 For any other environments(for instance, Ruby), you only need to ensure java(the command) can be invoked at the console prompt(i.e. the command is available on PATH). No copying of jar(s) or any other scripts is necessary for Ruby support as tlb ruby-gems are self-sufficient and stand-alone.
 
@@ -60,7 +106,7 @@ For any other environments(for instance, Ruby), you only need to ensure java(the
 Usage(Server)
 -------------
 
-To start the TLB server, execute: "server.sh start"(on *nix) or "server.bat start"(on windows) from the directory extracted out of TLB archive(TLB download archive extracts to a directory named tlb-XXX(where XXX is the version number). 
+To start the TLB server, execute: "./server.sh start"(on *nix) or "server.bat start"(on windows) from the directory extracted out of TLB archive(TLB download archive extracts to a directory named tlb-YYY-XXX(where XXX is the version number, and YYY is the type)). 
 
 Feel free to make changes to the respective scripts to tweak values TLB Server uses for exposed configuration variables. Please visit the Configuration Reference page on the TLB website(documentation section) to get detailed description of role and possible values for each of these environment variables.
 
@@ -75,9 +121,9 @@ This is also acts as a good proving ground to play around with configuration var
 The tiny projects under this directory have test-cases that are executed by a helper script named 'run_balanced.sh' in a balanced fashion. The two primary things this helper script does are:
 
     1. Starts the TLB server (Partitions need a server to post/pull data, this server started by the helper script is equivallent to the remote server in your real setup, the URL to which is provided to partitions). This server is started before the first partition starts and is terminated after the last partition finishes.
-    2. Executes a loop, which loops as many times as the number of partitions. Each run of this loop sets a different partition number and invokes a project sperific build task(i.e. an Ant task for ant_junit project and a Rake task for rspec2_example).
+    2. Executes a loop, which iterates as many times as the number of partitions. Each execution of this loop sets a different partition number and invokes a project sperific build task(i.e. an Ant task for ant_junit project and a Rake task for rspec2_example).
 
-This script uses TLB to makes 2 partitions of these tests, and executes them serially(not parallely) on the local machine. In a real situation each one of these partitions will be executed on a different machine(or by a different process) parallely. The helper script executes them serially only to demonstrate partitioning/re-ordering.
+This script uses TLB to makes 2 partitions of these tests, and executes them serially(not parallely) on the local machine. In a real situation each one of these partitions will be executed on a different machine(or by a different process) "parallely". The helper script executes them serially only to demonstrate partitioning/re-ordering.
 
 Sample projects directory is bundled alongwith every release for users to see and play with. Its usually a good idea to borrow build script configuration from the example project that matches your environment.
 
