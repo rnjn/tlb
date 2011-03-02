@@ -63,9 +63,4 @@ public abstract class JobFamilyAwareSplitter extends TestSplitter implements Tal
     protected boolean isFirst(int index) {
         return (index == 0);
     }
-
-    protected String jobName() {
-        return env.val(TlbConstants.Go.GO_JOB_NAME);
-    }
-
 }
