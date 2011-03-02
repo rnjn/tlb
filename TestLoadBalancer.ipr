@@ -266,7 +266,7 @@
   <component name="ProjectRunConfigurationManager">
     <configuration default="false" name="TlbBalancer_2" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" />
-      <option name="MAIN_CLASS_NAME" value="tlb.Main" />
+      <option name="MAIN_CLASS_NAME" value="tlb.BalancerApp" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
@@ -275,19 +275,18 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="server" />
+      <module name="alien" />
       <envs>
-        <env name="TLB_URL" value="http://localhost:7019" />
-        <env name="JOB_VERSION" value="bar1" />
+        <env name="TLB_BASE_URL" value="http://localhost:7019" />
+        <env name="TLB_JOB_VERSION" value="bar1" />
         <env name="TLB_JOB_NAME" value="foo" />
-        <env name="TOTAL_PARTITIONS" value="2" />
-        <env name="PARTITION_NUMBER" value="2" />
-        <env name="TLB_CRITERIA" value="tlb.splitter.DefaultingTestSplitterCriteria" />
+        <env name="TLB_TOTAL_PARTITIONS" value="2" />
+        <env name="TLB_PARTITION_NUMBER" value="2" />
+        <env name="TLB_SPLITTER" value="tlb.splitter.DefaultingTestSplitter" />
         <env name="TLB_ORDERER" value="tlb.orderer.FailedFirstOrderer" />
-        <env name="TALK_TO_SERVICE" value="tlb.service.TalkToTlbServer" />
-        <env name="TLB_APP" value="tlb.balancer.BalancerInitializer" />
+        <env name="TYPE_OF_SERVER" value="tlb.service.TlbServer" />
         <env name="TLB_BALANCER_PORT" value="3001" />
-        <env name="CRITERIA_DEFAULTING_ORDER" value="tlb.splitter.TimeBasedTestSplitterCriteria:tlb.splitter.CountBasedTestSplitterCriteria" />
+        <env name="TLB_PREFERRED_SPLITTERS" value="tlb.splitter.TimeBasedTestSplitter:tlb.splitter.CountBasedTestSplitter" />
       </envs>
       <RunnerSettings RunnerId="Debug">
         <option name="DEBUG_PORT" value="54930" />
@@ -299,44 +298,9 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="TlbBalancer_1" type="Application" factoryName="Application">
-      <extension name="coverage" enabled="false" merge="false" />
-      <option name="MAIN_CLASS_NAME" value="tlb.Main" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="server" />
-      <envs>
-        <env name="TLB_URL" value="http://localhost:7019" />
-        <env name="JOB_VERSION" value="bar1" />
-        <env name="TLB_JOB_NAME" value="foo" />
-        <env name="TOTAL_PARTITIONS" value="2" />
-        <env name="PARTITION_NUMBER" value="1" />
-        <env name="TLB_CRITERIA" value="tlb.splitter.DefaultingTestSplitterCriteria" />
-        <env name="TLB_ORDERER" value="tlb.orderer.FailedFirstOrderer" />
-        <env name="TALK_TO_SERVICE" value="tlb.service.TalkToTlbServer" />
-        <env name="TLB_APP" value="tlb.balancer.BalancerInitializer" />
-        <env name="TLB_BALANCER_PORT" value="3001" />
-        <env name="CRITERIA_DEFAULTING_ORDER" value="tlb.splitter.TimeBasedTestSplitterCriteria:tlb.splitter.CountBasedTestSplitterCriteria" />
-      </envs>
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="41899" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
     <configuration default="false" name="TlbServer" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" />
-      <option name="MAIN_CLASS_NAME" value="tlb.Main" />
+      <option name="MAIN_CLASS_NAME" value="tlb.ServerApp" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
@@ -357,6 +321,38 @@
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="TlbBalancer_1" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" />
+      <option name="MAIN_CLASS_NAME" value="tlb.BalancerApp" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="alien" />
+      <envs>
+        <env name="TLB_BASE_URL" value="http://localhost:7019" />
+        <env name="TLB_JOB_VERSION" value="bar1" />
+        <env name="TLB_JOB_NAME" value="foo" />
+        <env name="TLB_TOTAL_PARTITIONS" value="2" />
+        <env name="TLB_PARTITION_NUMBER" value="1" />
+        <env name="TLB_SPLITTER" value="tlb.splitter.DefaultingTestSplitter" />
+        <env name="TLB_ORDERER" value="tlb.orderer.FailedFirstOrderer" />
+        <env name="TYPE_OF_SERVER" value="tlb.service.TlbServer" />
+        <env name="TLB_BALANCER_PORT" value="3001" />
+        <env name="TLB_PREFERRED_SPLITTERS" value="tlb.splitter.TimeBasedTestSplitter:tlb.splitter.CountBasedTestSplitter" />
+      </envs>
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="40350" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <ConfigurationWrapper RunnerId="Debug" />
       <method />
     </configuration>
     <configuration default="false" name="local_5005" type="Remote" factoryName="Remote">

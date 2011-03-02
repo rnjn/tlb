@@ -34,8 +34,6 @@ public interface TlbConstants {
     static final String TLB_ORDERER = "TLB_ORDERER";
     static final String TLB_SMOOTHING_FACTOR = "TLB_SMOOTHING_FACTOR";
 
-    static final String TLB_APP = "TLB_APP";
-
     public static interface Balancer {
         static final String TLB_BALANCER_PORT = "TLB_BALANCER_PORT";
         static final String QUERY = "query";
@@ -49,7 +47,6 @@ public interface TlbConstants {
         static final String DEFAULT_TLB_DATA_DIR = "tlb_store";
         static final String LISTING_VERSION = "listing_version";
         static final String TLB_VERSION_LIFE_IN_DAYS = "TLB_VERSION_LIFE_IN_DAYS";
-        static final String DEFAULT_SERVER_INITIALIZER = "tlb.server.TlbServerInitializer";
 
         public static interface EntryRepoFactory {
             static final String SUBSET_SIZE = "subset_size";

@@ -139,11 +139,12 @@
 
     <macrodef name="jar-restlet">
         <attribute name="jar-name"/>
+        <attribute name="main-class"/>
         <element name="class-dirs"/>
         <sequential>
             <tlb-jar dest="@{jar-name}">
                 <extra-manifest>
-                    <attribute name="Main-Class" value="tlb.Main"/>
+                    <attribute name="Main-Class" value="@{main-class}"/>
                 </extra-manifest>
                 <content>
                     <class-dirs/>
@@ -196,7 +197,7 @@
 
     <target name="package.server.jar" depends="init, compile, test, -load.short.rev">
         <property name="tlb_server_jar" value="${target.dir}/tlb-server.jar"/>
-        <jar-restlet jar-name="${tlb_server_jar}">
+        <jar-restlet jar-name="${tlb_server_jar}" main-class="tlb.ServerApp">
             <class-dirs>
                 <fileset dir="${server.classes.dir}"/>
             </class-dirs>
@@ -209,7 +210,7 @@
 
     <target name="package.alien.jar" depends="init, compile, test, -load.short.rev">
         <property name="tlb_alien_jar" value="${target.dir}/tlb-alien.jar"/>
-        <jar-restlet jar-name="${tlb_alien_jar}">
+        <jar-restlet jar-name="${tlb_alien_jar}" main-class="tlb.BalancerApp">
             <class-dirs>
                 <fileset dir="${alien.classes.dir}"/>
                 <fileset dir="${balancer.classes.dir}"/>
@@ -419,7 +420,7 @@
     <target name="test" depends="init, core.test, balancer.test, java.test, restlet.test, alien.test, server.test, integration-tests.test"/>
 
     <target name="run_balancer" depends="compile">
-        <java classname="tlb.Main" fork="true">
+        <java classname="tlb.BalancerApp" fork="true">
             <env key="TLB_BASE_URL" value="http://localhost:7019"/>
             <env key="TLB_JOB_NAME" value="foo"/>
             <env key="TLB_PARTITION_NUMBER" value="1"/>
@@ -428,7 +429,6 @@
             <env key="TLB_SPLITTER" value="tlb.splitter.CountBasedTestSplitter"/>
             <env key="TYPE_OF_SERVER" value="tlb.service.TlbServer"/>
             <env key="TLB_BALANCER_PORT" value="${random.balancer.port}"/>
-            <env key="TLB_APP" value="tlb.balancer.BalancerInitializer"/>
             <classpath>
                 <path refid="core.src.classpath"/>
                 <path refid="balancer.src.classpath"/>
