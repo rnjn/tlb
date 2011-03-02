@@ -8,4 +8,4 @@ REM set TLB_PORT=7019
 REM Store is the directory under which the test information(running-time, results etc) are stored
 REM set tlb_store=tlb_store #in current working directory
 
-java -jar tlb-all*.jar
+java -jar tlb-server*.jar

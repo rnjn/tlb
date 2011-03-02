@@ -93,6 +93,10 @@ public class TestUtil {
         return entryList;
     }
 
+    public static String convertToPlatformSpecificPath(String classRelPath) {
+        return new File(classRelPath).getPath();
+    }
+
     public static class LogFixture extends AppenderSkeleton {
 
         public void startListening() {

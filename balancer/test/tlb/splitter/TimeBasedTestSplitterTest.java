@@ -6,6 +6,7 @@ import org.junit.Test;
 import tlb.TestUtil;
 import tlb.TlbSuiteFile;
 import tlb.TlbSuiteFileImpl;
+import static tlb.TestUtil.convertToPlatformSpecificPath;
 import tlb.domain.SuiteTimeEntry;
 import tlb.service.Server;
 import tlb.utils.SystemEnvironment;
@@ -63,11 +64,11 @@ public class TimeBasedTestSplitterTest {
         List<SuiteTimeEntry> entries = testTimes();
         when(server.getLastRunTestTimes()).thenReturn(entries);
 
-        TlbSuiteFile first = new TlbSuiteFileImpl("com/foo/First.class");
-        TlbSuiteFile second = new TlbSuiteFileImpl("com/foo/Second.class");
-        TlbSuiteFile third = new TlbSuiteFileImpl("com/bar/Third.class");
-        TlbSuiteFile fourth = new TlbSuiteFileImpl("foo/baz/Fourth.class");
-        TlbSuiteFile fifth = new TlbSuiteFileImpl("foo/bar/Fourth.class");
+        TlbSuiteFile first = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/foo/First.class"));
+        TlbSuiteFile second = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/foo/Second.class"));
+        TlbSuiteFile third = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/bar/Third.class"));
+        TlbSuiteFile fourth = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/baz/Fourth.class"));
+        TlbSuiteFile fifth = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/bar/Fourth.class"));
         List<TlbSuiteFile> resources = Arrays.asList(first, second, third, fourth, fifth);
         when(server.partitionNumber()).thenReturn(1);
 
@@ -127,11 +128,11 @@ public class TimeBasedTestSplitterTest {
         when(server.totalPartitions()).thenReturn(4);
         when(server.getLastRunTestTimes()).thenReturn(testTimes());
 
-        TlbSuiteFile first = new TlbSuiteFileImpl("com/foo/First.class");
-        TlbSuiteFile second = new TlbSuiteFileImpl("com/foo/Second.class");
-        TlbSuiteFile third = new TlbSuiteFileImpl("com/bar/Third.class");
-        TlbSuiteFile fourth = new TlbSuiteFileImpl("foo/baz/Fourth.class");
-        TlbSuiteFile fifth = new TlbSuiteFileImpl("foo/bar/Fourth.class");
+        TlbSuiteFile first = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/foo/First.class"));
+        TlbSuiteFile second = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/foo/Second.class"));
+        TlbSuiteFile third = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/bar/Third.class"));
+        TlbSuiteFile fourth = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/baz/Fourth.class"));
+        TlbSuiteFile fifth = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/bar/Fourth.class"));
         List<TlbSuiteFile> resources = Arrays.asList(first, second, third, fourth, fifth);
 
         when(server.partitionNumber()).thenReturn(1);
@@ -156,13 +157,13 @@ public class TimeBasedTestSplitterTest {
         when(server.totalPartitions()).thenReturn(2);
         when(server.getLastRunTestTimes()).thenReturn(testTimes());
 
-        TlbSuiteFile first = new TlbSuiteFileImpl("com/foo/First.class");
-        TlbSuiteFile second = new TlbSuiteFileImpl("com/foo/Second.class");
-        TlbSuiteFile third = new TlbSuiteFileImpl("com/bar/Third.class");
-        TlbSuiteFile fourth = new TlbSuiteFileImpl("foo/baz/Fourth.class");
-        TlbSuiteFile fifth = new TlbSuiteFileImpl("foo/bar/Fourth.class");
-        TlbSuiteFile firstNew = new TlbSuiteFileImpl("foo/quux/First.class");
-        TlbSuiteFile secondNew = new TlbSuiteFileImpl("foo/quux/Second.class");
+        TlbSuiteFile first = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/foo/First.class"));
+        TlbSuiteFile second = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/foo/Second.class"));
+        TlbSuiteFile third = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/bar/Third.class"));
+        TlbSuiteFile fourth = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/baz/Fourth.class"));
+        TlbSuiteFile fifth = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/bar/Fourth.class"));
+        TlbSuiteFile firstNew = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/quux/First.class"));
+        TlbSuiteFile secondNew = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/quux/Second.class"));
         List<TlbSuiteFile> resources = Arrays.asList(first, second, third, fourth, fifth, firstNew, secondNew);
 
         when(server.partitionNumber()).thenReturn(1);
@@ -196,9 +197,9 @@ public class TimeBasedTestSplitterTest {
         when(server.totalPartitions()).thenReturn(2);
         when(server.getLastRunTestTimes()).thenReturn(testTimes());
 
-        TlbSuiteFile first = new TlbSuiteFileImpl("com/foo/First.class");
-        TlbSuiteFile second = new TlbSuiteFileImpl("com/foo/Second.class");
-        TlbSuiteFile third = new TlbSuiteFileImpl("com/bar/Third.class");
+        TlbSuiteFile first = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/foo/First.class"));
+        TlbSuiteFile second = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/foo/Second.class"));
+        TlbSuiteFile third = new TlbSuiteFileImpl(convertToPlatformSpecificPath("com/bar/Third.class"));
 
         List<TlbSuiteFile> resources = Arrays.asList(second, first, third);
 

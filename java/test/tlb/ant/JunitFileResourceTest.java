@@ -17,6 +17,6 @@ public class JunitFileResourceTest {
         project.setBasedir(baseDir);
         JunitFileResource junitFileResource = new JunitFileResource(project, "foo/bar/Baz.class");
         junitFileResource.setBaseDir(new File(baseDir));
-        assertThat(junitFileResource.getName(), is("foo/bar/Baz.class"));
+        assertThat(junitFileResource.getName(), is(new File("foo/bar/Baz.class").getPath()));
     }
 }

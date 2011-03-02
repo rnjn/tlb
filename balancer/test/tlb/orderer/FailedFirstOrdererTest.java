@@ -3,9 +3,9 @@ package tlb.orderer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.verification.Times;
-import tlb.TestUtil;
 import tlb.TlbSuiteFile;
 import tlb.TlbSuiteFileImpl;
+import tlb.TestUtil;
 import tlb.domain.SuiteResultEntry;
 import tlb.service.GoServer;
 import tlb.service.TalksToServer;
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static tlb.TestUtil.initEnvironment;
+import static tlb.TestUtil.convertToPlatformSpecificPath;
 
 public class FailedFirstOrdererTest {
     private FailedFirstOrderer orderer;
@@ -56,10 +57,10 @@ public class FailedFirstOrdererTest {
 
     @Test
     public void shouldReorderTestsToBringFailedTestsFirst() throws Exception{
-        TlbSuiteFile bazClass = new TlbSuiteFileImpl("foo/bar/Baz.class");
-        TlbSuiteFile quuxClass = new TlbSuiteFileImpl("foo/baz/Quux.class");
-        TlbSuiteFile failedFooClass = new TlbSuiteFileImpl("baz/bang/Foo.class");
-        TlbSuiteFile failedBangClass = new TlbSuiteFileImpl("foo/bar/Bang.class");
+        TlbSuiteFile bazClass = new TlbSuiteFileImpl(normalize("foo/bar/Baz.class"));
+        TlbSuiteFile quuxClass = new TlbSuiteFileImpl(normalize("foo/baz/Quux.class"));
+        TlbSuiteFile failedFooClass = new TlbSuiteFileImpl(normalize("baz/bang/Foo.class"));
+        TlbSuiteFile failedBangClass = new TlbSuiteFileImpl(normalize("foo/bar/Bang.class"));
         List<SuiteResultEntry> failedTests = Arrays.asList(new SuiteResultEntry(convertToPlatformSpecificPath("baz/bang/Foo.class"), true), new SuiteResultEntry(convertToPlatformSpecificPath("foo/bar/Bang.class"), true));
         when(toCruise.getLastRunFailedTests()).thenReturn(failedTests);
         List<TlbSuiteFile> fileList = new ArrayList<TlbSuiteFile>(Arrays.asList(bazClass, failedFooClass, quuxClass, failedBangClass));
@@ -73,12 +74,16 @@ public class FailedFirstOrdererTest {
         verify(toCruise, new Times(1)).getLastRunFailedTests();
     }
 
+    private String normalize(String actual) {
+        return new File(actual).getPath();
+    }
+
     @Test
-    public void shouldNotReorderPassedSuitesInspiteOfHavingResults() throws Exception{
-        TlbSuiteFile bazClass = new TlbSuiteFileImpl("foo/bar/Baz.class");
-        TlbSuiteFile quuxClass = new TlbSuiteFileImpl("foo/baz/Quux.class");
-        TlbSuiteFile reportedButPassedFooClass = new TlbSuiteFileImpl("baz/bang/Foo.class");
-        TlbSuiteFile reportedButPassedBangClass = new TlbSuiteFileImpl("foo/bar/Bang.class");
+    public void shouldNotReorderPassedSuitesInspiteOfHavingResults() throws Exception {
+        TlbSuiteFile bazClass = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/bar/Baz.class"));
+        TlbSuiteFile quuxClass = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/baz/Quux.class"));
+        TlbSuiteFile reportedButPassedFooClass = new TlbSuiteFileImpl(convertToPlatformSpecificPath("baz/bang/Foo.class"));
+        TlbSuiteFile reportedButPassedBangClass = new TlbSuiteFileImpl(convertToPlatformSpecificPath("foo/bar/Bang.class"));
         List<SuiteResultEntry> failedTests = Arrays.asList(new SuiteResultEntry("baz.bang.Foo", false), new SuiteResultEntry("foo.bar.Bang", false));
         when(toCruise.getLastRunFailedTests()).thenReturn(failedTests);
 
@@ -90,7 +95,4 @@ public class FailedFirstOrdererTest {
         verify(toCruise, new Times(1)).getLastRunFailedTests();
     }
 
-    private String convertToPlatformSpecificPath(String classRelPath) {
-        return new File(classRelPath).getPath();
-    }
 }
