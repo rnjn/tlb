@@ -10,7 +10,7 @@ Balancer is meant to be hooked with your build script and test runner. This hook
 
 In order to do this, TLB uses historical test run data from the TLB server(or equivallent).
 
-For details, refer to the online documentation page.
+For details, refer to the online documentation page at http://test-load-balancer.github.com
 
 
 System Requirements
