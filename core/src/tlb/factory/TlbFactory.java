@@ -1,5 +1,6 @@
 package tlb.factory;
 
+import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 import tlb.service.Server;
 import tlb.service.TalksToServer;
@@ -15,6 +16,8 @@ public class TlbFactory<T> {
     private T defaultValue;
 
     private static TlbFactory<Server> talkToServiceFactory;
+
+    private static final Logger LOGGER = Logger.getLogger(TlbFactory.class);
 
     TlbFactory(Class<T> klass, T defaultValue) {
         this.klass = klass;
@@ -45,14 +48,16 @@ public class TlbFactory<T> {
             }
             return criteria;
         } catch (InvocationTargetException e) {
+            LOGGER.fatal(getInstanceExceptionMessage(actualKlass, environment, e), e);
             throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Public constructor matching " + actualKlass.getName() + "(SystemEnvironment) was not found", e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Public constructor matching " + actualKlass.getName() + "(SystemEnvironment) was not found", e);
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException("Unable to create abstract class " + actualKlass.getName(), e);
+        } catch (Exception e) {
+            LOGGER.fatal(getInstanceExceptionMessage(actualKlass, environment, e), e);
+            throw new IllegalArgumentException(e);
         }
+    }
+
+    private static String getInstanceExceptionMessage(Class actualKlass, SystemEnvironment environment, Exception e) {
+        return String.format("Message: %s, Args: %s, %s", e.getMessage(), actualKlass, environment);
     }
 
     public static Server getTalkToService(SystemEnvironment environment) {
