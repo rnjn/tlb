@@ -38,6 +38,7 @@
         <mkdir dir="${java.test.reports.dir}"/>
         <property name="java.dist.libs.dir.basename" value="lib"/>
         <property name="java.dependencies.dir" location="${java.dir}/${java.dist.libs.dir.basename}"/>
+        <delete dir="${java.dependencies.dir}"/>
         <mkdir dir="${java.dependencies.dir}"/>
         <copy todir="${java.dependencies.dir}"><!-- remove this duplication(either depend on this, or derive this from dependencies) -->
             <fileset dir="${core.lib.dir}">

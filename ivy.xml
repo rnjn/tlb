@@ -10,7 +10,7 @@
     </configurations>
     <dependencies>
         <dependency org="commons-io" name="commons-io" rev="1.3.2" conf="core"/>
-        <dependency org="commons-codec" name="commons-codec" rev="1.2" conf="core"/>
+        <dependency org="commons-codec" name="commons-codec" rev="1.4" conf="core"/>
         <dependency org="log4j" name="log4j" rev="1.2.9" conf="core"/>
 
         <dependency org="dom4j" name="dom4j" rev="1.6.1" conf="balancer"/>
