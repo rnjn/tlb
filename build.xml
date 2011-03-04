@@ -77,7 +77,7 @@
 
     <import file="${integration_tests.dir}/integration_tests-build.xml"/>
 
-    <target name="init" depends="clean, resolve, core.init, balancer.init, java.init, restlet.init, alien.init, server.init, integration-tests.init">
+    <target name="init" depends="resolve, core.init, balancer.init, java.init, restlet.init, alien.init, server.init, integration-tests.init">
         <mkdir dir="${target.dir}"/>
         <mkdir dir="${tmp.dir}"/>
         <mkdir dir="${dog-fooding.reports.target.dir}"/>
