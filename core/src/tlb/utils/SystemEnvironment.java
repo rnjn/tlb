@@ -38,9 +38,15 @@ public class SystemEnvironment {
     }
 
     public String val(String key) {
-        String value = variables.get(key);
-        value = substituteRefs(value);
-        return value;
+        String[] keysInOrderOfPreference = key.split(":");
+        for (String prefferedKey : keysInOrderOfPreference) {
+            String value = variables.get(prefferedKey);
+            if (value != null) {
+                value = substituteRefs(value);
+                return value;
+            }
+        }
+        return null;
     }
 
     private String substituteRefs(String value) {

@@ -29,6 +29,27 @@ public class SystemEnvironmentTest {
         SystemEnvironment env = new SystemEnvironment(map);
         assertThat(env.val("foo"), is("bar"));
     }
+    
+    @Test
+    public void shouldDefaultProperties() throws Exception {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("foo", "bar");
+        map.put("baz", "quux");
+        SystemEnvironment env = new SystemEnvironment(map);
+        assertThat(env.val("foo:baz"), is("bar"));
+        assertThat(env.val("hello:baz"), is("quux"));
+    }
+
+    @Test
+    public void shouldDefaultPropertiesWhileUsingLongPrefferedKeysChain_withRecursiveResolution() {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("foo", "bar");
+        map.put("bar", "oo");
+        map.put("baz", "baz-${foo}");
+        map.put("quux", "quux_val-${f${bar}}");
+        SystemEnvironment env = new SystemEnvironment(map);
+        assertThat(env.val("hello:world:hello_world_key:foo : bar:quux:last_in_preference_key"), is("quux_val-bar"));
+    }
 
     @Test
     public void shouldRecursivelyResolveVariables() throws Exception {
