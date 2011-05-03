@@ -180,7 +180,7 @@ public class GoServer extends SmoothingServer {
     }
 
     public List<SuiteTimeEntry> fetchLastRunTestTimes() {
-        return getLastRunTestTimes(pearJobs());
+        return getLastRunTestTimes(peerJobs());
     }
 
     List<SuiteTimeEntry> getLastRunTestTimes(List<String> pearJobs) {
@@ -278,7 +278,7 @@ public class GoServer extends SmoothingServer {
     }
 
     public List<SuiteResultEntry> getLastRunFailedTests() {
-        return getLastRunFailedTests(pearJobs());
+        return getLastRunFailedTests(peerJobs());
     }
 
     protected String jobName() {
@@ -312,17 +312,17 @@ public class GoServer extends SmoothingServer {
         return family;
     }
 
-    public List<String> pearJobs() {
+    public List<String> peerJobs() {
         List<String> jobs = jobsInTheSameFamily(getJobs());
         Collections.sort(jobs);
         return jobs;
     }
 
     public int partitionNumber() {
-        return pearJobs().indexOf(jobName()) + 1; //partition number is one based
+        return peerJobs().indexOf(jobName()) + 1; //partition number is one based
     }
 
     public int totalPartitions() {
-        return pearJobs().size();
+        return peerJobs().size();
     }
 }

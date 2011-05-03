@@ -190,7 +190,7 @@ public class EntryRepoFactoryTest {
     public void shouldPurgeDiskDumpAndRepositoryWhenAsked() throws IOException, ClassNotFoundException, InterruptedException {
         SuiteTimeRepo fooRepo = factory.createSuiteTimeRepo("foo", LATEST_VERSION);
         fooRepo.update(new SuiteTimeEntry("foo.bar.Baz", 15));
-        fooRepo.update(new SuiteTimeEntry("foo.bar.Quux", 80));
+        fooRepo.update(new SuiteTimeEntry("foo.bar.Qux", 80));
         final Thread exitHook = factory.exitHook();
         exitHook.start();
         exitHook.join();

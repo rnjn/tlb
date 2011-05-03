@@ -59,7 +59,7 @@ public class GoServerTest {
 
         server = new GoServer(environment, action);
         assertThat(server.getJobs(), is(Arrays.asList("firefox-3", "rails", "firefox-1", "smoke", "firefox-2")));
-        assertThat(server.pearJobs(), is(Arrays.asList("firefox-1", "firefox-2", "firefox-3")));
+        assertThat(server.peerJobs(), is(Arrays.asList("firefox-1", "firefox-2", "firefox-3")));
         assertThat(server.totalPartitions(), is(3));
         assertThat(server.partitionNumber(), is(2));
     }
@@ -80,7 +80,7 @@ public class GoServerTest {
 
         server = new GoServer(environment, action);
         assertThat(server.getJobs(), is(Arrays.asList("firefox-cbcdef12-1234-1234-1234-abcdef123456", "rails", "firefox-abcdef12-1234-1234-1234-abcdef123456", "smoke", "firefox-bbcdef12-1234-1234-1234-abcdef123456")));
-        assertThat(server.pearJobs(), is(Arrays.asList("firefox-abcdef12-1234-1234-1234-abcdef123456", "firefox-bbcdef12-1234-1234-1234-abcdef123456", "firefox-cbcdef12-1234-1234-1234-abcdef123456")));
+        assertThat(server.peerJobs(), is(Arrays.asList("firefox-abcdef12-1234-1234-1234-abcdef123456", "firefox-bbcdef12-1234-1234-1234-abcdef123456", "firefox-cbcdef12-1234-1234-1234-abcdef123456")));
         assertThat(server.totalPartitions(), is(3));
         assertThat(server.partitionNumber(), is(2));
     }

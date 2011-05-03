@@ -40,8 +40,8 @@ public class EntryRepoFactory implements Runnable {
 
     EntryRepoFactory(File tlbStoreDir, TimeProvider timeProvider, double smoothingFactor) {
         this.tlbStoreDir = tlbStoreDir.getAbsolutePath();
-        repos = new ConcurrentHashMap<String, EntryRepo>();
         this.timeProvider = timeProvider;
+        repos = new ConcurrentHashMap<String, EntryRepo>();
     }
 
     public void purge(String identifier) throws IOException {
@@ -128,7 +128,8 @@ public class EntryRepoFactory implements Runnable {
         return str.replace(DELIMITER, DELIMITER + DELIMITER);
     }
 
-    @Deprecated //for tests only
+    @Deprecated
+        //for tests only
     Map<String, EntryRepo> getRepos() {
         return repos;
     }
