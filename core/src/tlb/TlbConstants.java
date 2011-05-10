@@ -6,7 +6,7 @@ import tlb.utils.SystemEnvironment;
  * @understands TLB constants
  */
 public interface TlbConstants {
-    static final String TYPE_OF_SERVER = "TYPE_OF_SERVER";//defaults to TlbServer
+    static final SystemEnvironment.EnvVar TYPE_OF_SERVER = new SystemEnvironment.DefaultedEnvVar("TYPE_OF_SERVER", "tlb.service.TlbServer");
 
     public static interface Go {
         static final String GO_SERVER_URL = "GO_SERVER_URL";
@@ -30,11 +30,11 @@ public interface TlbConstants {
 
     static final String PASSWORD = "TLB_PASSWORD";
     static final String USERNAME = "TLB_USERNAME";
-    static final String TLB_SPLITTER = "TLB_SPLITTER";//defaults to tlb.splitter.DefaultingTestSplitter
+    static final String TLB_SPLITTER = "TLB_SPLITTER";
     static final String TEST_SUBSET_SIZE_FILE = "tlb/subset_size";
-    static final String TLB_PREFERRED_SPLITTERS = "TLB_PREFERRED_SPLITTERS";//defaults to tlb.splitter.TimeBasedTestSplitter:tlb.splitter.CountBasedTestSplitter
-    static final String TLB_TMP_DIR = "TLB_TMP_DIR";//defaults to java.io.tmpdir
-    static final String TLB_ORDERER = "TLB_ORDERER";//defaults to tlb.orderer.FailedFirstOrderer
+    static final String TLB_PREFERRED_SPLITTERS = "TLB_PREFERRED_SPLITTERS";
+    static final String TLB_TMP_DIR = "TLB_TMP_DIR";
+    static final String TLB_ORDERER = "TLB_ORDERER";
     static final SystemEnvironment.EnvVar TLB_SMOOTHING_FACTOR = new SystemEnvironment.DefaultedEnvVar("TLB_SMOOTHING_FACTOR", "1.0");
 
     public static interface Balancer {
