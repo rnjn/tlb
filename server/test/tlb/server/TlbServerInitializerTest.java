@@ -2,6 +2,9 @@ package tlb.server;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.internal.verification.Only;
+import org.mockito.internal.verification.Times;
 import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.Restlet;
@@ -19,11 +22,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import static junit.framework.Assert.fail;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 import static tlb.TlbConstants.Server.EntryRepoFactory.SUBSET_SIZE;
 import static tlb.TlbConstants.Server.TLB_VERSION_LIFE_IN_DAYS;
 import static tlb.server.repo.EntryRepoFactory.LATEST_VERSION;
@@ -144,20 +146,25 @@ public class TlbServerInitializerTest {
             }
         }.init();
 
-        tasks[0].run();
-        verify(repoFactory).purgeVersionsOlderThan(7);
+        assertThat(tasks[0], is(nullValue()));
+        verify(repoFactory).registerExitHook();
+        verifyNoMoreInteractions(repoFactory);
+
+        final EntryRepoFactory anotherRepoFactory = mock(EntryRepoFactory.class);
 
         systemEnv.put(TLB_VERSION_LIFE_IN_DAYS.key, "3");
 
         new TlbServerInitializer(new SystemEnvironment(systemEnv), timer) {
             @Override
             EntryRepoFactory repoFactory() {
-                return repoFactory;
+                return anotherRepoFactory;
             }
         }.init();
 
         tasks[0].run();
-        verify(repoFactory).purgeVersionsOlderThan(3);
+        verify(anotherRepoFactory).purgeVersionsOlderThan(3);
+        verify(anotherRepoFactory).registerExitHook();
+        verifyNoMoreInteractions(repoFactory);
     }
 
     @Test
