@@ -35,7 +35,7 @@ public class EntryRepoFactory implements Runnable {
     }
 
     public EntryRepoFactory(SystemEnvironment env) {
-        this(new File(env.val(TLB_DATA_DIR, DEFAULT_TLB_DATA_DIR)), new TimeProvider(), Double.parseDouble(env.val(TlbConstants.TLB_SMOOTHING_FACTOR, "1")));
+        this(new File(env.val(TlbConstants.Server.TLB_DATA_DIR)), new TimeProvider(), Double.parseDouble(env.val(TlbConstants.TLB_SMOOTHING_FACTOR)));
     }
 
     EntryRepoFactory(File tlbStoreDir, TimeProvider timeProvider, double smoothingFactor) {

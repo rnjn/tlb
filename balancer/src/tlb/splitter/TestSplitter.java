@@ -1,8 +1,8 @@
 package tlb.splitter;
 
 import java.util.List;
-import java.io.File;
 
+import tlb.TlbConstants;
 import tlb.TlbSuiteFile;
 import tlb.utils.SystemEnvironment;
 
@@ -11,6 +11,7 @@ import tlb.utils.SystemEnvironment;
  */
 public abstract class TestSplitter {
     protected final SystemEnvironment env;
+    public static final SystemEnvironment.EnvVar TLB_SPLITTER = new SystemEnvironment.DefaultedEnvVar(TlbConstants.TLB_SPLITTER, DefaultingTestSplitter.class.getCanonicalName());
 
     protected TestSplitter(SystemEnvironment env) {
         this.env = env;

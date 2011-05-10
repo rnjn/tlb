@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import tlb.TlbConstants;
 import tlb.TlbSuiteFile;
 import tlb.factory.TlbBalancerFactory;
-import tlb.factory.TlbFactory;
 import tlb.utils.SystemEnvironment;
 
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ import java.util.List;
  */
 public class DefaultingTestSplitter extends TestSplitter {
     private static final Logger logger = Logger.getLogger(DefaultingTestSplitter.class.getName());
+    public static final SystemEnvironment.EnvVar TLB_PREFERRED_SPLITTERS = new SystemEnvironment.DefaultedEnvVar(TlbConstants.TLB_PREFERRED_SPLITTERS, TimeBasedTestSplitter.class.getCanonicalName() + ":" + CountBasedTestSplitter.class.getCanonicalName());
 
     private ArrayList<TestSplitter> criterion;
 
@@ -46,6 +46,6 @@ public class DefaultingTestSplitter extends TestSplitter {
     }
 
     private String[] criteriaNames(SystemEnvironment env) {
-        return env.val(TlbConstants.TLB_PREFERRED_SPLITTERS).split("\\s*:\\s*");
+        return env.val(TLB_PREFERRED_SPLITTERS).split("\\s*:\\s*");
     }
 }

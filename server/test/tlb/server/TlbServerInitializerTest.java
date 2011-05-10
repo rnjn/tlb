@@ -54,7 +54,7 @@ public class TlbServerInitializerTest {
 
     @Test
     public void shouldInitializeTlbToRunOnConfiguredPort() {
-        systemEnv.put(TlbConstants.Server.TLB_SERVER_PORT, "1234");
+        systemEnv.put(TlbConstants.Server.TLB_SERVER_PORT.key, "1234");
         assertThat(new TlbServerInitializer(new SystemEnvironment(systemEnv)).appPort(), is(1234));
     }
 
@@ -109,7 +109,7 @@ public class TlbServerInitializerTest {
     @Test
     public void shouldHonorDiskStorageRootOverride() throws IOException, ClassNotFoundException {
         String tmpDir = TestUtil.createTempFolder().getAbsolutePath();
-        systemEnv.put(TlbConstants.Server.TLB_DATA_DIR, tmpDir);
+        systemEnv.put(TlbConstants.Server.TLB_DATA_DIR.key, tmpDir);
         initializer = new TlbServerInitializer(new SystemEnvironment(systemEnv));
         EntryRepoFactory factory = initializer.repoFactory();
         File file = new File(tmpDir, EntryRepoFactory.name("quux", LATEST_VERSION, SUBSET_SIZE));
@@ -147,7 +147,7 @@ public class TlbServerInitializerTest {
         tasks[0].run();
         verify(repoFactory).purgeVersionsOlderThan(7);
 
-        systemEnv.put(TLB_VERSION_LIFE_IN_DAYS, "3");
+        systemEnv.put(TLB_VERSION_LIFE_IN_DAYS.key, "3");
 
         new TlbServerInitializer(new SystemEnvironment(systemEnv), timer) {
             @Override
@@ -162,7 +162,7 @@ public class TlbServerInitializerTest {
 
     @Test
     public void shouldNotSetTimerIfNoVersionLifeIsMentioned() {
-        systemEnv.put(TLB_VERSION_LIFE_IN_DAYS, "-1");
+        systemEnv.put(TLB_VERSION_LIFE_IN_DAYS.key, "-1");
 
         final EntryRepoFactory repoFactory = mock(EntryRepoFactory.class);
         final Timer timer = new Timer() {

@@ -42,7 +42,7 @@ public class TlbServer extends SmoothingServer {
     }
 
     public List<SuiteTimeEntry> fetchLastRunTestTimes() {
-        return SuiteTimeEntry.parse(httpAction.get(getUrl(namespace(), suiteTimeRepoName(), environment.val(TlbConstants.TlbServer.TLB_JOB_VERSION))));
+        return SuiteTimeEntry.parse(httpAction.get(getUrl(namespace(), suiteTimeRepoName(), environment.val(new SystemEnvironment.EnvVar(TlbConstants.TlbServer.TLB_JOB_VERSION)))));
     }
 
     public List<SuiteResultEntry> getLastRunFailedTests() {
@@ -59,16 +59,16 @@ public class TlbServer extends SmoothingServer {
     }
 
     public int partitionNumber() {
-        return Integer.parseInt(environment.val(TlbConstants.TlbServer.TLB_PARTITION_NUMBER));
+        return Integer.parseInt(environment.val(new SystemEnvironment.EnvVar(TlbConstants.TlbServer.TLB_PARTITION_NUMBER)));
     }
 
     public int totalPartitions() {
-        return Integer.parseInt(environment.val(TlbConstants.TlbServer.TLB_TOTAL_PARTITIONS));
+        return Integer.parseInt(environment.val(new SystemEnvironment.EnvVar(TlbConstants.TlbServer.TLB_TOTAL_PARTITIONS)));
     }
 
     private String getUrl(String... parts) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(environment.val(TLB_BASE_URL));
+        builder.append(environment.val(new SystemEnvironment.EnvVar(TLB_BASE_URL)));
         for (String part : parts) {
             builder.append("/").append(part);
         }
@@ -84,6 +84,6 @@ public class TlbServer extends SmoothingServer {
     }
 
     private String namespace() {
-        return environment.val(TLB_JOB_NAME);
+        return environment.val(new SystemEnvironment.EnvVar(TLB_JOB_NAME));
     }
 }

@@ -63,7 +63,7 @@ public class TlbFactory<T> {
     public static Server getTalkToService(SystemEnvironment environment) {
         if (talkToServiceFactory == null)
             talkToServiceFactory = new TlbFactory<Server>(Server.class, null);
-        return talkToServiceFactory.getInstance(environment.val(TlbConstants.TYPE_OF_SERVER), environment);
+        return talkToServiceFactory.getInstance(environment.val(new SystemEnvironment.EnvVar(TlbConstants.TYPE_OF_SERVER)), environment);
     }
 
 }

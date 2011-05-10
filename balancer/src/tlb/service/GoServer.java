@@ -40,7 +40,6 @@ import java.util.regex.Pattern;
  */
 public class GoServer extends SmoothingServer {
     private static final Logger logger = Logger.getLogger(GoServer.class.getName());
-    private static final String DEFAULT_STAGE_FEED_SEARCH_DEPTH = "10";
 
     private final HttpAction httpAction;
     private static final String JOB_NAME = "name";
@@ -78,7 +77,7 @@ public class GoServer extends SmoothingServer {
 
     private static URI createUri(SystemEnvironment environment) {
         try {
-            return new URI(environment.val(Go.GO_SERVER_URL));
+            return new URI(environment.val(new SystemEnvironment.EnvVar(Go.GO_SERVER_URL)));
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -105,8 +104,8 @@ public class GoServer extends SmoothingServer {
     private static DefaultHttpClient createClient(SystemEnvironment environment) {
         DefaultHttpClient client = DefaultHttpAction.createClient();
         URI uri = createUri(environment);
-        if (environment.val(USERNAME) != null) {
-            client.getCredentialsProvider().setCredentials(new AuthScope(uri.getHost(), uri.getPort()), new UsernamePasswordCredentials(environment.val(USERNAME), environment.val(PASSWORD)));
+        if (environment.val(new SystemEnvironment.EnvVar(USERNAME)) != null) {
+            client.getCredentialsProvider().setCredentials(new AuthScope(uri.getHost(), uri.getPort()), new UsernamePasswordCredentials(environment.val(new SystemEnvironment.EnvVar(USERNAME)), environment.val(new SystemEnvironment.EnvVar(PASSWORD))));
         }
         return client;
     }
@@ -140,7 +139,7 @@ public class GoServer extends SmoothingServer {
     }
 
     private String v(String key) {
-        return environment.val(key);
+        return environment.val(new SystemEnvironment.EnvVar(key));
     }
 
     public void processedTestClassTime(String className, long time) {
@@ -221,7 +220,7 @@ public class GoServer extends SmoothingServer {
 
     @SuppressWarnings({"unchecked"})
     private String lastRunStageDetailUrl(String stageFeedUrl) {
-        return findLastRunStageDetailUrl(stageFeedUrl, Integer.parseInt(environment.val(TlbConstants.Go.GO_STAGE_FEED_MAX_SEARCH_DEPTH, DEFAULT_STAGE_FEED_SEARCH_DEPTH)), 0);
+        return findLastRunStageDetailUrl(stageFeedUrl, Integer.parseInt(environment.val(TlbConstants.Go.GO_STAGE_FEED_MAX_SEARCH_DEPTH)), 0);
     }
 
     private String findLastRunStageDetailUrl(String stageFeedUrl, int digNoMoreThan, int current) {
@@ -244,8 +243,8 @@ public class GoServer extends SmoothingServer {
         if (!matcher.matches()) {
             return false;
         }
-        boolean samePipeline = environment.val(Go.GO_PIPELINE_NAME).equals(matcher.group(1));
-        boolean sameStage = environment.val(Go.GO_STAGE_NAME).equals(matcher.group(2));
+        boolean samePipeline = environment.val(new SystemEnvironment.EnvVar(Go.GO_PIPELINE_NAME)).equals(matcher.group(1));
+        boolean sameStage = environment.val(new SystemEnvironment.EnvVar(Go.GO_STAGE_NAME)).equals(matcher.group(2));
         return samePipeline && sameStage;
     }
 
@@ -282,7 +281,7 @@ public class GoServer extends SmoothingServer {
     }
 
     protected String jobName() {
-        return environment.val(Go.GO_JOB_NAME);
+        return environment.val(new SystemEnvironment.EnvVar(Go.GO_JOB_NAME));
     }
 
     private String jobBaseName() {

@@ -26,6 +26,33 @@ public class SystemEnvironment {
 
     public static final Logger logger = Logger.getLogger(SystemEnvironment.class.getName());
 
+    public static class EnvVar {
+        public final String key;
+
+        public EnvVar(String key) {
+            this.key = key;
+        }
+
+        public String getValue(SystemEnvironment env) {
+            return env.loadVal(this);
+        }
+    }
+
+    public static class DefaultedEnvVar extends EnvVar {
+        private final String defaultValue;
+
+        public DefaultedEnvVar(String key, String defaultValue) {
+            super(key);
+            this.defaultValue = defaultValue;
+        }
+
+        @Override
+        public String getValue(SystemEnvironment env) {
+            String value = super.getValue(env);
+            return value == null ? defaultValue : value;
+        }
+    }
+
     public SystemEnvironment(Map<String, String> variables) {
         this.variables = new HashMap<String, String>();
         for (Map.Entry<String, String> ent : variables.entrySet()) {
@@ -37,8 +64,8 @@ public class SystemEnvironment {
         this(System.getenv());
     }
 
-    public String val(String key) {
-        String[] keysInOrderOfPreference = key.split(":");
+    private String loadVal(EnvVar var) {
+        String[] keysInOrderOfPreference = var.key.split(":");
         for (String prefferedKey : keysInOrderOfPreference) {
             String value = variables.get(prefferedKey);
             if (value != null) {
@@ -54,14 +81,13 @@ public class SystemEnvironment {
         final Matcher matcher = REF.matcher(value);
         if (matcher.find()) {
             final String ref = matcher.group(1);
-            return substituteRefs(value.replace(String.format("${%s}", ref), val(ref)));
+            return substituteRefs(value.replace(String.format("${%s}", ref), val(new EnvVar(ref))));
         }
         return value;
     }
 
-    public String val(String key, String defaultValue) {
-        String value = val(key);
-        return value == null ? defaultValue : value;
+    public String val(EnvVar envVar) {
+        return envVar.getValue(this);
     }
 
     public String getDigest() {
@@ -76,7 +102,7 @@ public class SystemEnvironment {
     }
 
     String tmpDir() {
-        String tmpParent = val(TLB_TMP_DIR);
+        String tmpParent = val(new EnvVar(TLB_TMP_DIR));
         if (tmpParent == null) {
             tmpParent = System.getProperty(SystemEnvironment.TMP_DIR);
             logger.warn(String.format("defaulting tlb tmp directory to %s", tmpParent));

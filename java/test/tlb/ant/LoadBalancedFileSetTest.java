@@ -22,7 +22,8 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static tlb.TlbConstants.Go.GO_SERVER_URL;
 import static tlb.TlbConstants.TLB_SPLITTER;
 
@@ -43,17 +44,6 @@ public class LoadBalancedFileSetTest {
     private void initFileSet(FileSet fileSet) {
         fileSet.setDir(projectDir);
         fileSet.setProject(new Project());
-    }
-
-    @Test
-    public void shouldReturnAllFilesWhenThereIsNothingToSplit() {
-        File newFile = TestUtil.createFileInFolder(projectDir, "abc");
-
-        Iterator files = fileSet.iterator();
-
-        assertThat(files.hasNext(), is(true));
-        assertThat(((FileResource) files.next()).getFile(), is(newFile));
-        assertThat(files.hasNext(), is(false));
     }
 
     @Test

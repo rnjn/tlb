@@ -37,10 +37,10 @@ public class TlbServerTest {
     @BeforeClass
     public static void startTlbServer() throws Exception {
         HashMap<String, String> serverEnv = new HashMap<String, String>();
-        serverEnv.put(TlbConstants.TLB_SMOOTHING_FACTOR, "0.1");
+        serverEnv.put(TlbConstants.TLB_SMOOTHING_FACTOR.key, "0.1");
         freePort = TestUtil.findFreePort();
-        serverEnv.put(TlbConstants.Server.TLB_SERVER_PORT, freePort);
-        serverEnv.put(TlbConstants.Server.TLB_DATA_DIR, TestUtil.createTempFolder().getAbsolutePath());
+        serverEnv.put(TlbConstants.Server.TLB_SERVER_PORT.key, freePort);
+        serverEnv.put(TlbConstants.Server.TLB_DATA_DIR.key, TestUtil.createTempFolder().getAbsolutePath());
         ServerInitializer main = new TlbServerInitializer(new SystemEnvironment(serverEnv));
         component = main.init();
         component.start();
@@ -98,7 +98,7 @@ public class TlbServerTest {
     @Test
     public void shouldBeAbleToPostSmoothenedSuiteTimeToRepo() throws NoSuchFieldException, IllegalAccessException {
         updateEnv(env, TlbConstants.TlbServer.TLB_JOB_NAME, "foo-job");
-        updateEnv(env, TlbConstants.TLB_SMOOTHING_FACTOR, "0.5");
+        updateEnv(env, TlbConstants.TLB_SMOOTHING_FACTOR.key, "0.5");
         String suiteTimeUrl = String.format("http://localhost:%s/foo-job/suite_time", freePort);
         httpAction.put(suiteTimeUrl, "com.foo.Foo: 100");
         httpAction.put(suiteTimeUrl, "com.bar.Bar: 120");

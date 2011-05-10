@@ -34,7 +34,7 @@ public class BalancerInitializerTest {
         updateEnv(env, TlbConstants.TLB_SPLITTER, CountBasedTestSplitter.class.getCanonicalName());
         updateEnv(env, TlbConstants.TLB_ORDERER, FailedFirstOrderer.class.getCanonicalName());
         updateEnv(env, TlbConstants.TYPE_OF_SERVER, TlbServer.class.getCanonicalName());
-        updateEnv(env, TlbConstants.Balancer.TLB_BALANCER_PORT, "614");
+        updateEnv(env, TlbConstants.Balancer.TLB_BALANCER_PORT.key, "614");
         updateEnv(env, TlbConstants.TlbServer.TLB_BASE_URL, "http://foo.bar.com:7019");
         ConcurrentMap<String,Object> map = initializer.application().getContext().getAttributes();
         assertThat(map.get(TlbClient.SPLITTER), is(CountBasedTestSplitter.class));
@@ -46,7 +46,7 @@ public class BalancerInitializerTest {
 
     @Test
     public void shouldInitializeTlbToRunOnConfiguredPort() throws NoSuchFieldException, IllegalAccessException {
-        updateEnv(env, TlbConstants.Balancer.TLB_BALANCER_PORT, "4321");
+        updateEnv(env, TlbConstants.Balancer.TLB_BALANCER_PORT.key, "4321");
         assertThat(initializer.appPort(), is(4321));
     }
 }

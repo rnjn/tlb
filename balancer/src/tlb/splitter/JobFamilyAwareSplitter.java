@@ -45,7 +45,7 @@ public abstract class JobFamilyAwareSplitter extends TestSplitter implements Tal
         }
 
         List<TlbSuiteFile> subset = subset(fileResources);
-        logger.info(String.format("assigned total of %s files to [ %s ]", subset.size(), env.val(TlbConstants.Go.GO_JOB_NAME)));
+        logger.info(String.format("assigned total of %s files to [ %s ]", subset.size(), env.val(new SystemEnvironment.EnvVar(TlbConstants.Go.GO_JOB_NAME))));
         server.publishSubsetSize(subset.size());
         return subset;
     }

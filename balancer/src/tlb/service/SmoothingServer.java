@@ -49,7 +49,7 @@ public abstract class SmoothingServer implements Server {
     }
 
     private double smoothingFactor() {
-        return Double.parseDouble(environment.val(TlbConstants.TLB_SMOOTHING_FACTOR, "1.0"));
+        return Double.parseDouble(environment.val(TlbConstants.TLB_SMOOTHING_FACTOR));
     }
 
     private SuiteTimeEntry entryFor(String className) {
