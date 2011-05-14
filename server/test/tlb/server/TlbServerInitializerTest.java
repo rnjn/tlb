@@ -146,7 +146,8 @@ public class TlbServerInitializerTest {
             }
         }.init();
 
-        assertThat(tasks[0], is(nullValue()));
+        tasks[0].run();
+        verify(repoFactory).purgeVersionsOlderThan(7);
         verify(repoFactory).registerExitHook();
         verifyNoMoreInteractions(repoFactory);
 
