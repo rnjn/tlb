@@ -8,7 +8,7 @@ TLB aims at splitting your test suite into a given number of mutually exclusive 
 
 Balancer is meant to be hooked with your build script and test runner. This hookup ensures TLB gets appropriate callbacks when tests are about to be executed, so it can prune the list of tests to be executed to execute only a part of whole, and change test execution order etc. 
 
-In order to do this, TLB uses historical test run data from the TLB server(or equivallent).
+In order to do this, TLB uses historical test run data from the TLB server(or equivalent).
 
 For details, refer to the online documentation page at http://test-load-balancer.github.com
 
@@ -30,14 +30,14 @@ TLB can be downloaded from http://code.google.com/p/tlb/downloads/list
 
 TLB is distributed as 'tarred + gziped' files(.tar.gz). Uncompressing the archive produces a directory containing the artifacts.
 
-TLB is bundled in various combinations so as to allow users to download exactly what they need. Here is a short discription of the contents of each such distributable.
+TLB is bundled in various combinations so as to allow users to download exactly what they need. Here is a short description of the contents of each such distributable.
 
 Archive Name                   Contents
 ------------                   --------
-tlb-complete-gXXX.tar.gz        Has everything(all tlb artifacts and example projects bundled). If you are a new user or are unsure of what you want to go with, go with this. You do not need to download any of other packages if you pull this one.
-tlb-java-gXXX.tar.gz            Contains TLB java support library and its dependencies. Dependencies are shipped in a directory named 'lib'. Java users will need to drop both tlb-java jar and its dependencies in build and test class-path(s).
-tlb-server-gXXX.tar.gz          Contains TLB server, and 'shell-script'(for *nix) and 'bat-script'(for Windows) to manage the server process.
-setup-examples-gXXX.tar.gz      Contains tiny projects that demonstrate TLB hookup in projects written using different languages and/or testing and build frameworks. This will be useful for people trying to setup TLB on their own project(s)/wanting to see TLB work before they set it up on their project.
+tlb-complete-XXX.tar.gz        Has everything(all tlb artifacts and example projects bundled). If you are a new user or are unsure of what you want to go with, go with this. You do not need to download any of other packages if you pull this one.
+tlb-java-XXX.tar.gz            Contains TLB java support library and its dependencies. Dependencies are shipped in a directory named 'lib'. Java users will need to drop both tlb-java jar and its dependencies in build and test class-path(s).
+tlb-server-XXX.tar.gz          Contains TLB server, and 'shell-script'(for *nix) and 'bat-script'(for Windows) to manage the server process.
+setup-examples-XXX.tar.gz      Contains tiny projects that demonstrate TLB hookup in projects written using different languages and/or testing and build frameworks. This will be useful for people trying to setup TLB on their own project(s)/wanting to see TLB work before they set it up on their project.
 
 To unarchive TLB distribution:
 You can use "tar -zxvf tlb-YYY-XXXX.tar.gz" on *nix(GNU/Linux, Unix or MacOS). Windows users can unarchive the distribution using WinRAR, 7z or the Zip Utility(bundled with recent versions of Windows, the zip utility bundled with older versions may not work).
@@ -49,29 +49,29 @@ Artifacts: TLB(Archive Contents/Downloads)
 tlb-complete
 ------------
     server/
-        tlb-server-gXXX.jar                 : Standalone TLB server jar file. This can be used to spin up the TLB server, which is a very lightweight restful http server.
+        tlb-server-XXX.jar                 : Standalone TLB server jar file. This can be used to spin up the TLB server, which is a very lightweight restful http server.
         server.sh and server.bat            : Utility script to manage TLB server from the command line(for *nix and Windows respectively).
     java/
-        tlb-java-gXXX.jar                   : TLB Java support library(Java users would want to add this to their build and test classpath.
+        tlb-java-XXX.jar                   : TLB Java support library(Java users would want to add this to their build and test classpath.
         lib/                                : Libraries TLB Java support library depends on. These jars need to be added to the build/test classpath as well. If the subject Java project already has dependency on a few of the libraries TLB depends on, they can be omitted(so TLB will .
     alien/
-        tlb-alien-gXXX.jar                  : (Matters only for people developing/maintaining TLB support libraries for other languages) TLB alien environment(non-java environment) support library. This is a standalone jar too. Jar invocation runs very lightweight http server. Alien language support library maintainers bundle this library, so as an end user you do not need to worry about this artifact.
+        tlb-alien-XXX.jar                  : (Matters only for people developing/maintaining TLB support libraries for other languages) TLB alien environment(non-java environment) support library. This is a standalone jar too. Jar invocation runs very lightweight http server. Alien language support library maintainers bundle this library, so as an end user you do not need to worry about this artifact.
     examples/                               : Has several tiny example projects made to demonstrate TLB in action, hooked up in projects written using different languages and/or testing and build frameworks. Check examples/README for details.
     source/
-        tlb-gXXX-src.jar                    : TLB source archive. Note: TLB is a multi-module project, to keep things simple for reference purposes we bundle all the module sources merged into one. While this is good for debugging and reference purposes, its not appropriate for contributing-to/patching TLB. Please use the upstream repository for patch work.
+        tlb-XXX-src.jar                    : TLB source archive. Note: TLB is a multi-module project, to keep things simple for reference purposes we bundle all the module sources merged into one. While this is good for debugging and reference purposes, its not appropriate for contributing-to/patching TLB. Please use the upstream repository for patch work.
     README                                  : This file.
     LICENSE                                 : License file.
 
 tlb-server
 ----------
-    tlb-server-gXXX.jar                     : Standalone TLB server jar file. This can be used to spin up the TLB server, which is a very lightweight restful http server.
+    tlb-server-XXX.jar                     : Standalone TLB server jar file. This can be used to spin up the TLB server, which is a very lightweight restful http server.
     server.sh and server.bat                : Utility script to manage TLB server from the command line(for *nix and Windows respectively).
     README                                  : This file.
     LICENSE                                 : License file.
 
 tlb-java
 --------
-    tlb-java-gXXX.jar                       : TLB Java support library(Java users would want to add this to their build and test classpath.
+    tlb-java-XXX.jar                       : TLB Java support library(Java users would want to add this to their build and test classpath.
     lib/                                    : Libraries TLB Java support library depends on. These jars need to be added to the build/test classpath as well. If the subject Java project already has dependency on a few of the libraries TLB depends on, they can be omitted(so TLB will .
     README                                  : This file.
     LICENSE                                 : License file.
@@ -79,9 +79,9 @@ tlb-java
 setup-example (some of the TLB artifacts are bundled in to meet example dependencies)
 -------------
     server/
-        tlb-server-gXXX.jar                 : Standalone TLB server jar file. This can be used to spin up the TLB server, which is a very lightweight restful http server.
+        tlb-server-XXX.jar                 : Standalone TLB server jar file. This can be used to spin up the TLB server, which is a very lightweight restful http server.
     java/
-        tlb-java-gXXX.jar                   : TLB Java support library(Java users would want to add this to their build and test classpath.
+        tlb-java-XXX.jar                   : TLB Java support library(Java users would want to add this to their build and test classpath.
         lib/                                : Libraries TLB Java support library depends on. These jars need to be added to the build/test classpath as well. If the subject Java project already has dependency on a few of the libraries TLB depends on, they can be omitted(so TLB will .
     examples/                               : Has several tiny example projects made to demonstrate TLB in action, hooked up in projects written using different languages and/or testing and build frameworks. Check examples/README for details.
     README                                  : This file.
@@ -96,9 +96,9 @@ If you have pulled down the tlb-complete archive, java libraries should be found
 Usage(Balancer)
 ---------------
 
-Please ensure a suitable version of Java is installed. We highly recomend refering to 'Quick Start' page on TLB website. This page has typical build script fragments you can borrow, or refer to, while setting up 'load-balanced-test-runner' task in your build script(s).
+Please ensure a suitable version of Java is installed. We highly recommend referring to 'Quick Start' page on TLB website. This page has typical build script fragments you can borrow, or refer to, while setting up 'load-balanced-test-runner' task in your build script(s).
 
-If you are using TLB in a Java project, you can add the jars in this distribution to your test classpath. This means, you will have to copy tlb-java-gXXXX.jar and other jars that tlb-java jar depends on(which are bundled alongwith, in the sub-directory named 'lib'), to your project's classpath.
+If you are using TLB in a Java project, you can add the jars in this distribution to your test classpath. This means, you will have to copy tlb-java-XXXX.jar and other jars that tlb-java jar depends on(which are bundled alongwith, in the sub-directory named 'lib'), to your project's classpath.
 
 For any other environments(for instance, Ruby), you only need to ensure java(the command) can be invoked at the console prompt(i.e. the command is available on PATH). No copying of jar(s) or any other scripts is necessary for Ruby support as tlb ruby-gems are self-sufficient and stand-alone.
 
@@ -125,7 +125,7 @@ The tiny projects under this directory have test-cases that are executed by a he
 
 This script uses TLB to makes 2 partitions of these tests, and executes them serially(not parallely) on the local machine. In a real situation each one of these partitions will be executed on a different machine(or by a different process) "parallely". The helper script executes them serially only to demonstrate partitioning/re-ordering.
 
-Sample projects directory is bundled alongwith every release for users to see and play with. Its usually a good idea to borrow build script configuration from the example project that matches your environment.
+Sample projects directory is bundled along with every release for users to see and play with. Its usually a good idea to borrow build script configuration from the example project that matches your environment.
 
 
 Useful Links
