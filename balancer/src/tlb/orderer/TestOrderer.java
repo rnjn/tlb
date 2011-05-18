@@ -1,5 +1,6 @@
 package tlb.orderer;
 
+import tlb.TlbConstants;
 import tlb.TlbSuiteFile;
 import tlb.utils.SystemEnvironment;
 
@@ -20,4 +21,6 @@ public abstract class TestOrderer implements Comparator<TlbSuiteFile> {
             return 0;
         }
     };
+
+    public static final SystemEnvironment.EnvVar TLB_ORDERER = new SystemEnvironment.DefaultedEnvVar(TlbConstants.TLB_ORDERER, FailedFirstOrderer.class.getCanonicalName());
 }

@@ -1,10 +1,12 @@
 package tlb;
 
+import tlb.utils.SystemEnvironment;
+
 /**
  * @understands TLB constants
  */
 public interface TlbConstants {
-    static final String TYPE_OF_SERVER = "TYPE_OF_SERVER";
+    static final SystemEnvironment.EnvVar TYPE_OF_SERVER = new SystemEnvironment.DefaultedEnvVar("TYPE_OF_SERVER", "tlb.service.TlbServer");
 
     public static interface Go {
         static final String GO_SERVER_URL = "GO_SERVER_URL";
@@ -14,7 +16,8 @@ public interface TlbConstants {
         static final String GO_STAGE_COUNTER = "GO_STAGE_COUNTER";
         static final String GO_PIPELINE_COUNTER = "GO_PIPELINE_COUNTER";
         static final String GO_PIPELINE_LABEL = "GO_PIPELINE_LABEL";
-        static final String GO_STAGE_FEED_MAX_SEARCH_DEPTH = "GO_STAGE_FEED_MAX_SEARCH_DEPTH";
+        static final String DEFAULT_STAGE_FEED_SEARCH_DEPTH = "10";
+        static final SystemEnvironment.EnvVar GO_STAGE_FEED_MAX_SEARCH_DEPTH = new SystemEnvironment.DefaultedEnvVar("GO_STAGE_FEED_MAX_SEARCH_DEPTH", DEFAULT_STAGE_FEED_SEARCH_DEPTH);
     }
 
     public static interface TlbServer {
@@ -32,21 +35,23 @@ public interface TlbConstants {
     static final String TLB_PREFERRED_SPLITTERS = "TLB_PREFERRED_SPLITTERS";
     static final String TLB_TMP_DIR = "TLB_TMP_DIR";
     static final String TLB_ORDERER = "TLB_ORDERER";
-    static final String TLB_SMOOTHING_FACTOR = "TLB_SMOOTHING_FACTOR";
+    static final SystemEnvironment.EnvVar TLB_SMOOTHING_FACTOR = new SystemEnvironment.DefaultedEnvVar("TLB_SMOOTHING_FACTOR", "1.0");
 
     public static interface Balancer {
-        static final String TLB_BALANCER_PORT = "TLB_BALANCER_PORT";
+        static final SystemEnvironment.EnvVar TLB_BALANCER_PORT = new SystemEnvironment.DefaultedEnvVar("TLB_BALANCER_PORT", "8019");
         static final String QUERY = "query";
     }
 
     public static interface Server {
         static final String REPO_FACTORY = "repo_factory";
         static final String REQUEST_NAMESPACE = "namespace";
-        static final String TLB_SERVER_PORT = "TLB_SERVER_PORT";
-        static final String TLB_DATA_DIR = "TLB_DATA_DIR";
+        static final String DEFAULT_SERVER_PORT = "7019";
+        static final SystemEnvironment.EnvVar TLB_SERVER_PORT = new SystemEnvironment.DefaultedEnvVar("TLB_SERVER_PORT", DEFAULT_SERVER_PORT);
         static final String DEFAULT_TLB_DATA_DIR = "tlb_store";
+        static final SystemEnvironment.EnvVar TLB_DATA_DIR = new SystemEnvironment.DefaultedEnvVar("TLB_DATA_DIR", DEFAULT_TLB_DATA_DIR);
+
         static final String LISTING_VERSION = "listing_version";
-        static final String TLB_VERSION_LIFE_IN_DAYS = "TLB_VERSION_LIFE_IN_DAYS";
+        static final SystemEnvironment.EnvVar TLB_VERSION_LIFE_IN_DAYS = new SystemEnvironment.DefaultedEnvVar("TLB_VERSION_LIFE_IN_DAYS", "7");
 
         public static interface EntryRepoFactory {
             static final String SUBSET_SIZE = "subset_size";

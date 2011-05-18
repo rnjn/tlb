@@ -36,7 +36,7 @@ public class EntryRepoFactoryTest {
 
     private SystemEnvironment env() {
         final HashMap<String, String> env = new HashMap<String, String>();
-        env.put(TlbConstants.Server.TLB_DATA_DIR, baseDir.getAbsolutePath());
+        env.put(TlbConstants.Server.TLB_DATA_DIR.key, baseDir.getAbsolutePath());
         return new SystemEnvironment(env);
     }
 

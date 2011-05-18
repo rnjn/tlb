@@ -104,17 +104,17 @@
         <exec executable="git" outputproperty="short_rev">
             <arg line="describe --always"/>
         </exec>
-        <property name="tlb.basename" value="tlb-g${short_rev}"/>
-        <property name="tlb.server.basename" value="tlb-server-g${short_rev}"/>
-        <property name="tlb.alien.basename" value="tlb-alien-g${short_rev}"/>
-        <property name="tlb.java.basename" value="tlb-java-g${short_rev}"/>
+        <property name="tlb.basename" value="tlb-${short_rev}"/>
+        <property name="tlb.server.basename" value="tlb-server-${short_rev}"/>
+        <property name="tlb.alien.basename" value="tlb-alien-${short_rev}"/>
+        <property name="tlb.java.basename" value="tlb-java-${short_rev}"/>
         <property name="tlb.jar.name" value="${tlb.basename}.jar"/>
         <property name="tlb.server.jar.name" value="${tlb.server.basename}.jar"/>
         <property name="tlb.alien.jar.name" value="${tlb.alien.basename}.jar"/>
         <property name="tlb.java.jar.name" value="${tlb.java.basename}.jar"/>
         <property name="tlb.src.jar.name" value="${tlb.basename}-src.jar"/>
-        <property name="tlb.complete.basename" value="tlb-complete-g${short_rev}"/>
-        <property name="tlb.examples.basename" value="setup-examples-g${short_rev}"/>
+        <property name="tlb.complete.basename" value="tlb-complete-${short_rev}"/>
+        <property name="tlb.examples.basename" value="setup-examples-${short_rev}"/>
     </target>
 
     <macrodef name="tlb-jar">
@@ -355,7 +355,7 @@
     </target>
 
     <target name="release-files" depends="prepare-dist">
-        <property name="dist.readme" value="${dist.dir}/README"/>
+        <property name="dist.readme" value="${dist.dir}/README-${short_rev}"/>
         <copyfile src="${basedir}/README.release" dest="${dist.readme}"/>
     </target>
 

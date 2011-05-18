@@ -27,7 +27,7 @@ public class SystemEnvironmentTest {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("foo", "bar");
         SystemEnvironment env = new SystemEnvironment(map);
-        assertThat(env.val("foo"), is("bar"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("foo")), is("bar"));
     }
     
     @Test
@@ -36,8 +36,8 @@ public class SystemEnvironmentTest {
         map.put("foo", "bar");
         map.put("baz", "quux");
         SystemEnvironment env = new SystemEnvironment(map);
-        assertThat(env.val("foo:baz"), is("bar"));
-        assertThat(env.val("hello:baz"), is("quux"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("foo:baz")), is("bar"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("hello:baz")), is("quux"));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class SystemEnvironmentTest {
         map.put("baz", "baz-${foo}");
         map.put("quux", "quux_val-${f${bar}}");
         SystemEnvironment env = new SystemEnvironment(map);
-        assertThat(env.val("hello:world:hello_world_key:foo : bar:quux:last_in_preference_key"), is("quux_val-bar"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("hello:world:hello_world_key:foo : bar:quux:last_in_preference_key")), is("quux_val-bar"));
     }
 
     @Test
@@ -64,10 +64,10 @@ public class SystemEnvironmentTest {
         map.put("axe", "${X}");
         map.put("X", "x");
         SystemEnvironment env = new SystemEnvironment(map);
-        assertThat(env.val("foo"), is("bar"));
-        assertThat(env.val("baz"), is("baz-bar"));
-        assertThat(env.val("quux"), is("baz-bar"));
-        assertThat(env.val("complex"), is("baz-bar|baz-bar"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("foo")), is("bar"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("baz")), is("baz-bar"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("quux")), is("baz-bar"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("complex")), is("baz-bar|baz-bar"));
     }
 
     @Test
@@ -77,26 +77,26 @@ public class SystemEnvironmentTest {
         map.put("bar", "$o");
         map.put("baz", "baz-${fo${bar}}");
         SystemEnvironment env = new SystemEnvironment(map);
-        assertThat(env.val("baz"), is("baz-ba${r"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("baz")), is("baz-ba${r"));
     }
 
     @Test
     @RunIf(value = OSChecker.class, arguments = OSChecker.LINUX)
     public void shouldGetSystemEnvironmentVairableWhenNoMapPassed() throws Exception{
         SystemEnvironment env = new SystemEnvironment();
-        assertThat(env.val("HOME"), is(System.getProperty("user.home")));
+        assertThat(env.val(new SystemEnvironment.EnvVar("HOME")), is(System.getProperty("user.home")));
     }
     
     @Test
     public void shouldDefaultEnvVariableValues() {
         HashMap<String, String> map = new HashMap<String, String>();
         SystemEnvironment env = new SystemEnvironment(map);
-        assertThat(env.val("foo", "bar"), is("bar"));
-        assertThat(env.val("foo"), is(nullValue()));
+        assertThat(env.val(new SystemEnvironment.DefaultedEnvVar("foo", "bar")), is("bar"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("foo")), is(nullValue()));
         map.put("foo", "baz");
         env = new SystemEnvironment(map);
-        assertThat(env.val("foo", "bar"), is("baz"));
-        assertThat(env.val("foo"), is("baz"));
+        assertThat(env.val(new SystemEnvironment.DefaultedEnvVar("foo", "bar")), is("baz"));
+        assertThat(env.val(new SystemEnvironment.EnvVar("foo")), is("baz"));
     }
 
     @Test

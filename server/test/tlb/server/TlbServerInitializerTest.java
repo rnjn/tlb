@@ -2,6 +2,9 @@ package tlb.server;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.internal.verification.Only;
+import org.mockito.internal.verification.Times;
 import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.Restlet;
@@ -19,11 +22,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import static junit.framework.Assert.fail;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 import static tlb.TlbConstants.Server.EntryRepoFactory.SUBSET_SIZE;
 import static tlb.TlbConstants.Server.TLB_VERSION_LIFE_IN_DAYS;
 import static tlb.server.repo.EntryRepoFactory.LATEST_VERSION;
@@ -54,7 +56,7 @@ public class TlbServerInitializerTest {
 
     @Test
     public void shouldInitializeTlbToRunOnConfiguredPort() {
-        systemEnv.put(TlbConstants.Server.TLB_SERVER_PORT, "1234");
+        systemEnv.put(TlbConstants.Server.TLB_SERVER_PORT.key, "1234");
         assertThat(new TlbServerInitializer(new SystemEnvironment(systemEnv)).appPort(), is(1234));
     }
 
@@ -109,7 +111,7 @@ public class TlbServerInitializerTest {
     @Test
     public void shouldHonorDiskStorageRootOverride() throws IOException, ClassNotFoundException {
         String tmpDir = TestUtil.createTempFolder().getAbsolutePath();
-        systemEnv.put(TlbConstants.Server.TLB_DATA_DIR, tmpDir);
+        systemEnv.put(TlbConstants.Server.TLB_DATA_DIR.key, tmpDir);
         initializer = new TlbServerInitializer(new SystemEnvironment(systemEnv));
         EntryRepoFactory factory = initializer.repoFactory();
         File file = new File(tmpDir, EntryRepoFactory.name("quux", LATEST_VERSION, SUBSET_SIZE));
@@ -146,23 +148,29 @@ public class TlbServerInitializerTest {
 
         tasks[0].run();
         verify(repoFactory).purgeVersionsOlderThan(7);
+        verify(repoFactory).registerExitHook();
+        verifyNoMoreInteractions(repoFactory);
 
-        systemEnv.put(TLB_VERSION_LIFE_IN_DAYS, "3");
+        final EntryRepoFactory anotherRepoFactory = mock(EntryRepoFactory.class);
+
+        systemEnv.put(TLB_VERSION_LIFE_IN_DAYS.key, "3");
 
         new TlbServerInitializer(new SystemEnvironment(systemEnv), timer) {
             @Override
             EntryRepoFactory repoFactory() {
-                return repoFactory;
+                return anotherRepoFactory;
             }
         }.init();
 
         tasks[0].run();
-        verify(repoFactory).purgeVersionsOlderThan(3);
+        verify(anotherRepoFactory).purgeVersionsOlderThan(3);
+        verify(anotherRepoFactory).registerExitHook();
+        verifyNoMoreInteractions(repoFactory);
     }
 
     @Test
     public void shouldNotSetTimerIfNoVersionLifeIsMentioned() {
-        systemEnv.put(TLB_VERSION_LIFE_IN_DAYS, "-1");
+        systemEnv.put(TLB_VERSION_LIFE_IN_DAYS.key, "-1");
 
         final EntryRepoFactory repoFactory = mock(EntryRepoFactory.class);
         final Timer timer = new Timer() {

@@ -236,7 +236,7 @@ public class GoServerTest {
     public void shouldUpdateCruiseArtifactWithSmoothenedTestTimes() throws Exception {
         Map<String, String> envMap = initEnvMap("http://test.host:8153/go");
         envMap.put(TlbConstants.Go.GO_JOB_NAME, "firefox-2");
-        envMap.put(TlbConstants.TLB_SMOOTHING_FACTOR, "0.5");
+        envMap.put(TlbConstants.TLB_SMOOTHING_FACTOR.key, "0.5");
         SystemEnvironment env = new SystemEnvironment(envMap);
         HttpAction action = mock(HttpAction.class);
 
@@ -447,7 +447,7 @@ public class GoServerTest {
             assertThat(e.getMessage(), is("Couldn't find a historical run for stage in '10' pages of stage feed."));
         }
 
-        map.put(TlbConstants.Go.GO_STAGE_FEED_MAX_SEARCH_DEPTH, "17");
+        map.put(TlbConstants.Go.GO_STAGE_FEED_MAX_SEARCH_DEPTH.key, "17");
         service = new GoServer(new SystemEnvironment(map), action);
         try {
             service.getLastRunTestTimes(Arrays.asList("firefox-1", "firefox-2"));
@@ -457,7 +457,7 @@ public class GoServerTest {
             assertThat(e.getMessage(), is("Couldn't find a historical run for stage in '17' pages of stage feed."));
         }
 
-        map.put(TlbConstants.Go.GO_STAGE_FEED_MAX_SEARCH_DEPTH, "2");
+        map.put(TlbConstants.Go.GO_STAGE_FEED_MAX_SEARCH_DEPTH.key, "2");
         when(action.get("http://test.host:8153/go/api/pipelines/pipeline-foo/stages.xml?before=19")).thenThrow(new AssertionError("requested more pages than permitted"));
         service = new GoServer(new SystemEnvironment(map), action);
         try {

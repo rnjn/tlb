@@ -1,26 +1,19 @@
 package tlb.ant;
 
-import tlb.TlbConstants;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.resources.FileResource;
 import tlb.TlbFileResource;
 import tlb.TlbSuiteFile;
 import tlb.factory.TlbBalancerFactory;
+import tlb.orderer.TestOrderer;
 import tlb.splitter.TestSplitter;
 import tlb.utils.SuiteFileConvertor;
-import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.resources.FileResource;
-import tlb.orderer.TestOrderer;
-import org.apache.tools.ant.BuildException;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.io.File;
-
-import tlb.factory.TlbFactory;
 import tlb.utils.SystemEnvironment;
 
-import static tlb.TlbConstants.TLB_SPLITTER;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @understands splitting Junit test classes into groups
@@ -35,8 +28,8 @@ public class LoadBalancedFileSet extends FileSet {
     }
 
     public LoadBalancedFileSet(SystemEnvironment systemEnvironment) {
-        this(TlbBalancerFactory.getCriteria(systemEnvironment.val(TLB_SPLITTER), systemEnvironment),
-                TlbBalancerFactory.getOrderer(systemEnvironment.val(TlbConstants.TLB_ORDERER), systemEnvironment));
+        this(TlbBalancerFactory.getCriteria(systemEnvironment.val(TestSplitter.TLB_SPLITTER), systemEnvironment),
+                TlbBalancerFactory.getOrderer(systemEnvironment.val(TestOrderer.TLB_ORDERER), systemEnvironment));
     }
 
     public LoadBalancedFileSet() {//used by ant

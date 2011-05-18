@@ -35,7 +35,7 @@ public class SmoothingServerTest {
     public void setUp() throws IllegalAccessException, IOException {
         fetchedEntries = new ArrayList<SuiteTimeEntry>();
         HashMap<String, String> variables = new HashMap<String, String>();
-        variables.put(TlbConstants.TLB_SMOOTHING_FACTOR, "0.05");
+        variables.put(TlbConstants.TLB_SMOOTHING_FACTOR.key, "0.05");
         env = new SystemEnvironment(variables);
 
         delegate = mock(SmoothingServer.class);
@@ -114,7 +114,7 @@ public class SmoothingServerTest {
     @Test
     public void shouldAssumeNoOpSmoothingFactorWhenNotGiven() throws NoSuchFieldException, IllegalAccessException {
         when(delegate.fetchLastRunTestTimes()).thenReturn(Arrays.asList(new SuiteTimeEntry("foo/bar/Baz.class", 12l)));
-        updateEnv(env, TlbConstants.TLB_SMOOTHING_FACTOR, null);
+        updateEnv(env, TlbConstants.TLB_SMOOTHING_FACTOR.key, null);
         server.testClassTime("foo/bar/Baz.class", 102l);
         verify(delegate).processedTestClassTime("foo/bar/Baz.class", 102l);
     }

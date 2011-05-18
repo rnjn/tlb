@@ -110,7 +110,7 @@ public class TlbBalancerFactoryTest {
     public void shouldReturnTalkToTlbServer() {
         final Map<String, String> map = new HashMap<String, String>();
         map.put(TlbConstants.TlbServer.TLB_BASE_URL, "http://localhost:7019");
-        map.put(TlbConstants.TYPE_OF_SERVER, "tlb.service.TlbServer");
+        map.put(TlbConstants.TYPE_OF_SERVER.key, "tlb.service.TlbServer");
         Server server = TlbFactory.getTalkToService(new SystemEnvironment(map));
         assertThat(server, is(TlbServer.class));
     }
@@ -119,7 +119,7 @@ public class TlbBalancerFactoryTest {
     public void shouldReturnTalkToCruise() {
         final Map<String, String> map = new HashMap<String, String>();
         map.put(TlbConstants.Go.GO_SERVER_URL, "http://localhost:8153/cruise");
-        map.put(TlbConstants.TYPE_OF_SERVER, "tlb.service.GoServer");
+        map.put(TlbConstants.TYPE_OF_SERVER.key, "tlb.service.GoServer");
         Server server = TlbFactory.getTalkToService(new SystemEnvironment(map));
         assertThat(server, is(GoServer.class));
     }
@@ -128,7 +128,7 @@ public class TlbBalancerFactoryTest {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put(TlbConstants.Go.GO_SERVER_URL, "https://localhost:8154/cruise");
         map.put(TlbConstants.TlbServer.TLB_BASE_URL, "http://localhost:7019");
-        map.put(TlbConstants.TYPE_OF_SERVER, talkToService);
+        map.put(TlbConstants.TYPE_OF_SERVER.key, talkToService);
         return new SystemEnvironment(map);
     }
 
