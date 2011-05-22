@@ -381,6 +381,29 @@
 
     <target name="release" depends="dist, sign-dist"/>
 
+    <path id="file.upload.classpath">
+      <pathelement location="${build.lib.dir}/net-bluecow-googlecode-ant-0.0.2.jar" />
+    </path>
+
+    <property environment="env"/>
+
+    <property name="upload.password" value="${env.TLB_UPLOAD_PASSWORD}"/>
+    <property name="upload.filePath" value="${env.TLB_UPLOAD_FILE_PATH}"/>
+    <property name="upload.targetFileName" value="${env.TLB_UPLOAD_TARGET_FILE_NAME}"/>
+    <property name="upload.summary" value="${env.TLB_UPLOAD_SUMMARY}"/>
+    <property name="upload.labels" value="${env.TLB_UPLOAD_LABELS}"/>
+
+    <target name="upload-files" depends="resolve">
+      <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpathref="file.upload.classpath" name="gcupload"/>
+      <gcupload username="testloadbalancer@gmail.com" 
+          password="${upload.password}"
+          projectname="tlb"
+          filename="${upload.filePath}"
+          targetfilename="${upload.targetFileName}"
+          summary="${upload.summary}"
+          labels="${upload.labels}" />
+    </target>
+
     <target name="emma.prepare">
         <taskdef resource="emma_ant.properties" classpathref="emma.classpath"/>
         <mkdir dir="${emma.dir}"/>

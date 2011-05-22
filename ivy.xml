@@ -38,6 +38,7 @@
         <dependency org="emma" name="emma" rev="2.0.5312" conf="build"/>
         <dependency org="emma" name="emma_ant" rev="2.0.5312" conf="build"/>
         <dependency org="org.onejar" name="one-jar-ant-task" rev="0.96" conf="build"/>
+        <dependency org="net.bluecow" name="net-bluecow-googlecode-ant" rev="0.0.2" conf="build"/>
 
         <!--This excludes all the lame libraries that get downloaded because of M2.-->
         <exclude artifact="icu4j" />
