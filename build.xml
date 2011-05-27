@@ -388,6 +388,8 @@
     <property environment="env"/>
 
     <property name="upload.password" value="${env.TLB_UPLOAD_PASSWORD}"/>
+    <property name="upload.project" value="${env.TLB_PROJECT_NAME}"/>
+    <property name="upload.user" value="${env.TLB_USER_NAME}"/>
     <property name="upload.filePath" value="${env.TLB_UPLOAD_FILE_PATH}"/>
     <property name="upload.targetFileName" value="${env.TLB_UPLOAD_TARGET_FILE_NAME}"/>
     <property name="upload.summary" value="${env.TLB_UPLOAD_SUMMARY}"/>
@@ -395,9 +397,9 @@
 
     <target name="upload-files" depends="resolve">
       <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpathref="file.upload.classpath" name="gcupload"/>
-      <gcupload username="testloadbalancer@gmail.com" 
+      <gcupload username="${upload.user}" 
           password="${upload.password}"
-          projectname="tlb"
+          projectname="${upload.project}"
           filename="${upload.filePath}"
           targetfilename="${upload.targetFileName}"
           summary="${upload.summary}"
