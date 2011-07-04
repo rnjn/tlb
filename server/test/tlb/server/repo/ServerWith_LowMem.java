@@ -12,10 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static tlb.server.repo.EntryRepoFactory.LATEST_VERSION;
 
 public class ServerWith_LowMem {
@@ -52,7 +48,7 @@ public class ServerWith_LowMem {
             for (int j = 0; j < 100; j++)
                 suiteTimeRepo.getSubRepo("abcde" + j);
 
-            System.out.println("Created all versions of " + name + " repositories successfully.");
+            System.out.println("Created all versions of " + name + " repository successfully.");
         }
     }
 }

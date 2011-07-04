@@ -55,7 +55,7 @@ public class VersioningEntryRepoTest {
         repo.setFactory(factory);
         repo.setNamespace("foo");
         GregorianCalendar cal = new GregorianCalendar(2010, 6, 6, 0, 35, 15);
-        when(timeProvider.now()).thenReturn(cal);
+        when(timeProvider.cal()).thenReturn(cal);
         final TestCaseRepo versionedRepo = new TestCaseRepo(timeProvider);
         versionedRepo.setFactory(factory);
         versionedRepo.setNamespace("foo");
@@ -65,7 +65,7 @@ public class VersioningEntryRepoTest {
         verify(factory, new Times(1)).findOrCreate(eq("foo"), eq("1.1"), eq("test_case"), any(EntryRepoFactory.Creator.class));
         //when not too old, doesn't get killed
         cal = new GregorianCalendar(2010, 6, 7, 0, 35, 14);
-        when(timeProvider.now()).thenReturn(cal);
+        when(timeProvider.cal()).thenReturn(cal);
         repo.purgeOldVersions(1);
         verify(factory, never()).purge("foo|1.1|test_case");
         repo.list("1.1");
@@ -73,7 +73,7 @@ public class VersioningEntryRepoTest {
 
         //when not too old, doesn't get killed
         cal = new GregorianCalendar(2010, 6, 8, 0, 35, 14);
-        when(timeProvider.now()).thenReturn(cal);
+        when(timeProvider.cal()).thenReturn(cal);
         repo.purgeOldVersions(2);
         verify(factory, never()).purge("foo|1.1|test_case");
         repo.list("1.1");
@@ -81,7 +81,7 @@ public class VersioningEntryRepoTest {
 
         //when too old, does get removed
         cal = new GregorianCalendar(2010, 6, 7, 0, 35, 16);
-        when(timeProvider.now()).thenReturn(cal);
+        when(timeProvider.cal()).thenReturn(cal);
         repo.purgeOldVersions(1);
         verify(factory).purge("foo|1.1|test_case");
         repo.list("1.1");

@@ -206,18 +206,24 @@ public class EntryRepoFactoryTest {
         final GregorianCalendar[] cal = new GregorianCalendar[1];
         final TimeProvider timeProvider = new TimeProvider() {
             @Override
-            public GregorianCalendar now() {
+            public GregorianCalendar cal() {
                 GregorianCalendar gregorianCalendar = cal[0];
                 return gregorianCalendar == null ? null : (GregorianCalendar) gregorianCalendar.clone();
             }
+
+            @Override
+            public Date now() {
+                return cal().getTime();
+            }
         };
         final EntryRepoFactory factory = new EntryRepoFactory(baseDir, timeProvider, 1);
+
+        cal[0] = new GregorianCalendar(2010, 6, 7, 0, 37, 12);
 
         SuiteTimeRepo repo = factory.createSuiteTimeRepo("foo", LATEST_VERSION);
         repo.update(new SuiteTimeEntry("foo.bar.Baz", 15));
         repo.update(new SuiteTimeEntry("foo.bar.Quux", 80));
 
-        cal[0] = new GregorianCalendar(2010, 6, 7, 0, 37, 12);
         Collection<SuiteTimeEntry> oldList = repo.list("old");
         assertThat(oldList.size(), is(2));
         assertThat(oldList, hasItem(new SuiteTimeEntry("foo.bar.Baz", 15)));
