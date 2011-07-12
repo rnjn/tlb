@@ -47,8 +47,6 @@ public class ServerWith_LowMem {
                 suiteTimeRepo.update(new SuiteTimeEntry(new String("foo bar baz bang quux"), j * 100));
             for (int j = 0; j < 100; j++)
                 suiteTimeRepo.getSubRepo("abcde" + j);
-
-            System.out.println("Created all versions of " + name + " repository successfully.");
         }
     }
 }

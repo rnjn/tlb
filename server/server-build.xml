@@ -10,10 +10,15 @@
     <property name="server.test.classes.dir" location="${server.target.dir}/test-classes"/>
     <property name="server.test.reports.dir" location="${server.target.dir}/reports"/>
 
+    <path id="server.dependencies">
+        <fileset dir="${server.lib.dir}" includes="*.jar" id="server.dependencies.fileset"/>
+    </path>
+
     <path id="server.src.classpath">
         <pathelement path="${server.classes.dir}"/>
         <pathelement path="${restlet.classes.dir}"/>
         <pathelement path="${core.classes.dir}"/>
+        <path refid="server.dependencies"/>
         <path refid="restlet.dependencies"/>
         <path refid="core.dependencies"/>
     </path>

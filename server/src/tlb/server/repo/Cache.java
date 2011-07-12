@@ -5,6 +5,9 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
  * @understands caching against a string key
  */
@@ -12,9 +15,11 @@ public class Cache<T> {
     public static final CacheManager CACHE_MANAGER = CacheManager.create();
     private final net.sf.ehcache.Cache cache;
 
-    public Cache(final String cacheName) {
+    public Cache() {
         cache = new net.sf.ehcache.Cache(
-                new CacheConfiguration(cacheName, 1000)
+                new CacheConfiguration()
+                        .name(UUID.randomUUID().toString())
+                        .maxElementsInMemory(10000)
                         .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
                         .overflowToDisk(false)
                         .eternal(true)
@@ -32,5 +37,17 @@ public class Cache<T> {
             return null;
         }
         return (T) element.getValue();
+    }
+
+    public void remove(final String key) {
+        cache.remove(key);
+    }
+
+    public List<String> keys() {
+        return cache.getKeys();
+    }
+
+    public void clear() {
+        cache.removeAll();
     }
 }

@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class SuiteEntryRepo<T extends SuiteLevelEntry> implements EntryRepo<T> {
     protected Map<String, T> suiteData;
     protected String namespace;
-    protected EntryRepoFactory factory;
+    transient protected EntryRepoFactory factory;
     protected String identifier;
 
     public SuiteEntryRepo() {
