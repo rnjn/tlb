@@ -65,11 +65,13 @@
         </junit>
     </target>
 
+    <target name="server.test.perf" depends="server.test.lowmem"/>
+
     <target name="server.test.lowmem" depends="server.compile.tests, server.compile">
         <junit failureproperty="test.failure" printsummary="yes" haltonfailure="true" fork="true">
             <classpath refid="emma.classpath"/>
-            <jvmarg value="-Xms10m"/>
-            <jvmarg value="-Xmx10m"/>
+            <jvmarg value="-Xms30m"/>
+            <jvmarg value="-Xmx30m"/>
             <jvmarg value="-Demma.coverage.out.file=${server.emma.file}"/>
             <jvmarg value="-Demma.coverage.out.merge=true"/>
 
