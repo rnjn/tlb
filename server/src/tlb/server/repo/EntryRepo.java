@@ -2,17 +2,14 @@ package tlb.server.repo;
 
 import tlb.domain.Entry;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * @understands storage and retrieval of records 
  */
-public interface EntryRepo<T extends Entry> {
+public interface EntryRepo<T extends Entry> extends Serializable {
     Collection<T> list();
 
     Collection<T> list(String version) throws IOException, ClassNotFoundException;

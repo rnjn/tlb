@@ -1,6 +1,7 @@
 package tlb.server.repo;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import tlb.TestUtil;
@@ -206,18 +207,24 @@ public class EntryRepoFactoryTest {
         final GregorianCalendar[] cal = new GregorianCalendar[1];
         final TimeProvider timeProvider = new TimeProvider() {
             @Override
-            public GregorianCalendar now() {
+            public GregorianCalendar cal() {
                 GregorianCalendar gregorianCalendar = cal[0];
                 return gregorianCalendar == null ? null : (GregorianCalendar) gregorianCalendar.clone();
             }
+
+            @Override
+            public Date now() {
+                return cal().getTime();
+            }
         };
-        final EntryRepoFactory factory = new EntryRepoFactory(baseDir, timeProvider, 1);
+        final EntryRepoFactory factory = new EntryRepoFactory(baseDir, timeProvider);
+
+        cal[0] = new GregorianCalendar(2010, 6, 7, 0, 37, 12);
 
         SuiteTimeRepo repo = factory.createSuiteTimeRepo("foo", LATEST_VERSION);
         repo.update(new SuiteTimeEntry("foo.bar.Baz", 15));
         repo.update(new SuiteTimeEntry("foo.bar.Quux", 80));
 
-        cal[0] = new GregorianCalendar(2010, 6, 7, 0, 37, 12);
         Collection<SuiteTimeEntry> oldList = repo.list("old");
         assertThat(oldList.size(), is(2));
         assertThat(oldList, hasItem(new SuiteTimeEntry("foo.bar.Baz", 15)));
@@ -292,8 +299,8 @@ public class EntryRepoFactoryTest {
     @Test
     public void shouldCheckRepoExistenceBeforeTryingPurge() throws IOException, IllegalAccessException {
         factory.createSuiteTimeRepo("foo", LATEST_VERSION);
-        Map<String, EntryRepo> repos = (Map<String, EntryRepo>) deref("repos", factory);
-        List<String> keys = new ArrayList<String>(repos.keySet());
+        Cache<EntryRepo> repos = (Cache<EntryRepo>) deref("cache", factory);
+        List<String> keys = repos.keys();
         assertThat(keys.size(), is(1));
         String fooKey = keys.get(0);
         repos.clear();

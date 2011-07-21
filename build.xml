@@ -203,7 +203,11 @@
             </class-dirs>
         </jar-restlet>
 
-        <onejar-restlet jar-name="${tlb_server_jar}" name="${tlb.server.jar.name}"/>
+        <onejar-restlet jar-name="${tlb_server_jar}" name="${tlb.server.jar.name}">
+            <additional-dependencies>
+                <fileset refid="server.dependencies.fileset"/>
+            </additional-dependencies>
+        </onejar-restlet>
 
         <delete file="${tlb_server_jar}"/>
     </target>
@@ -443,6 +447,8 @@
     </target>
 
     <target name="test" depends="init, core.test, balancer.test, java.test, restlet.test, alien.test, server.test, integration-tests.test"/>
+
+    <target name="test.perf" depends="init, server.test.perf"/>
 
     <target name="run_balancer" depends="compile">
         <java classname="tlb.BalancerApp" fork="true">

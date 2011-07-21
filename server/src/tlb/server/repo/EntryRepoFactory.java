@@ -8,15 +8,11 @@ import tlb.utils.SystemEnvironment;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
-import static tlb.TlbConstants.Server.DEFAULT_TLB_DATA_DIR;
 import static tlb.TlbConstants.Server.EntryRepoFactory.SUBSET_SIZE;
 import static tlb.TlbConstants.Server.EntryRepoFactory.SUITE_RESULT;
 import static tlb.TlbConstants.Server.EntryRepoFactory.SUITE_TIME;
-import static tlb.TlbConstants.Server.TLB_DATA_DIR;
 
 /**
  * @understands creation of EntryRepo
@@ -26,27 +22,32 @@ public class EntryRepoFactory implements Runnable {
     public static final String LATEST_VERSION = "LATEST";
     private static final Logger logger = Logger.getLogger(EntryRepoFactory.class.getName());
 
-    private final Map<String, EntryRepo> repos;
+    //private final Map<String, EntryRepo> repos;
     private final String tlbStoreDir;
     private final TimeProvider timeProvider;
+    private Cache<EntryRepo> cache;
 
     static interface Creator<T> {
         T create();
     }
 
     public EntryRepoFactory(SystemEnvironment env) {
-        this(new File(env.val(TlbConstants.Server.TLB_DATA_DIR)), new TimeProvider(), Double.parseDouble(env.val(TlbConstants.TLB_SMOOTHING_FACTOR)));
+        this(new File(env.val(TlbConstants.Server.TLB_DATA_DIR)), new TimeProvider());
     }
 
-    EntryRepoFactory(File tlbStoreDir, TimeProvider timeProvider, double smoothingFactor) {
+    EntryRepoFactory(File tlbStoreDir, TimeProvider timeProvider) {
         this.tlbStoreDir = tlbStoreDir.getAbsolutePath();
+<<<<<<< HEAD
+=======
+        this.cache = new Cache<EntryRepo>();
+>>>>>>> 4c6ec91bd2efb7ab54df5e5e49c4649a7cbffe39
         this.timeProvider = timeProvider;
         repos = new ConcurrentHashMap<String, EntryRepo>();
     }
 
     public void purge(String identifier) throws IOException {
         synchronized (repoId(identifier)) {
-            repos.remove(identifier);
+            cache.remove(identifier);
             File file = dumpFile(identifier);
             if (file.exists()) FileUtils.forceDelete(file);
         }
@@ -57,8 +58,8 @@ public class EntryRepoFactory implements Runnable {
     }
 
     public void purgeVersionsOlderThan(int versionLifeInDays) {
-        for (String identifier : repos.keySet()) {
-            EntryRepo entryRepo = repos.get(identifier);
+        for (String identifier : cache.keys()) {
+            EntryRepo entryRepo = cache.get(identifier);
             if (entryRepo instanceof VersioningEntryRepo) {
                 final VersioningEntryRepo repo = (VersioningEntryRepo) entryRepo;
                 try {
@@ -97,13 +98,12 @@ public class EntryRepoFactory implements Runnable {
     EntryRepo findOrCreate(String namespace, String version, String type, Creator<? extends EntryRepo> creator) throws IOException {
         String identifier = name(namespace, version, type);
         synchronized (repoId(identifier)) {
-            EntryRepo repo = repos.get(identifier);
+            EntryRepo repo = cache.get(identifier);
             if (repo == null) {
                 repo = creator.create();
-                repo.setFactory(this);
                 repo.setNamespace(namespace);
                 repo.setIdentifier(identifier);
-                repos.put(identifier, repo);
+                cache.put(identifier, repo);
 
                 File diskDump = dumpFile(identifier);
                 if (diskDump.exists()) {
@@ -111,6 +111,7 @@ public class EntryRepoFactory implements Runnable {
                     repo.load(FileUtil.readIntoString(new BufferedReader(reader)));
                 }
             }
+            repo.setFactory(this);
             return repo;
         }
     }
@@ -128,19 +129,25 @@ public class EntryRepoFactory implements Runnable {
         return str.replace(DELIMITER, DELIMITER + DELIMITER);
     }
 
+<<<<<<< HEAD
     @Deprecated
         //for tests only
     Map<String, EntryRepo> getRepos() {
         return repos;
+=======
+    @Deprecated //for tests only
+    Cache<EntryRepo> getRepos() {
+        return cache;
+>>>>>>> 4c6ec91bd2efb7ab54df5e5e49c4649a7cbffe39
     }
 
     public void run() {
-        for (String identifier : repos.keySet()) {
+        for (String identifier : cache.keys()) {
             FileWriter writer = null;
             try {
                 //don't care about a couple entries not being persisted(at teardown), as client is capable of balancing on averages(treat like new suites)
                 synchronized (repoId(identifier)) {
-                    EntryRepo entryRepo = repos.get(identifier);
+                    EntryRepo entryRepo = cache.get(identifier);
                     if (entryRepo != null) {
                         writer = new FileWriter(dumpFile(identifier));
                         String dump = entryRepo.diskDump();

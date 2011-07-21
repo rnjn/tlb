@@ -17,6 +17,7 @@
         <pathelement path="${balancer.test.classes.dir}"/>
         <pathelement path="${core.classes.dir}"/>
         <pathelement path="${core.test.classes.dir}"/>
+        <path refid="server.dependencies"/>
         <path refid="restlet.dependencies"/>
         <path refid="balancer.dependencies"/>
         <path refid="core.dependencies"/>

@@ -54,8 +54,7 @@ public class VersioningEntryRepoTest {
         final EntryRepoFactory factory = mock(EntryRepoFactory.class);
         repo.setFactory(factory);
         repo.setNamespace("foo");
-        GregorianCalendar cal = new GregorianCalendar(2010, 6, 6, 0, 35, 15);
-        when(timeProvider.now()).thenReturn(cal);
+        stubTime(timeProvider, new GregorianCalendar(2010, 6, 6, 0, 35, 15));
         final TestCaseRepo versionedRepo = new TestCaseRepo(timeProvider);
         versionedRepo.setFactory(factory);
         versionedRepo.setNamespace("foo");
@@ -64,28 +63,30 @@ public class VersioningEntryRepoTest {
         repo.list("1.1");
         verify(factory, new Times(1)).findOrCreate(eq("foo"), eq("1.1"), eq("test_case"), any(EntryRepoFactory.Creator.class));
         //when not too old, doesn't get killed
-        cal = new GregorianCalendar(2010, 6, 7, 0, 35, 14);
-        when(timeProvider.now()).thenReturn(cal);
+        stubTime(timeProvider, new GregorianCalendar(2010, 6, 7, 0, 35, 14));
         repo.purgeOldVersions(1);
         verify(factory, never()).purge("foo|1.1|test_case");
         repo.list("1.1");
         verify(factory, new Times(1)).findOrCreate(eq("foo"), eq("1.1"), eq("test_case"), any(EntryRepoFactory.Creator.class));
 
         //when not too old, doesn't get killed
-        cal = new GregorianCalendar(2010, 6, 8, 0, 35, 14);
-        when(timeProvider.now()).thenReturn(cal);
+        stubTime(timeProvider, new GregorianCalendar(2010, 6, 8, 0, 35, 14));
         repo.purgeOldVersions(2);
         verify(factory, never()).purge("foo|1.1|test_case");
         repo.list("1.1");
         verify(factory, new Times(1)).findOrCreate(eq("foo"), eq("1.1"), eq("test_case"), any(EntryRepoFactory.Creator.class));
 
         //when too old, does get removed
-        cal = new GregorianCalendar(2010, 6, 7, 0, 35, 16);
-        when(timeProvider.now()).thenReturn(cal);
+        stubTime(timeProvider, new GregorianCalendar(2010, 6, 7, 0, 35, 16));
         repo.purgeOldVersions(1);
         verify(factory).purge("foo|1.1|test_case");
         repo.list("1.1");
         verify(factory, new Times(2)).findOrCreate(eq("foo"), eq("1.1"), eq("test_case"), any(EntryRepoFactory.Creator.class));
+    }
+
+    private void stubTime(TimeProvider timeProvider, GregorianCalendar cal) {
+        when(timeProvider.cal()).thenReturn(cal);
+        when(timeProvider.now()).thenReturn(cal.getTime());
     }
 
     @Test

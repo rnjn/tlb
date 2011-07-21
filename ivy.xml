@@ -1,10 +1,11 @@
 <ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="test-load-balancer" module="tlb"/>
-    <configurations defaultconfmapping="core->default;balancer->default;java->default;restlet->default;test->default;build->default">
+    <configurations defaultconfmapping="core->default;balancer->default;java->default;restlet->default;server->default;test->default;build->default">
         <conf name="core"/>
         <conf name="balancer"/>
         <conf name="java"/>
         <conf name="restlet"/>
+        <conf name="server"/>
         <conf name="test"/>
         <conf name="build"/>
     </configurations>
@@ -27,6 +28,8 @@
         <dependency org="org.restlet" name="org.restlet" rev="1.1.10" conf="restlet"/>
         <dependency org="com.noelios.restlet" name="com.noelios.restlet" rev="1.1.10" conf="restlet"/>
         <dependency org="com.noelios.restlet" name="com.noelios.restlet.ext.servlet" rev="1.1.10" conf="restlet"/>
+
+        <dependency org="net.sf.ehcache" name="ehcache-core" rev="2.4.2" conf="server"/>
         
         <dependency name="junit" rev="4.7" org="junit" conf="test;java"/>
 

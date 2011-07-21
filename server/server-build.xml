@@ -10,10 +10,15 @@
     <property name="server.test.classes.dir" location="${server.target.dir}/test-classes"/>
     <property name="server.test.reports.dir" location="${server.target.dir}/reports"/>
 
+    <path id="server.dependencies">
+        <fileset dir="${server.lib.dir}" includes="*.jar" id="server.dependencies.fileset"/>
+    </path>
+
     <path id="server.src.classpath">
         <pathelement path="${server.classes.dir}"/>
         <pathelement path="${restlet.classes.dir}"/>
         <pathelement path="${core.classes.dir}"/>
+        <path refid="server.dependencies"/>
         <path refid="restlet.dependencies"/>
         <path refid="core.dependencies"/>
     </path>
@@ -59,7 +64,25 @@
             </batchtest>
         </junit>
     </target>
-    
+
+    <target name="server.test.perf" depends="server.test.lowmem"/>
+
+    <target name="server.test.lowmem" depends="server.compile.tests, server.compile">
+        <junit failureproperty="test.failure" printsummary="yes" haltonfailure="true" fork="true">
+            <classpath refid="emma.classpath"/>
+            <jvmarg value="-Xms30m"/>
+            <jvmarg value="-Xmx30m"/>
+            <jvmarg value="-Demma.coverage.out.file=${server.emma.file}"/>
+            <jvmarg value="-Demma.coverage.out.merge=true"/>
+
+            <classpath refid="server.test.classpath"/>
+            <batchtest todir="${server.test.reports.dir}">
+                <fileset dir="${server.test.classes.dir}" includes="**/*_LowMem.class*"/>
+                <formatter type="plain"/>
+            </batchtest>
+        </junit>
+    </target>
+
     <target name="emma.instr.server" depends="server.compile">
         <emma-instr classes-dir="${server.classes.dir}" name="server"/>
     </target>
