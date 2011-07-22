@@ -196,7 +196,7 @@
     </target>
 
     <target name="package.server.jar" depends="init, compile, test, -load.short.rev">
-        <property name="tlb_server_jar" value="${target.dir}/tlb-server.jar"/>
+        <property name="tlb_server_jar" value="${target.dir}/main.jar"/>
         <jar-restlet jar-name="${tlb_server_jar}" main-class="tlb.ServerApp">
             <class-dirs>
                 <fileset dir="${server.classes.dir}"/>
@@ -213,7 +213,7 @@
     </target>
 
     <target name="package.alien.jar" depends="init, compile, test, -load.short.rev">
-        <property name="tlb_alien_jar" value="${target.dir}/tlb-alien.jar"/>
+        <property name="tlb_alien_jar" value="${target.dir}/main.jar"/>
         <jar-restlet jar-name="${tlb_alien_jar}" main-class="tlb.BalancerApp">
             <class-dirs>
                 <fileset dir="${alien.classes.dir}"/>
